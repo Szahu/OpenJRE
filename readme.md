@@ -10,9 +10,12 @@ Feel free to add your own brick to this project by doing a pull request, even th
 ## Installation 
 
 You will need: 
-- (Java JDK)[https://www.oracle.com/java/technologies/downloads/]
-- (Maven)[https://maven.apache.org/]
+- [Java JDK](https://www.oracle.com/java/technologies/downloads)
+- [Maven](https://maven.apache.org/)
+
+1. Clone the repository. 
+2. Run `mvn package`
 
 ## Usage 
 
-Once you clone the repository use `mvn package` once and then `mvn exec:java` each time You want to compile the application. Of course You can use other tools, possibly integrated into Yours IDE of choice. 
+Once you clone the repository and use `mvn package` once, use `mvn exec:java` each time You want to compile and run the application. Of course You can use other tools, possibly integrated into Yours IDE of choice. 
