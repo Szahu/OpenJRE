@@ -1,0 +1,25 @@
+package org.solar;
+
+import org.lwjgl.*;
+
+import org.solar.engine.Engine;
+
+public class App {
+
+	private Engine m_engine;
+
+	public void run() {
+		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
+		
+		m_engine = new Engine();
+
+		m_engine.initialize();
+		m_engine.mainLoop();
+		m_engine.terminate();
+	}
+
+	public static void main(String[] args) {
+		new App().run();
+	}
+
+}
