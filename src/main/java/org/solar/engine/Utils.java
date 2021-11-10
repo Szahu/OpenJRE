@@ -9,6 +9,7 @@ public class Utils {
 
     private static String absProjectPath = "src/main/resources/shaders/";
 
+    //Creating a shader from a text file
     public static String singleShaderFromFile(String shaderName) {
         try {
             String path = absProjectPath + shaderName;
@@ -19,6 +20,7 @@ public class Utils {
         }
     }
 
+    //This function takes a text file and splits it into two after each token
     public static String[] multipleShadersFromFile(String shaderName) {
 
         String vertexShaderToken = "#vertexShader";
@@ -35,11 +37,13 @@ public class Utils {
 
             for(int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i);
+                //Cheking if the line is our token
                 if (line.contains(vertexShaderToken)) {
                     foundVertexShader = true;
                     foundFragmentShader = false;
                     continue;
                 }
+                //Cheking if the line is our token
                 else if (line.contains(fragmentShaderToken)) {
                     foundVertexShader = false;
                     foundFragmentShader = true;

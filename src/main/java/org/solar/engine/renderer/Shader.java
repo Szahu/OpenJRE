@@ -1,6 +1,8 @@
-package org.solar.engine;
+package org.solar.engine.renderer;
 
 import static org.lwjgl.opengl.GL20.*;
+
+import org.solar.engine.Utils;
 
 public class Shader {
 

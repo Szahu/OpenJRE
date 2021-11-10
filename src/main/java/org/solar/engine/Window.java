@@ -1,8 +1,10 @@
 package org.solar.engine;
 
-import static org.lwjgl.system.MemoryUtil.*;
-
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL20.*;
+
+import static org.lwjgl.system.MemoryUtil.*;
+import org.lwjgl.opengl.*;
 
 public class Window {
     public long handle;
@@ -24,11 +26,16 @@ public class Window {
 		if ( this.handle == NULL )
 			throw new RuntimeException("Failed to create the GLFW window");
 
+        //Create current contex 
+		glfwMakeContextCurrent(handle);
+        //Initialise OpenGL
+		GL.createCapabilities();
 
         //resize callback
         glfwSetFramebufferSizeCallback(handle, (window, width, height) -> {
             this.width = width;
             this.height = height;
+            glViewport(0,0, width, height);
         });
 
         //making sure the window will close upon closing
@@ -36,6 +43,7 @@ public class Window {
     }
 
     public void terminate(){
+        //Cleanup
         glfwDestroyWindow(handle);
     }
 

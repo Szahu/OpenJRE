@@ -2,7 +2,9 @@ package org.solar.engine;
 
 import org.lwjgl.glfw.*;
 import org.lwjgl.system.*;
-import org.lwjgl.opengl.*;
+import org.solar.engine.renderer.Mesh;
+import org.solar.engine.renderer.Renderer;
+import org.solar.engine.renderer.Shader;
 
 import java.nio.*;
 
@@ -36,8 +38,11 @@ public class Engine {
 		if ( !glfwInit() )
 			throw new IllegalStateException("Unable to initialize GLFW");
 
+		//Creating and initialising window 
 		m_window = new Window();
 		m_window.initialize();
+
+		//Initialising Input object so we can use it as a singleton
 		Input.initialise(m_window.handle);
         Event.AddKeyCallback(m_window.handle, GLFW_KEY_ESCAPE, GLFW_RELEASE, Engine::closeWindow);
 
@@ -61,66 +66,37 @@ public class Engine {
 		} // the stack frame is popped automatically
 
 		// Make the OpenGL context current
-		glfwMakeContextCurrent(m_window.handle);
 		// Enable v-sync
 		glfwSwapInterval(1);
 
 		// Make the window visible
 		glfwShowWindow(m_window.handle);
-
-		GL.createCapabilities();
     }
 
 	public void mainLoop(){
 
-		//glClearColor(0.5f, 0.0f, 1.0f, 0.0f);
-
-
 		//TEST CODE
-		float vertices[] = {
+		float[] vertices = new float[]{
 			-0.5f,  0.5f, 0.0f,
 			-0.5f, -0.5f, 0.0f,
-			 0.5f,  0.5f, 0.0f,
-			 0.5f,  0.5f, 0.0f,
-			-0.5f, -0.5f, 0.0f,
 			 0.5f, -0.5f, 0.0f,
-		};  
+			 0.5f,  0.5f, 0.0f,
+		};
+		int[] indices = new int[]{
+			0, 1, 3, 3, 1, 2,
+		};
 		
 		Shader shader = new Shader();
 		shader.load("testShader.glsl");
-		shader.bind();
-
-		FloatBuffer verticesBuffer = MemoryUtil.memAllocFloat(vertices.length);
-		int vertexCount = vertices.length / 3;
-		verticesBuffer.put(vertices).flip();
-
-		int vaoId = glGenVertexArrays();
-		glBindVertexArray(vaoId);
-
-		int vboId = glGenBuffers();
-		glBindBuffer(GL_ARRAY_BUFFER, vboId);
-		glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);            
-		glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		
-		shader.unbind();
+		Mesh testMesh = new Mesh(vertices, indices);
 
 		//TEST CODE END
 
 		while (!this.getWindow().shouldClose) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-			shader.bind();
-
-			glBindVertexArray(vaoId);
-    		glEnableVertexAttribArray(0);
-    		glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-
-    		// Restore state
-    		glDisableVertexAttribArray(0);
-    		glBindVertexArray(0);
-
-			shader.unbind();
+			Renderer.render(testMesh, shader);
 
 			glfwSwapBuffers(this.getWindow().handle); // swap the color buffers
 
@@ -129,7 +105,10 @@ public class Engine {
 			glfwPollEvents();
 		}
 
+		//test code here
+		testMesh.cleanup();
 		shader.cleanup();
+		//test code end here
 	}
 
     public void terminate() {
