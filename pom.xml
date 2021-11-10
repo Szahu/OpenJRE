@@ -18,7 +18,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <lwjgl.version>3.2.3</lwjgl.version>
 	  <joml.version>1.10.2</joml.version>
-	  <lwjgl.natives>natives-windows</lwjgl.natives>
+	  <lwjgl.natives>natives-linux</lwjgl.natives>
   </properties>
 
   <dependencyManagement>
@@ -147,5 +147,15 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>11</source>
+          <target>11</target>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 </project>
