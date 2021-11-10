@@ -27,7 +27,6 @@ public class Utils {
         String fragmentShaderToken = "#fragmentShader";
         String vertexShaderContent = "";
         String fragmentShaderContent = "";
-        System.out.println("Working Directory = " + System.getProperty("user.dir"));
         try {
             String path = absProjectPath + shaderName; 
             List<String> lines = Files.readAllLines(Paths.get(path), StandardCharsets.UTF_8);
