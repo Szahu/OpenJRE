@@ -1,10 +1,10 @@
 # OpenJRE - Open Java Rendering Engine
 
-OpenJRE is an open source Java project, which hopefully one day will become OpenGL (maybe other rendering API) based rendering engine for various applications. 
+OpenJRE is an open source Java project, built on lwjgl, which hopefully one day will become OpenGL (maybe other rendering API) based rendering engine for various applications. 
 
 ## Open Source!
 
-This project is meant to be built by UT students, regardless of your programming experience or prior 3D rendering knowledge, you can too be a part of this initiative. 
+Everyone is invited to join the project, regardless of your programming experience or prior 3D rendering knowledge, you can too be a part of this initiative. 
 Feel free to add your own brick to this project by doing a pull request, even the smallest contributions like commenting the code are welcome. You can find all wanted features in the project tab of this GitHub repository. 
 
 ## Installation 
