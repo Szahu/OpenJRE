@@ -31,8 +31,11 @@ public class Window {
         //Initialise OpenGL
 		GL.createCapabilities();
 
+        Event.createEvent("windowResize");
+
         //resize callback
         glfwSetFramebufferSizeCallback(handle, (window, width, height) -> {
+            Event.activateEvent("windowResize");
             this.width = width;
             this.height = height;
             glViewport(0,0, width, height);
