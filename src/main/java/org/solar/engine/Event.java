@@ -3,7 +3,9 @@ package org.solar.engine;
 import static org.lwjgl.glfw.GLFW.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 /*
@@ -25,7 +27,6 @@ Event.activateEvent("windowResize");
 
 public class Event {
 
-
     static class EventObject {
         public String m_eventLabel;
         public List<Supplier<Integer>> m_callBacks;
@@ -36,41 +37,40 @@ public class Event {
         }
     } 
 
-    private static List<EventObject> m_eventsList;
-    //private static List<EventObject> m_eventsToDispatchQueue;
+    private static Map<String, List<Supplier<Integer>>> m_eventsList;
 
     private Event() {}
 
-    //TODO check if event exists first
     public static void createEvent(String eventLabel) {
         if(m_eventsList == null) {
-            m_eventsList = new ArrayList<>();
+            m_eventsList = new HashMap<String, List<Supplier<Integer>>>();
         }
-        EventObject obj = new EventObject(eventLabel);
-        m_eventsList.add(obj);
+
+        if(!m_eventsList.containsKey(eventLabel)) {
+            m_eventsList.put(eventLabel, new ArrayList<>());
+        } else {
+            System.out.println("ERROR, SUCH EVENT ALREADY EXISTS: " + eventLabel);
+        }
     }
 
-    //To be optimised 
-    //TODO provide some kind of error if error doesnt not exist
     public static void activateEvent(String eventLabel) {
-        for(int i = 0; i < m_eventsList.size();i++) {
-            EventObject obj = m_eventsList.get(i);
-            if (obj.m_eventLabel == eventLabel) {
-                for(int j = 0;j < obj.m_callBacks.size();j++) {
-                    obj.m_callBacks.get(j).get();
-                }
+        if(m_eventsList.containsKey(eventLabel)) {
+            List<Supplier<Integer>> callbacks = m_eventsList.get(eventLabel);
+            for(int i = 0;i < callbacks.size();i++){
+                callbacks.get(i).get();
             }
+        }
+        else {
+            System.out.println("NO SUCH EVENT AS: " + eventLabel);
         }
     }
 
-    //To be optimised 
-    //TODO provide some kind of error message if the event does not exists
     public static void addEventCallback(String eventLabel, Supplier<Integer> func) {
-        for(int i = 0; i < m_eventsList.size();i++) {
-            EventObject obj = m_eventsList.get(i);
-            if (obj.m_eventLabel == eventLabel) {
-                obj.m_callBacks.add(func);
-            }
+        if(m_eventsList.containsKey(eventLabel)) {
+            m_eventsList.get(eventLabel).add(func);
+        }
+        else {
+            System.out.println("NO SUCH EVENT AS: " + eventLabel);
         }
     }
 
