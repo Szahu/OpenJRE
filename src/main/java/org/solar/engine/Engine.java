@@ -110,17 +110,21 @@ public class Engine {
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-			//Renderer.render(testMesh, shader);
+			//START CODE HERE
 			
 			testUniformShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
 			testUniformShader.setUniform("u_transformMatrix", m_camera.getTransformMatrix());
 			Renderer.render(testVertexArray, testUniformShader);
+
+			//END CODE HERER
 
 			glfwSwapBuffers(this.getWindow().getHandle()); // swap the color buffers
 
 			// Poll for window events. The key callback above will only be
 			// invoked during this call.
 			glfwPollEvents();
+
+			Utils.updateDeltaTime();
 		}
 
 		//test code here

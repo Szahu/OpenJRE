@@ -1,5 +1,7 @@
 package org.solar.engine;
 
+import static org.lwjgl.glfw.GLFW.*;
+
 import org.joml.Matrix4f;
 
 public class CameraController extends Camera {
@@ -13,6 +15,8 @@ public class CameraController extends Camera {
     }
 
     public void update() {
-        
+        if(Input.isKeyDown(GLFW_KEY_W)) {
+            //update position here
+        }
     }
 }

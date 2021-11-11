@@ -1,4 +1,5 @@
 package org.solar.engine;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -6,7 +7,21 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.nio.charset.*;
+
 public class Utils {
+
+    private static long m_startDeltaTime = 0;
+
+    private static float m_deltaTime  = 0;
+
+    public static void updateDeltaTime() {
+        long time = System.nanoTime();
+        m_deltaTime = ((float)(time - m_startDeltaTime)) / 100000000f;
+        m_startDeltaTime = time;
+    }
+
+    public static float getDeltaTime() {return m_deltaTime;}
+
     private final static String ABS_PROJECT_PATH = "src/main/resources/shaders/";
     //Reading content of the text file into String
     public static String FileToString(String shaderName) throws IOException {
