@@ -20,3 +20,9 @@ You will need:
 ## Usage 
 
 Once you clone the repository and use `mvn package` once, use `mvn exec:java` each time You want to compile and run the application. Of course You can use other tools, possibly integrated into Yours IDE of choice. 
+
+## Learning Sources 
+
+Here are some learning sources for OpenGL and lwjgl in general: 
+- [lwjgl/OpenGL guide](https://lwjglgamedev.gitbooks.io/3d-game-development-with-lwjgl/content/chapter01/chapter1.html)
+- [learnopengl.com](https://learnopengl.com/) , a good source on OpenGL, however in C++ (OpenGL concepts are the same).
