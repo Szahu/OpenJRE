@@ -125,6 +125,7 @@ public class Engine {
 			glfwPollEvents();
 
 			Utils.updateDeltaTime();
+			Input.update();
 		}
 
 		//test code here
