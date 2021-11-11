@@ -116,6 +116,10 @@ public class Engine {
 			testUniformShader.setUniform("u_transformMatrix", m_camera.getTransformMatrix());
 			Renderer.render(testVertexArray, testUniformShader);
 
+
+			Utils.updateDeltaTime();
+			Input.update();
+			m_camera.update();
 			//END CODE HERER
 
 			glfwSwapBuffers(this.getWindow().getHandle()); // swap the color buffers
@@ -123,9 +127,6 @@ public class Engine {
 			// Poll for window events. The key callback above will only be
 			// invoked during this call.
 			glfwPollEvents();
-
-			Utils.updateDeltaTime();
-			Input.update();
 		}
 
 		//test code here

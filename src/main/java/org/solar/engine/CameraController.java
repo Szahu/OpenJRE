@@ -2,21 +2,32 @@ package org.solar.engine;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-import org.joml.Matrix4f;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-public class CameraController extends Camera {
-    public CameraController(int width, int height) {
-        super(width, height);
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+
+
+public class CameraController {
+
+    private Consumer<Matrix4f> m_setTransformMatrixCallback;
+    private Supplier<Matrix4f> m_getTransformMatrixCallback;
+
+    private void setTransformMatrix(Matrix4f newMat) {
+        m_setTransformMatrixCallback.accept(newMat);
     }
 
-    @Override
-    public void setTransformMatrix(Matrix4f newMatrix) {
-        super.setTransformMatrix(newMatrix);
+    private float offset = 0;
+
+    public CameraController(Consumer<Matrix4f> setTransformMatrixCallback, Supplier<Matrix4f> getTransformMatrixCallback) {
+        m_setTransformMatrixCallback = setTransformMatrixCallback;
+        m_getTransformMatrixCallback = getTransformMatrixCallback;
     }
 
     public void update() {
-        if(Input.isKeyDown(GLFW_KEY_W)) {
-            //update position here
-        }
+        Matrix4f newTrans = new Matrix4f().identity().translate(new Vector3f(0,0, offset));
+        setTransformMatrix(newTrans);
+        offset += 0.01f;
     }
 }

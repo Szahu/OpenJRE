@@ -1,5 +1,7 @@
 package org.solar.engine;
 
+import java.util.function.Function;
+
 import org.joml.Matrix4f;
 
 public class Camera {
@@ -32,7 +34,10 @@ public class Camera {
         Event.addWindowResizeCallback((newWidth, newHeight) -> {
             recalculateProjection((float) newWidth / newHeight);
         });
-          
+        
+        m_CameraController = new CameraController((newMatrix) -> {
+            m_transformMatrix = newMatrix;
+        }, () -> {return m_transformMatrix;});
     }
 
     public void update() {
