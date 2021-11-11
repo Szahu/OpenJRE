@@ -8,11 +8,11 @@ import java.util.List;
 import java.nio.charset.*;
 public class Utils {
     private final static String ABS_PROJECT_PATH = "src/main/resources/shaders/";
-    //Creating a shader from a text file
-    public static String singleShaderFromFile(String shaderName) throws IOException {
-        StringBuffer content = new StringBuffer();
-        new BufferedReader( new FileReader(ABS_PROJECT_PATH + shaderName) ).lines().forEach(line -> content.append(line + "\n"));
-        return content.toString();
+    //Reading content of the text file into String
+    public static String FileToString(String shaderName) throws IOException {
+        StringBuffer stringBuffer = new StringBuffer();
+        new BufferedReader( new FileReader(ABS_PROJECT_PATH + shaderName) ).lines().forEach(line -> stringBuffer.append(line + "\n"));
+        return stringBuffer.toString();
     }
     //This function takes a text file and splits it into two after each token
     public static String[] multipleShadersFromFile(String shaderName) throws IOException{
