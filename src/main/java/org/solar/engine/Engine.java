@@ -87,7 +87,7 @@ public class Engine {
 		
 		Shader shader = new Shader();
 		//shader.load("VertexFragmentShader.glsl");
-		shader.load("vert_.glsl", "frag.glsl");
+		shader.load("vert.glsl", "frag.glsl");
 		
 		Mesh testMesh = new Mesh(vertices, indices);
 

@@ -10,11 +10,11 @@ Feel free to add your own brick to this project by doing a pull request, even th
 ## Installation 
 
 You will need: 
-- [Java JDK 11+](https://www.oracle.com/java/technologies/downloads)
+- [Java JDK 8+](https://www.oracle.com/java/technologies/downloads)
 - [Maven](https://maven.apache.org/)
 
 1. Clone the repository.
-2. (Optional for linux users: change pom.xml: replace dependancies with linux-native libraries, ([www.lwjgl.org](https://www.lwjgl.org/customize))
+2. (Optional) For linux users: change pom.xml replace dependencies with linux-native lwjgl libraries
 3. Run `mvn package`
 
 ## Usage 

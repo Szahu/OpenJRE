@@ -15,14 +15,14 @@ public class Shader {
     public Shader() {
         programId = glCreateProgram();
         if (programId == 0) {
-            System.out.println("System could not cratte the shader program");
+            System.out.println("System could not create the shader program");
         }
     }
 
     //Load and crate shaders from a file containing two shaders
     public void load(String bothShadersFileName) {
-        String[] shadersContent = Utils.multipleShadersFromFile(bothShadersFileName);
         try {
+            String[] shadersContent = Utils.multipleShadersFromFile(bothShadersFileName);
             createVertexShader(shadersContent[0]);
             createFragmentShader(shadersContent[1]);
             link();
@@ -37,7 +37,7 @@ public class Shader {
     public void load(String vertexShaderName, String fragmentShaderName) {
         try {
             String shaderCode = Utils.singleShaderFromFile(vertexShaderName);
-            System.out.println("v:\n" + shaderCode);
+            System.out.println("vertex:\n" + shaderCode);
             createVertexShader(shaderCode);
         } catch (Exception e) {
             System.out.print("Error while loading shaders from path: " + vertexShaderName + " , " + e.toString());
@@ -45,7 +45,7 @@ public class Shader {
 
         try {
             String shaderCode = Utils.singleShaderFromFile(fragmentShaderName);
-            System.out.println("f:\n" + shaderCode);
+            System.out.println("fragment:\n" + shaderCode);
             createFragmentShader(shaderCode);
         } catch (Exception e) {
             System.out.print("Error while loading shaders from path: " + fragmentShaderName + " , " + e.toString());
@@ -54,7 +54,7 @@ public class Shader {
         try {
             link();
         } catch (Exception e) {
-            System.out.println("Erro while linking " + vertexShaderName + " and " + fragmentShaderName + " , " + e.toString());
+            System.out.println("Error while linking " + vertexShaderName + " and " + fragmentShaderName + " , " + e.toString());
         }
     }
 
