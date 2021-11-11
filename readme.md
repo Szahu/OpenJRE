@@ -4,17 +4,18 @@ OpenJRE is an open source Java project, built on [lwjgl3](https://github.com/LWJ
 
 ## Open Source!
 
-Everyone is invited to join the project, regardless of your programming experience or prior 3D rendering knowledge, you can too be a part of this initiative. 
+Everyone is invited to join the project, regardless of your programming experience or prior 3D rendering knowledge, you can be a part of this initiative too! 
 Feel free to add your own brick to this project by doing a pull request, even the smallest contributions like commenting the code are welcome. You can find all wanted features in the project tab of this GitHub repository. 
 
 ## Installation 
 
 You will need: 
-- [Java JDK](https://www.oracle.com/java/technologies/downloads)
+- [Java JDK 8+](https://www.oracle.com/java/technologies/downloads)
 - [Maven](https://maven.apache.org/)
 
-1. Clone the repository. 
-2. Run `mvn package`
+1. Clone the repository.
+2. (Optional) For linux users: change pom.xml replace dependencies with linux-native lwjgl libraries
+3. Run `mvn package`
 
 ## Usage 
 
