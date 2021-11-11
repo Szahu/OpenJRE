@@ -113,7 +113,7 @@ public class Engine {
 			//Renderer.render(testMesh, shader);
 			
 			testUniformShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
-
+			testUniformShader.setUniform("u_transformMatrix", m_camera.getTransformMatrix());
 			Renderer.render(testVertexArray, testUniformShader);
 
 			glfwSwapBuffers(this.getWindow().getHandle()); // swap the color buffers

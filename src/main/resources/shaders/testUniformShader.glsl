@@ -6,12 +6,13 @@ layout (location =0) in vec3 position;
 layout (location =1) in vec3 inColour;
 
 uniform mat4 u_projectionMatrix;
+uniform mat4 u_transformMatrix;
 
 out vec3 exColour;
 
 void main()
 {
-    gl_Position =  u_projectionMatrix * vec4(position, 1.0);
+    gl_Position =  u_projectionMatrix * u_transformMatrix * vec4(position, 1.0);
     exColour = inColour;
 }
 

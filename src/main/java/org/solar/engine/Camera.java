@@ -1,7 +1,6 @@
 package org.solar.engine;
 
 import org.joml.Matrix4f;
-import org.solar.engine.Event.WindowResizeCallback;
 
 public class Camera {
     
@@ -11,8 +10,14 @@ public class Camera {
     private Matrix4f m_projectionMatrix;
     private Matrix4f m_transformMatrix;
 
+    private CameraController m_CameraController;
+
     public Matrix4f getProjectionMatrix() {return m_projectionMatrix;}
     public Matrix4f getTransformMatrix() {return m_transformMatrix;}
+
+    public void setTransformMatrix(Matrix4f newMatrix) {
+        m_transformMatrix = newMatrix;
+    }
 
     private void recalculateProjection(float aspectRatio) {
         m_projectionMatrix = new Matrix4f().perspective(m_FOV, aspectRatio, m_Z_NEAR, m_Z_FAR);
@@ -28,6 +33,10 @@ public class Camera {
             recalculateProjection((float) newWidth / newHeight);
         });
           
+    }
+
+    public void update() {
+        m_CameraController.update();
     }
 
 

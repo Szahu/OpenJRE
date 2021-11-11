@@ -14,6 +14,6 @@ public class Input {
     }
 
     public static boolean isKeyDown(int keyCode) {
-        return glfwGetKey(m_windowHandle, GLFW_KEY_V) == 1;
+        return glfwGetKey(m_windowHandle, keyCode) == 1;
     }
 }
