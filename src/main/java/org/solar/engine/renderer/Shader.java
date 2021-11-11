@@ -37,6 +37,7 @@ public class Shader {
     public void load(String vertexShaderName, String fragmentShaderName) {
         try {
             String shaderCode = Utils.singleShaderFromFile(vertexShaderName);
+            System.out.println("v:\n" + shaderCode);
             createVertexShader(shaderCode);
         } catch (Exception e) {
             System.out.print("Error while loading shaders from path: " + vertexShaderName + " , " + e.toString());
@@ -44,6 +45,7 @@ public class Shader {
 
         try {
             String shaderCode = Utils.singleShaderFromFile(fragmentShaderName);
+            System.out.println("f:\n" + shaderCode);
             createFragmentShader(shaderCode);
         } catch (Exception e) {
             System.out.print("Error while loading shaders from path: " + fragmentShaderName + " , " + e.toString());

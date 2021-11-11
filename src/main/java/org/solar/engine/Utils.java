@@ -10,10 +10,9 @@ public class Utils {
     //Creating a shader from a text file
     public static String singleShaderFromFile(String shaderName) {
         try {
-            //StringBuffer content = new StringBuffer();
-            //new BufferedReader( new FileReader(ABS_PROJECT_PATH + shaderName) ).lines().forEach(content::append);
-            String content = Files.readString(Paths.get(ABS_PROJECT_PATH + shaderName), StandardCharsets.UTF_8);
-            return content/*.toString()*/;
+            StringBuffer content = new StringBuffer();
+            new BufferedReader( new FileReader(ABS_PROJECT_PATH + shaderName) ).lines().forEach(line -> {content.append(line + "\n");});
+            return content.toString();
         } catch (Exception e) {
             return e.toString();
         }
