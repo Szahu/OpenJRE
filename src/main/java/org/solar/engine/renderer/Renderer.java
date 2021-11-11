@@ -27,4 +27,25 @@ public class Renderer {
 
     }
 
+    public static void render(VertexArray vao, Shader shader) {
+        
+        shader.bind();
+
+        VertexArray.bind();
+
+        for(int i = 0;i < VertexArray.getNumberOfAttributes(); i++) {
+            glEnableVertexAttribArray(i);
+        }
+
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        // Restore state
+        for(int i = 0;i < VertexArray.getNumberOfAttributes(); i++) {
+            glEnableVertexAttribArray(i);
+        }
+        VertexArray.unbind();
+
+        shader.unbind();
+    }
+
 }
