@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /*
@@ -25,27 +26,39 @@ Event.activateEvent("windowResize");
      
 */
 
-public class Event {
-
-    static class EventObject {
-        public String m_eventLabel;
-        public List<Supplier<Integer>> m_callBacks;
-        
-        public EventObject(String label) {
-            m_eventLabel = label;
-            m_callBacks = new ArrayList<>();
-        }
-    } 
+public class Event { 
 
     private static Map<String, List<Supplier<Integer>>> m_eventsList;
 
+    @FunctionalInterface
+    interface WindowResizeCallback<Int> {
+        public void accept(int width, int height);
+    }
+
+    private static List<WindowResizeCallback<Integer>> m_ResizeCallbacks;
+
+    public static void addWindowResizeCallback(WindowResizeCallback<Integer> func) {
+        if(m_ResizeCallbacks == null) {
+            m_ResizeCallbacks = new ArrayList<>();
+        }
+
+        m_ResizeCallbacks.add(func);
+    }
+
     private Event() {}
 
-    public static void createEvent(String eventLabel) {
+    public static void initialise() {
+        if(m_ResizeCallbacks == null) {
+            m_ResizeCallbacks = new ArrayList<>();
+        }
+
         if(m_eventsList == null) {
             m_eventsList = new HashMap<String, List<Supplier<Integer>>>();
         }
+    }
 
+    public static void createEvent(String eventLabel) {
+    
         if(!m_eventsList.containsKey(eventLabel)) {
             m_eventsList.put(eventLabel, new ArrayList<>());
         } else {
@@ -54,14 +67,23 @@ public class Event {
     }
 
     public static void activateEvent(String eventLabel) {
+    
         if(m_eventsList.containsKey(eventLabel)) {
             List<Supplier<Integer>> callbacks = m_eventsList.get(eventLabel);
             for(int i = 0;i < callbacks.size();i++){
                 callbacks.get(i).get();
             }
-        }
+        } 
         else {
             System.out.println("NO SUCH EVENT AS: " + eventLabel);
+        }
+    }
+
+    public static void activateWindowResizeEvent(int width, int height) {
+        activateEvent("windowResize"); 
+        
+        for(int i = 0;i < m_ResizeCallbacks.size();i++){
+            m_ResizeCallbacks.get(i).accept(width, height);
         }
     }
 

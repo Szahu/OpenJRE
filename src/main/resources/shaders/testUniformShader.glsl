@@ -5,14 +5,13 @@
 layout (location =0) in vec3 position;
 layout (location =1) in vec3 inColour;
 
-uniform mat4 projectionMatrix;
-uniform mat4 transformMatrix;
+uniform mat4 u_projectionMatrix;
 
 out vec3 exColour;
 
 void main()
 {
-    gl_Position = vec4(position, 1.0) * projectionMatrix * transformMatrix;
+    gl_Position =  u_projectionMatrix * vec4(position, 1.0);
     exColour = inColour;
 }
 

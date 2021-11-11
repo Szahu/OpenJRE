@@ -6,10 +6,16 @@ import static org.lwjgl.system.MemoryUtil.*;
 import org.lwjgl.opengl.*;
 
 public class Window {
-    public long handle;
-    public boolean shouldClose = false;
-    public int width = 1024;
-    public int height = 768;
+    private long m_handle;
+    private boolean m_shouldClose = false;
+    private int m_width = 1024;
+    private int m_height = 768;
+
+    public int getWidth() {return m_width;}
+    public int getHeight() {return m_height;}
+    public long getHandle() {return m_handle;}
+    public boolean getShouldClose() {return m_shouldClose;}
+
     public void initialize(){
                 
         // Configure GLFW
@@ -18,35 +24,35 @@ public class Window {
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
 		// Create the window
-		this.handle = glfwCreateWindow(this.width, this.height, "Hello World!", NULL, NULL);
-		if ( this.handle == NULL )
+		this.m_handle = glfwCreateWindow(this.m_width, this.m_height, "Hello World!", NULL, NULL);
+		if ( this.m_handle == NULL )
 			throw new RuntimeException("Failed to create the GLFW window");
 
         //Create current contex 
-		glfwMakeContextCurrent(handle);
+		glfwMakeContextCurrent(m_handle);
         //Initialise OpenGL
 		GL.createCapabilities();
 
         Event.createEvent("windowResize");
 
         //resize callback
-        glfwSetFramebufferSizeCallback(handle, (window, width, height) -> {
-            Event.activateEvent("windowResize");
-            this.width = width;
-            this.height = height;
+        glfwSetFramebufferSizeCallback(m_handle, (window, width, height) -> {
+            Event.activateWindowResizeEvent(width, height);
+            this.m_width = width;
+            this.m_height = height;
             glViewport(0,0, width, height);
         });
 
         //making sure the window will close upon closing
-        glfwSetWindowCloseCallback(handle, (window) -> {this.shouldClose = true;});
+        glfwSetWindowCloseCallback(m_handle, (window) -> {this.m_shouldClose = true;});
     }
 
     public void terminate(){
         //Cleanup
-        glfwDestroyWindow(handle);
+        glfwDestroyWindow(m_handle);
     }
 
     public void close() {
-        shouldClose = true;
+        m_shouldClose = true;
     }
 }
