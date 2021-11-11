@@ -79,14 +79,15 @@ public class Engine {
 			-0.5f,  0.5f, 0.0f,
 			-0.5f, -0.5f, 0.0f,
 			 0.5f, -0.5f, 0.0f,
-			 0.5f,  0.5f, 0.0f,
+			 0.5f,  0.5f, 0.0f
 		};
 		int[] indices = new int[]{
 			0, 1, 3, 3, 1, 2,
 		};
 		
 		Shader shader = new Shader();
-		shader.load("testShader.glsl");
+		//shader.load("VertexFragmentShader.glsl");
+		shader.load("vert_.glsl", "frag.glsl");
 		
 		Mesh testMesh = new Mesh(vertices, indices);
 

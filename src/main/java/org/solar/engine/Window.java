@@ -2,18 +2,14 @@ package org.solar.engine;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL20.*;
-
 import static org.lwjgl.system.MemoryUtil.*;
 import org.lwjgl.opengl.*;
 
 public class Window {
     public long handle;
-
     public boolean shouldClose = false;
-
     public int width = 1024;
     public int height = 768;
-
     public void initialize(){
                 
         // Configure GLFW
