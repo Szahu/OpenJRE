@@ -94,7 +94,7 @@ public class Engine {
 		};
 
 		Shader shader = new Shader();
-
+		Shader testUniformShader = new Shader("testUniformShader.glsl");
 		//shader.load("VertexFragmentShader.glsl");
 		shader.load("testColorShader.glsl");
 
