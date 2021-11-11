@@ -20,7 +20,7 @@ public class Utils {
             br.close();
             return stringBuffer.toString();
         }
-        catch (Exception e) {System.out.println("Exception at ");}
+        catch (Exception e) {System.out.println("Exception at reading file: " + shaderName + "\n" + e.getStackTrace());}
         return null;
     }
     //This function takes a text file and splits it into two after each token
