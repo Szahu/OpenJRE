@@ -1,7 +1,6 @@
 package org.solar.engine;
 
 import org.joml.Vector3f;
-
 import org.joml.Matrix4f;
 
 public class Camera {

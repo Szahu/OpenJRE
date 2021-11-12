@@ -55,10 +55,12 @@ public class Engine {
 			GL.createCapabilities();
         	glEnable(GL_DEPTH_TEST);
         	glDepthFunc(GL_LESS); 
+
 			Utils.LOG_INFO("OpenGL version: " + glGetString(GL_VERSION));
+
 		});
 
-		//Initialising Input object so we can use it as a singleton
+		//Initialising Input object so we can use it as a singleton.
 		Input.initialise(m_window.getHandle());
         Event.AddKeyCallback(m_window.getHandle(), GLFW_KEY_ESCAPE, GLFW_RELEASE, Engine::closeWindow);
 

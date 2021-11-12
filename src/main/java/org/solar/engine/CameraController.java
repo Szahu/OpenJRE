@@ -29,7 +29,9 @@ public class CameraController {
     }
 
     public void update() {
+
         Matrix4f newTrans = new Matrix4f().identity().translate(new Vector3f(offsetX, offsetY, offsetZ));
+
         setTransformMatrix(newTrans);
         if(Input.isKeyDown(GLFW_KEY_W)) {
             offsetZ += speed;
