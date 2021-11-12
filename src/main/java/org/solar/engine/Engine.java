@@ -7,6 +7,8 @@ import org.solar.engine.renderer.Shader;
 
 import java.io.IOException;
 import java.nio.*;
+import java.util.Objects;
+
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryStack.*;
@@ -21,7 +23,7 @@ public class Engine {
         return 0;
     }
     public void initialize() throws NullPointerException {
-        // Setup an error callback. The default implementation
+        // Set up an error callback. The default implementation
 		// will print the error message in System.err.
 		GLFWErrorCallback.createPrint(System.err).set();
 		// Initialize GLFW. Most GLFW functions will not work before doing this.
@@ -30,7 +32,7 @@ public class Engine {
 		//Creating and initialising window
 		m_window = new Window();
 		m_window.initialize();
-		//Initialising Input object so we can use it as a singleton
+		//Initialising Input object, so we can use it as a singleton
 		Input.initialise(m_window.handle);
         Event.AddKeyCallback(m_window.handle, GLFW_KEY_ESCAPE, GLFW_RELEASE, Engine::closeWindow);
 		// Get the thread stack and push a new frame
@@ -42,6 +44,7 @@ public class Engine {
 			// Get the resolution of the primary monitor
 			GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 			// Center the window
+			assert vidmode != null;
 			glfwSetWindowPos(
 				m_window.handle,
 				(vidmode.width() - pWidth.get(0)) / 2,
@@ -91,6 +94,6 @@ public class Engine {
 
 		// Terminate GLFW and free the error callback
 		glfwTerminate();
-		glfwSetErrorCallback(null).free();
+		Objects.requireNonNull(glfwSetErrorCallback(null)).free();
     }
 }
