@@ -16,7 +16,7 @@ public class Window {
     public long getHandle() {return m_handle;}
     public boolean getShouldClose() {return m_shouldClose;}
 
-    public void initialize(){
+    public void initialize(Runnable glInitCallback){
                 
         // Configure GLFW
 		glfwDefaultWindowHints(); // optional, the current window hints are already the default
@@ -31,7 +31,7 @@ public class Window {
         //Create current contex 
 		glfwMakeContextCurrent(m_handle);
         //Initialise OpenGL
-		GL.createCapabilities();
+		glInitCallback.run();
 
         Event.createEvent("windowResize");
 

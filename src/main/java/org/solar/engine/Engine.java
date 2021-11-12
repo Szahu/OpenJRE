@@ -1,6 +1,7 @@
 package org.solar.engine;
 
 import org.lwjgl.glfw.*;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.system.*;
 
 import org.solar.engine.renderer.Renderer;
@@ -44,7 +45,11 @@ public class Engine {
 
 		//Creating and initialising window
 		m_window = new Window();
-		m_window.initialize();
+		m_window.initialize(()->{
+			GL.createCapabilities();
+        	glEnable(GL_DEPTH_TEST);
+        	glDepthFunc(GL_LESS); 
+		});
 
 		//Initialising Input object so we can use it as a singleton
 		Input.initialise(m_window.getHandle());
@@ -83,18 +88,45 @@ public class Engine {
 	public void mainLoop(){
 
 		//TEST CODE
-		float[] vertices = new float[]{
-			-0.5f,  0.5f, -1.05f,
-			 0.5f,  0.5f, -1.05f,
-			 0.5f, -0.5f, -1.05f,
-			-0.5f, -0.5f, -1.05f
+		float[] vertices = new float[] {
+			// VO
+			-0.5f,  0.5f,  0.5f,
+			// V1
+			-0.5f, -0.5f,  0.5f,
+			// V2
+			0.5f, -0.5f,  0.5f,
+			// V3
+			 0.5f,  0.5f,  0.5f,
+			// V4
+			-0.5f,  0.5f, -0.5f,
+			// V5
+			 0.5f,  0.5f, -0.5f,
+			// V6
+			-0.5f, -0.5f, -0.5f,
+			// V7
+			 0.5f, -0.5f, -0.5f,
 		};
 
-		int[] indices = new int[]{
-			0, 3, 1, 1, 2, 3
+		int[] indices = new int[] {
+			// Front face
+			0, 1, 3, 3, 1, 2,
+			// Top Face
+			4, 0, 3, 5, 4, 3,
+			// Right face
+			3, 2, 7, 5, 3, 7,
+			// Left face
+			6, 1, 0, 6, 0, 4,
+			// Bottom face
+			2, 1, 6, 2, 6, 7,
+			// Back face
+			7, 6, 4, 7, 4, 5,
 		};
 
 		float[] colours = new float[]{
+			0.5f, 0.0f, 0.0f,
+			0.0f, 0.5f, 0.0f,
+			0.0f, 0.0f, 0.5f,
+			0.0f, 0.5f, 0.5f,
 			0.5f, 0.0f, 0.0f,
 			0.0f, 0.5f, 0.0f,
 			0.0f, 0.0f, 0.5f,
@@ -115,11 +147,7 @@ public class Engine {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
 			//START CODE HERE
-			m_guiLayer.update(Utils.getDeltaTime(), m_window, () -> {
-				ImGui.text("Hello world");
-			});
-
-
+			
 			testUniformShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
 			testUniformShader.setUniform("u_worldMatrix", m_camera.getWorldMatrix());
 			Renderer.render(testVertexArray, testUniformShader);
@@ -127,9 +155,11 @@ public class Engine {
 			Utils.updateDeltaTime();
 			Input.update();
 			m_camera.update();
-
-		
+			
 			//END CODE HERER
+			m_guiLayer.update(Utils.getDeltaTime(), m_window, () -> {
+				ImGui.text("Hello world");
+			});
 
 			glfwSwapBuffers(this.getWindow().getHandle()); // swap the color buffers
 
