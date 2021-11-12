@@ -19,7 +19,9 @@ import static org.lwjgl.opengl.GL20.*;
 
 public class Engine {
 
+	//Our window object
     private static Window m_window;
+	//Our camera object
 	private static Camera m_camera;
 
     public Window getWindow() {
