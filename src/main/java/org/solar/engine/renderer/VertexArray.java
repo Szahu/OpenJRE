@@ -21,6 +21,9 @@ public class VertexArray {
     private List<Integer> m_floatBuffersIds;
     private static int m_numberOfAttributes = 0;
 
+    private int m_indexCount = 0;
+    public int getIndexCount() {return m_indexCount;}
+
     public static int getNumberOfAttributes() { return m_numberOfAttributes; }
 
     private void initialise(int[] indices, float[] ...floatArrays) {
@@ -46,6 +49,7 @@ public class VertexArray {
                 m_numberOfAttributes++;
             }
 
+            m_indexCount = indices.length;
             m_indexBufferId = glGenBuffers();
             IntBuffer indicesBuffer = MemoryUtil.memAllocInt(indices.length);
             indicesBuffer.put(indices).flip();
