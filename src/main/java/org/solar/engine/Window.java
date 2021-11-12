@@ -3,6 +3,7 @@ package org.solar.engine;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.system.MemoryUtil.*;
+import org.lwjgl.opengl.*;
 
 public class Window {
     private long m_handle;
@@ -18,9 +19,7 @@ public class Window {
     public void initialize(Runnable glInitCallback){
                 
         // Configure GLFW
-		glfwDefaultWindowHints();
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2); // optional, the current window hints are already the default
+		glfwDefaultWindowHints(); // optional, the current window hints are already the default
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 

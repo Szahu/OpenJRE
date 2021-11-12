@@ -19,14 +19,8 @@ import static org.lwjgl.opengl.GL20.*;
 
 public class Engine {
 
-	//Our window object
     private static Window m_window;
-	//Our camera object
 	private static Camera m_camera;
-
-
-	//One more change
-	//Maybe one more
 
     public Window getWindow() {
         return m_window;
@@ -55,9 +49,6 @@ public class Engine {
 			GL.createCapabilities();
         	glEnable(GL_DEPTH_TEST);
         	glDepthFunc(GL_LESS); 
-
-			Utils.LOG_INFO("OpenGL version: " + glGetString(GL_VERSION));
-
 		});
 
 		//Initialising Input object so we can use it as a singleton.

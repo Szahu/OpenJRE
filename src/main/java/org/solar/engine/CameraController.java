@@ -18,10 +18,7 @@ public class CameraController {
         m_setTransformMatrixCallback.accept(newMat);
     }
 
-    private float offsetX = 0;
-    private float offsetY = 0;
-    private float offsetZ = 1;
-    private final float speed = 0.01f;
+    private float offset = 0;
 
     public CameraController(Consumer<Matrix4f> setTransformMatrixCallback, Supplier<Matrix4f> getTransformMatrixCallback) {
         m_setTransformMatrixCallback = setTransformMatrixCallback;
@@ -29,27 +26,8 @@ public class CameraController {
     }
 
     public void update() {
-
-        Matrix4f newTrans = new Matrix4f().identity().translate(new Vector3f(offsetX, offsetY, offsetZ));
-
+        Matrix4f newTrans = new Matrix4f().identity().translate(new Vector3f(0, 0, offset));
         setTransformMatrix(newTrans);
-        if(Input.isKeyDown(GLFW_KEY_W)) {
-            offsetZ += speed;
-        }
-        if(Input.isKeyDown(GLFW_KEY_A)) {
-            offsetX -= speed;
-        }
-        if(Input.isKeyDown(GLFW_KEY_S)) {
-            offsetZ -= speed;
-        }
-        if(Input.isKeyDown(GLFW_KEY_D)) {
-            offsetX += speed;
-        }
-        if(Input.isKeyDown(GLFW_KEY_LEFT_SHIFT)) {
-            offsetY += speed;
-        }
-        if(Input.isKeyDown(GLFW_KEY_LEFT_CONTROL)) {
-            offsetY -= speed;
-        }
+        offset += 0.01f;
     }
 }
