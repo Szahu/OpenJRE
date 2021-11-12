@@ -5,7 +5,15 @@ OpenJRE is an open source Java project, built on [lwjgl3](https://github.com/LWJ
 ## Open Source!
 
 Everyone is invited to join the project, regardless of your programming experience or prior 3D rendering knowledge, you can be a part of this initiative too! 
-Feel free to add your own brick to this project by doing a pull request, even the smallest contributions like commenting the code are welcome. You can find all wanted features in the project tab of this GitHub repository. 
+Feel free to add your own brick to this project by doing a pull request, even the smallest contributions like commenting the code are welcome. You can find all wanted features in the **Projects** tab of this GitHub repository. 
+
+### How to contribute? 
+
+1. Fork the repository 
+2. Create a branch, You are gonna be working on. 
+3. Open a pull request to let others know you work on a certain feature.
+4. Commit all the changes you want to do. Project maintainer will review the changes and provide feedback if need be. 
+5. Your pull request will be merged into the repository. Thank You for the contribution!
 
 ## Installation 
 
@@ -14,9 +22,14 @@ You will need:
 - [Maven](https://maven.apache.org/)
 
 1. Clone the repository.
-2. (Optional) For linux users: change pom.xml replace dependencies with linux-native lwjgl libraries
-3. Run `mvn package`
+2. Run `mvn package`.
 
 ## Usage 
 
 Once you clone the repository and use `mvn package` once, use `mvn exec:java` each time You want to compile and run the application. Of course You can use other tools, possibly integrated into Yours IDE of choice. 
+
+## Learning Sources 
+
+Here are some learning sources for OpenGL and lwjgl in general: 
+- [lwjgl/OpenGL guide](https://lwjglgamedev.gitbooks.io/3d-game-development-with-lwjgl/content/chapter01/chapter1.html)
+- [learnopengl.com](https://learnopengl.com/) , a good source on OpenGL, however in C++ (OpenGL concepts are the same).
