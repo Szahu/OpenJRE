@@ -3,7 +3,6 @@ package org.solar.engine;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.system.MemoryUtil.*;
-import org.lwjgl.opengl.*;
 
 public class Window {
     private long m_handle;
