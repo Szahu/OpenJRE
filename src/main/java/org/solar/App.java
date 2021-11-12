@@ -3,11 +3,12 @@ package org.solar;
 import org.lwjgl.*;
 import org.solar.engine.Engine;
 import java.io.IOException;
+import org.solar.engine.Utils;
 
 public class App {
 	public void run() throws IOException, RuntimeException {
-		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
-		
+		Utils.LOG_SUCCESS("Hello LWJGL " + Version.getVersion() + "!");
+
 		Engine m_engine = new Engine();
 
 		m_engine.initialize();

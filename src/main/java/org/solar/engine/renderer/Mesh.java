@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.system.MemoryUtil;
+import org.solar.engine.Utils;
 
 import static org.lwjgl.system.MemoryUtil.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -24,12 +25,12 @@ public class Mesh {
     private void glInit() {
         if (!m_initialised) {
 
-            FloatBuffer verticesBuffer = MemoryUtil.memAllocFloat(m_vertices.length);
-            verticesBuffer.put(m_vertices).flip();
-
             m_vertexArrayId = glGenVertexArrays();
             glBindVertexArray(m_vertexArrayId);
 
+
+            FloatBuffer verticesBuffer = MemoryUtil.memAllocFloat(m_vertices.length);
+            verticesBuffer.put(m_vertices).flip();
             m_vertexBufferId = glGenBuffers();
             glBindBuffer(GL_ARRAY_BUFFER, m_vertexBufferId);
             glBufferData(GL_ARRAY_BUFFER, verticesBuffer, GL_STATIC_DRAW);            
@@ -48,7 +49,7 @@ public class Mesh {
         }
 
         else {
-            System.out.println("Mesh already initialised!");
+            Utils.LOG_ERROR("Mesh already initialised!");
         }
         
     }
