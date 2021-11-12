@@ -10,6 +10,26 @@ import java.nio.charset.*;
 
 public class Utils {
 
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_BLACK = "\u001B[30m";
+    private static final String ANSI_RED = "\u001B[31m";
+    private static final String ANSI_GREEN = "\u001B[32m";
+    private static final String ANSI_YELLOW = "\u001B[33m";
+    private static final String ANSI_BLUE = "\u001B[34m";
+    private static final String ANSI_PURPLE = "\u001B[35m";
+    private static final String ANSI_CYAN = "\u001B[36m";
+    private static final String ANSI_WHITE = "\u001B[37m";
+
+    private static void print(Object o){
+        System.out.println(o.toString());
+    }
+
+    public static void LOG_SUCCESS(Object o) {System.out.println(ANSI_GREEN + o.toString() + ANSI_RESET);}
+    public static void LOG_ERROR(Object o) {System.out.println(ANSI_RED + o.toString() + ANSI_RESET);}
+    public static void LOG_WARNING(Object o) {System.out.println(ANSI_YELLOW + o.toString() + ANSI_RESET);}
+    public static void LOG_INFO(Object o) {System.out.println(ANSI_BLUE + o.toString() + ANSI_RESET);}
+    public static void LOG(Object o) {System.out.println(ANSI_BLUE + o.toString() + ANSI_RESET);}
+
     private static long m_startDeltaTime = 0;
 
     private static float m_deltaTime  = 0;
@@ -23,11 +43,20 @@ public class Utils {
     public static float getDeltaTime() {return m_deltaTime;}
 
     private final static String ABS_PROJECT_PATH = "src/main/resources/shaders/";
-    //Reading content of the text file into String
-    public static String FileToString(String shaderName) throws IOException {
+    //Returning content of the text file as String
+    public static String FileToString(String shaderName) {
         StringBuffer stringBuffer = new StringBuffer();
-        new BufferedReader( new FileReader(ABS_PROJECT_PATH + shaderName) ).lines().forEach(line -> stringBuffer.append(line + "\n"));
-        return stringBuffer.toString();
+        try{
+            FileReader fr = new FileReader(ABS_PROJECT_PATH + shaderName);
+            BufferedReader br = new BufferedReader( fr );
+            br.lines()
+                .forEach(line -> stringBuffer.append(line + "\n"));
+            fr.close();
+            br.close();
+            return stringBuffer.toString();
+        }
+        catch (Exception e) {System.out.println("Exception at reading file: " + shaderName + "\n" + e.getStackTrace());}
+        return null;
     }
     //This function takes a text file and splits it into two after each token
     public static String[] multipleShadersFromFile(String shaderName) throws IOException{

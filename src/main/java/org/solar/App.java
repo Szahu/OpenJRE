@@ -3,13 +3,14 @@ package org.solar;
 import org.lwjgl.*;
 
 import org.solar.engine.Engine;
+import org.solar.engine.Utils;
 
 public class App {
 
 	private Engine m_engine;
 
 	public void run() {
-		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
+		Utils.LOG_SUCCESS("Hello LWJGL " + Version.getVersion() + "!");
 		
 		m_engine = new Engine();
 

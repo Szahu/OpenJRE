@@ -1,11 +1,14 @@
 package org.solar.engine;
 
 import org.lwjgl.glfw.*;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.system.*;
-import org.solar.engine.renderer.Mesh;
+
 import org.solar.engine.renderer.Renderer;
 import org.solar.engine.renderer.Shader;
 import org.solar.engine.renderer.VertexArray;
+
+import imgui.ImGui;
 
 import java.nio.*;
 
@@ -16,8 +19,14 @@ import static org.lwjgl.opengl.GL20.*;
 
 public class Engine {
 
+	//Our window object
     private static Window m_window;
+	//Our camera object
 	private static Camera m_camera;
+
+
+	//One more change
+	//Maybe one more
 
     public Window getWindow() {
         return m_window;
@@ -42,7 +51,12 @@ public class Engine {
 
 		//Creating and initialising window
 		m_window = new Window();
-		m_window.initialize();
+		m_window.initialize(()->{
+			GL.createCapabilities();
+        	glEnable(GL_DEPTH_TEST);
+        	glDepthFunc(GL_LESS); 
+			Utils.LOG_INFO("OpenGL version: " + glGetString(GL_VERSION));
+		});
 
 		//Initialising Input object so we can use it as a singleton
 		Input.initialise(m_window.getHandle());
@@ -76,22 +90,50 @@ public class Engine {
 		glfwShowWindow(m_window.getHandle());
 
 		m_camera = new Camera(m_window.getWidth(), m_window.getHeight());
+
     }
 	public void mainLoop(){
 
 		//TEST CODE
-		float[] vertices = new float[]{
-			-0.5f,  0.5f, -1.05f,
-			 0.5f,  0.5f, -1.05f,
-			 0.5f, -0.5f, -1.05f,
-			-0.5f, -0.5f, -1.05f
+		float[] vertices = new float[] {
+			// VO
+			-0.5f,  0.5f,  0.5f,
+			// V1
+			-0.5f, -0.5f,  0.5f,
+			// V2
+			0.5f, -0.5f,  0.5f,
+			// V3
+			 0.5f,  0.5f,  0.5f,
+			// V4
+			-0.5f,  0.5f, -0.5f,
+			// V5
+			 0.5f,  0.5f, -0.5f,
+			// V6
+			-0.5f, -0.5f, -0.5f,
+			// V7
+			 0.5f, -0.5f, -0.5f,
 		};
 
-		int[] indices = new int[]{
-			0, 3, 1, 1, 2, 3
+		int[] indices = new int[] {
+			// Front face
+			0, 1, 3, 3, 1, 2,
+			// Top Face
+			4, 0, 3, 5, 4, 3,
+			// Right face
+			3, 2, 7, 5, 3, 7,
+			// Left face
+			6, 1, 0, 6, 0, 4,
+			// Bottom face
+			2, 1, 6, 2, 6, 7,
+			// Back face
+			7, 6, 4, 7, 4, 5,
 		};
 
 		float[] colours = new float[]{
+			0.5f, 0.0f, 0.0f,
+			0.0f, 0.5f, 0.0f,
+			0.0f, 0.0f, 0.5f,
+			0.0f, 0.5f, 0.5f,
 			0.5f, 0.0f, 0.0f,
 			0.0f, 0.5f, 0.0f,
 			0.0f, 0.0f, 0.5f,
@@ -103,7 +145,8 @@ public class Engine {
 		testColorShader.load("testColorShader.glsl");
 
 		VertexArray testVertexArray = new VertexArray(indices, vertices, colours);
-
+		ImGuiLayer m_guiLayer = new ImGuiLayer(m_window.getHandle());
+		m_guiLayer.initImGui();
 		//TEST CODE END
 
 		while (!this.getWindow().getShouldClose()) {
@@ -113,14 +156,17 @@ public class Engine {
 			//START CODE HERE
 			
 			testUniformShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
-			testUniformShader.setUniform("u_transformMatrix", m_camera.getTransformMatrix());
+			testUniformShader.setUniform("u_worldMatrix", m_camera.getWorldMatrix());
 			Renderer.render(testVertexArray, testUniformShader);
-
 
 			Utils.updateDeltaTime();
 			Input.update();
 			m_camera.update();
+			
 			//END CODE HERER
+			m_guiLayer.update(Utils.getDeltaTime(), m_window, () -> {
+				ImGui.text("Hello world");
+			});
 
 			glfwSwapBuffers(this.getWindow().getHandle()); // swap the color buffers
 

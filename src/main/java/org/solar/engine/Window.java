@@ -3,7 +3,6 @@ package org.solar.engine;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.system.MemoryUtil.*;
-import org.lwjgl.opengl.*;
 
 public class Window {
     private long m_handle;
@@ -16,10 +15,12 @@ public class Window {
     public long getHandle() {return m_handle;}
     public boolean getShouldClose() {return m_shouldClose;}
 
-    public void initialize(){
+    public void initialize(Runnable glInitCallback){
                 
         // Configure GLFW
-		glfwDefaultWindowHints(); // optional, the current window hints are already the default
+		glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2); // optional, the current window hints are already the default
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
@@ -31,7 +32,7 @@ public class Window {
         //Create current contex 
 		glfwMakeContextCurrent(m_handle);
         //Initialise OpenGL
-		GL.createCapabilities();
+		glInitCallback.run();
 
         Event.createEvent("windowResize");
 

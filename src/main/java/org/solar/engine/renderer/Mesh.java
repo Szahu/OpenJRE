@@ -4,6 +4,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.system.MemoryUtil;
+import org.solar.engine.Utils;
 
 import static org.lwjgl.system.MemoryUtil.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -48,7 +49,7 @@ public class Mesh {
         }
 
         else {
-            System.out.println("Mesh already initialised!");
+            Utils.LOG_ERROR("Mesh already initialised!");
         }
         
     }
