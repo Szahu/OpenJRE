@@ -2,10 +2,15 @@ package org.solar.engine;
 
 import org.lwjgl.glfw.*;
 import org.lwjgl.system.*;
+
 import org.solar.engine.renderer.Mesh;
 import org.solar.engine.renderer.Renderer;
 import org.solar.engine.renderer.Shader;
 import org.solar.engine.renderer.VertexArray;
+
+import imgui.ImGui;
+import imgui.app.Application;
+import imgui.app.Configuration;
 
 import java.nio.*;
 
@@ -76,6 +81,7 @@ public class Engine {
 		glfwShowWindow(m_window.getHandle());
 
 		m_camera = new Camera(m_window.getWidth(), m_window.getHeight());
+
     }
 	public void mainLoop(){
 
@@ -113,13 +119,14 @@ public class Engine {
 			//START CODE HERE
 			
 			testUniformShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
-			testUniformShader.setUniform("u_transformMatrix", m_camera.getTransformMatrix());
+			testUniformShader.setUniform("u_worldMatrix", m_camera.getWorldMatrix());
 			Renderer.render(testVertexArray, testUniformShader);
 
 
 			Utils.updateDeltaTime();
 			Input.update();
 			m_camera.update();
+			m_imGui.update();
 			//END CODE HERER
 
 			glfwSwapBuffers(this.getWindow().getHandle()); // swap the color buffers

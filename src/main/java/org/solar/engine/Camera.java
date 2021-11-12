@@ -1,7 +1,5 @@
 package org.solar.engine;
 
-import java.util.function.Function;
-
 import org.joml.Matrix4f;
 
 public class Camera {
@@ -15,7 +13,7 @@ public class Camera {
     private CameraController m_CameraController;
 
     public Matrix4f getProjectionMatrix() {return m_projectionMatrix;}
-    public Matrix4f getTransformMatrix() {return m_transformMatrix;}
+    public Matrix4f getWorldMatrix() {return m_transformMatrix.invert();}
 
     public void setTransformMatrix(Matrix4f newMatrix) {
         m_transformMatrix = newMatrix;

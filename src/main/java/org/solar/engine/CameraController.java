@@ -26,7 +26,7 @@ public class CameraController {
     }
 
     public void update() {
-        Matrix4f newTrans = new Matrix4f().identity().translate(new Vector3f(0,0, offset));
+        Matrix4f newTrans = new Matrix4f().identity().translate(new Vector3f(0, offset, 0));
         setTransformMatrix(newTrans);
         offset += 0.01f;
     }
