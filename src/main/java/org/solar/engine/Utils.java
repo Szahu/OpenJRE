@@ -28,7 +28,7 @@ public class Utils {
     public static void LOG_ERROR(Object o) {System.out.println(ANSI_RED + o.toString() + ANSI_RESET);}
     public static void LOG_WARNING(Object o) {System.out.println(ANSI_YELLOW + o.toString() + ANSI_RESET);}
     public static void LOG_INFO(Object o) {System.out.println(ANSI_BLUE + o.toString() + ANSI_RESET);}
-    public static void LOG_PLAIN(Object o) {System.out.println(ANSI_BLUE + o.toString() + ANSI_RESET);}
+    public static void LOG(Object o) {System.out.println(ANSI_BLUE + o.toString() + ANSI_RESET);}
 
     private static long m_startDeltaTime = 0;
 

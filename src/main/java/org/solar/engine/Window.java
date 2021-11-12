@@ -18,7 +18,9 @@ public class Window {
     public void initialize(Runnable glInitCallback){
                 
         // Configure GLFW
-		glfwDefaultWindowHints(); // optional, the current window hints are already the default
+		glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2); // optional, the current window hints are already the default
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
