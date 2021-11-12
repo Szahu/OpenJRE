@@ -5,7 +5,15 @@ OpenJRE is an open source Java project, built on [lwjgl3](https://github.com/LWJ
 ## Open Source!
 
 Everyone is invited to join the project, regardless of your programming experience or prior 3D rendering knowledge, you can be a part of this initiative too! 
-Feel free to add your own brick to this project by doing a pull request, even the smallest contributions like commenting the code are welcome. You can find all wanted features in the project tab of this GitHub repository. Please refer to the **Projects** tab for requested features.  
+Feel free to add your own brick to this project by doing a pull request, even the smallest contributions like commenting the code are welcome. You can find all wanted features in the **Projects** tab of this GitHub repository. 
+
+### How to contribute? 
+
+1. Fork the repository 
+2. Create a branch, You are gonna be working on. 
+3. Open a pull request to let others know you work on a certain feature.
+4. Commit all the changes you want to do.
+5. Your pull request will be merged into the repository. Thank You for the contribution!
 
 ## Installation 
 
