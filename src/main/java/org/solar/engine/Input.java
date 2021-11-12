@@ -2,9 +2,6 @@ package org.solar.engine;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
-
 import org.joml.Vector2i;
 
 public class Input {

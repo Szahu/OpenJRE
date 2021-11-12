@@ -24,7 +24,7 @@ public class Shader {
         m_programId = glCreateProgram();
         
         if (m_programId == 0) {
-            System.out.println("System could not create the shader program");
+            Utils.LOG_ERROR("System could not create the shader program");
         }
     }
 
@@ -34,7 +34,7 @@ public class Shader {
         m_programId = glCreateProgram();
         
         if (m_programId == 0) {
-            System.out.println("System could not create the shader program");
+            Utils.LOG_ERROR("System could not create the shader program");
         }
 
         load(bothShadersFileName);
@@ -46,7 +46,7 @@ public class Shader {
         m_programId = glCreateProgram();
         
         if (m_programId == 0) {
-            System.out.println("System could not create the shader program");
+            Utils.LOG_ERROR("System could not create the shader program");
         }
 
         load(vertexShaderName, fragmentShaderName);
@@ -64,10 +64,10 @@ public class Shader {
                 value.get(fb);
                 glUniformMatrix4fv(m_uniforms.get(uniformName), false, fb);
             } catch (Exception e) {
-                System.out.println(e.toString());
+                Utils.LOG_ERROR(e.toString());
             }
         } else {
-            System.out.println("Trying to set value of the uniform that does not exist");
+            Utils.LOG_ERROR("Trying to set value of the uniform that does not exist");
         }
         
         
@@ -114,7 +114,7 @@ public class Shader {
             link();
             generateUniforms(shadersContent[0]);
         } catch (Exception e) {
-            System.out.println("Error while loading shaders from path: " + bothShadersFileName + " , " + e.toString());
+            Utils.LOG_ERROR("Error while loading shaders from path: " + bothShadersFileName + " , " + e.toString());
         }
     }
     //Load and create shaders from two separate files
@@ -122,27 +122,25 @@ public class Shader {
 
         try {
             String shaderCode = Utils.FileToString(vertexShaderName);
-            System.out.println("vertex shader:\n" + shaderCode);
             createVertexShader(shaderCode);
             generateUniforms(shaderCode);
         } catch (Exception e) {
 
-            System.out.println("Error while loading shaders from path: " + vertexShaderName + " , " + e.toString());
+            Utils.LOG_ERROR("Error while loading shaders from path: " + vertexShaderName + " , " + e.toString());
         }
 
         try {
 
             String shaderCode = Utils.FileToString(fragmentShaderName);
-            System.out.println("fragment shader:\n" + shaderCode);
             createFragmentShader(shaderCode);
         } catch (Exception e) {
-            System.out.println("Error while loading shaders from path: " + fragmentShaderName + " , " + e.toString());
+            Utils.LOG_ERROR("Error while loading shaders from path: " + fragmentShaderName + " , " + e.toString());
         }
 
         try {
             link();
         } catch (Exception e) {
-            System.out.println("Error while linking " + vertexShaderName + " and " + fragmentShaderName + " , " + e.toString());
+            Utils.LOG_ERROR("Error while linking " + vertexShaderName + " and " + fragmentShaderName + " , " + e.toString());
         }
     }
 
@@ -183,7 +181,7 @@ public class Shader {
         }
         glValidateProgram(m_programId);
         if (glGetProgrami(m_programId, GL_VALIDATE_STATUS) == 0) {
-            System.err.println("Warning validating Shader code: " + glGetProgramInfoLog(m_programId, 1024));
+            Utils.LOG_WARNING("Warning validating Shader code: " + glGetProgramInfoLog(m_programId, 1024));
         }
     }
 

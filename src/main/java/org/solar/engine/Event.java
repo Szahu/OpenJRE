@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /*
@@ -62,7 +61,7 @@ public class Event {
         if(!m_eventsList.containsKey(eventLabel)) {
             m_eventsList.put(eventLabel, new ArrayList<>());
         } else {
-            System.out.println("ERROR, SUCH EVENT ALREADY EXISTS: " + eventLabel);
+            Utils.LOG_ERROR("ERROR, SUCH EVENT ALREADY EXISTS: " + eventLabel);
         }
     }
 
@@ -75,7 +74,7 @@ public class Event {
             }
         } 
         else {
-            System.out.println("NO SUCH EVENT AS: " + eventLabel);
+            Utils.LOG_ERROR("NO SUCH EVENT AS: " + eventLabel);
         }
     }
 
@@ -92,7 +91,7 @@ public class Event {
             m_eventsList.get(eventLabel).add(func);
         }
         else {
-            System.out.println("NO SUCH EVENT AS: " + eventLabel);
+            Utils.LOG_ERROR("NO SUCH EVENT AS: " + eventLabel);
         }
     }
 

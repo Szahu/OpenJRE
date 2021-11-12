@@ -3,14 +3,9 @@ package org.solar.engine;
 import org.lwjgl.glfw.*;
 import org.lwjgl.system.*;
 
-import org.solar.engine.renderer.Mesh;
 import org.solar.engine.renderer.Renderer;
 import org.solar.engine.renderer.Shader;
 import org.solar.engine.renderer.VertexArray;
-
-import imgui.ImGui;
-import imgui.app.Application;
-import imgui.app.Configuration;
 
 import java.nio.*;
 
@@ -126,7 +121,6 @@ public class Engine {
 			Utils.updateDeltaTime();
 			Input.update();
 			m_camera.update();
-			m_imGui.update();
 			//END CODE HERER
 
 			glfwSwapBuffers(this.getWindow().getHandle()); // swap the color buffers
