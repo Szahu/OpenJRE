@@ -12,7 +12,7 @@ Feel free to add your own brick to this project by doing a pull request, even th
 1. Fork the repository 
 2. Create a branch, You are gonna be working on. 
 3. Open a pull request to let others know you work on a certain feature.
-4. Commit all the changes you want to do.
+4. Commit all the changes you want to do. Project maintainer will review the changes and let provide feedback if need be. 
 5. Your pull request will be merged into the repository. Thank You for the contribution!
 
 ## Installation 
