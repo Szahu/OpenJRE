@@ -16,11 +16,10 @@ public class Shader {
     private final int m_programId;
     private int vertexShaderId;
     private int fragmentShaderId;
-    private final Map<String, Integer> m_uniforms;
+    private Map<String, Integer> m_uniforms = new HashMap<>();
 
     public Shader() {
 
-        m_uniforms = new HashMap<>();
         m_programId = glCreateProgram();
         
         if (m_programId == 0) {
@@ -29,7 +28,6 @@ public class Shader {
     }
 
     public Shader(String bothShadersFileName) throws IOException {
-        m_uniforms = new HashMap<>();
 
         m_programId = glCreateProgram();
         
@@ -41,7 +39,6 @@ public class Shader {
     }
 
     public Shader(String vertexShaderName, String fragmentShaderName) throws IOException {
-        m_uniforms = new HashMap<>();
 
         m_programId = glCreateProgram();
         
@@ -56,8 +53,9 @@ public class Shader {
         
         //TODO move it to the render function
         this.bind();
-        
+        m_uniforms.put(uniformName,0);
         // Dump the matrix into a float buffer
+        System.out.println(m_uniforms.values() + ";" + m_uniforms.keySet());
         if(m_uniforms.containsKey(uniformName)) {
             MemoryStack stack = MemoryStack.stackPush();
             FloatBuffer fb = stack.mallocFloat(16);

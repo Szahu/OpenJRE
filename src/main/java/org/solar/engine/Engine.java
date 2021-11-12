@@ -50,16 +50,16 @@ public class Engine {
 		//Creating and initialising window
 		m_window = new Window();
 
-		m_window.initialize(this::initialize);
 		//Initialising Input object, so we can use it as a singleton
-		Input.initialise(m_window.getHandle());
-        Event.AddKeyCallback(m_window.getHandle(), GLFW_KEY_ESCAPE, GLFW_RELEASE, Engine::closeWindow);
+
 		m_window.initialize(()->{
 			GL.createCapabilities();
         	glEnable(GL_DEPTH_TEST);
         	glDepthFunc(GL_LESS); 
 			Utils.LOG_INFO("OpenGL version: " + glGetString(GL_VERSION));
 		});
+		Input.initialise(m_window.getHandle());
+		Event.AddKeyCallback(m_window.getHandle(), GLFW_KEY_ESCAPE, GLFW_RELEASE, Engine::closeWindow);
 
 		//Initialising Input object so we can use it as a singleton
 		Input.initialise(m_window.getHandle());
@@ -152,15 +152,15 @@ public class Engine {
 		ImGuiLayer m_guiLayer = new ImGuiLayer(m_window.getHandle());
 		m_guiLayer.initImGui();
 		//TEST CODE END
-
+		testUniformShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
+		testUniformShader.setUniform("u_worldMatrix", m_camera.getWorldMatrix());
 		while (!this.getWindow().getShouldClose()) {
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
 			//START CODE HERE
 			
-			testUniformShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
-			testUniformShader.setUniform("u_worldMatrix", m_camera.getWorldMatrix());
+
 			Renderer.render(testVertexArray, testUniformShader);
 
 			Utils.updateDeltaTime();
