@@ -7,6 +7,8 @@ import org.solar.engine.renderer.Renderer;
 import org.solar.engine.renderer.Shader;
 import org.solar.engine.renderer.VertexArray;
 
+import imgui.ImGui;
+
 import java.nio.*;
 
 import static org.lwjgl.glfw.Callbacks.*;
@@ -104,7 +106,8 @@ public class Engine {
 		testColorShader.load("testColorShader.glsl");
 
 		VertexArray testVertexArray = new VertexArray(indices, vertices, colours);
-
+		ImGuiLayer m_guiLayer = new ImGuiLayer(m_window.getHandle());
+		m_guiLayer.initImGui();
 		//TEST CODE END
 
 		while (!this.getWindow().getShouldClose()) {
@@ -112,15 +115,20 @@ public class Engine {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
 			//START CODE HERE
-			
+			m_guiLayer.update(Utils.getDeltaTime(), m_window, () -> {
+				ImGui.text("Hello world");
+			});
+
+
 			testUniformShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
 			testUniformShader.setUniform("u_worldMatrix", m_camera.getWorldMatrix());
 			Renderer.render(testVertexArray, testUniformShader);
 
-
 			Utils.updateDeltaTime();
 			Input.update();
 			m_camera.update();
+
+		
 			//END CODE HERER
 
 			glfwSwapBuffers(this.getWindow().getHandle()); // swap the color buffers
