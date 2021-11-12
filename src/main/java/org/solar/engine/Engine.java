@@ -4,6 +4,8 @@ import org.lwjgl.system.*;
 import org.solar.engine.renderer.Mesh;
 import org.solar.engine.renderer.Renderer;
 import org.solar.engine.renderer.Shader;
+
+import java.io.IOException;
 import java.nio.*;
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -18,7 +20,7 @@ public class Engine {
         m_window.close();
         return 0;
     }
-    public void initialize() {
+    public void initialize() throws NullPointerException {
         // Setup an error callback. The default implementation
 		// will print the error message in System.err.
 		GLFWErrorCallback.createPrint(System.err).set();
@@ -52,7 +54,7 @@ public class Engine {
 		// Make the window visible
 		glfwShowWindow(m_window.handle);
     }
-	public void mainLoop(){
+	public void mainLoop() throws IOException, NullPointerException {
 		//TEST CODE
 		float[] vertices = new float[]{
 			-0.5f,  0.5f, 0.0f,

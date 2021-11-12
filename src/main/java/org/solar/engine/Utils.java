@@ -6,54 +6,49 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.nio.charset.*;
+
 public class Utils {
-    private final static String ABS_PROJECT_PATH = "src/main/resources/shaders/";
+    public final static String ABS_PROJECT_PATH        = "src/main/resources/shaders/";
+    public final static char    VERTEX_SHADER_IDX       = 0;
+    public final static char    FRAGMENT_SHADER_IDX     = 1;
+    private final static String VERTEX_SHADER_TOKEN     = "#vertexShader";
+    private final static String FRAGMENT_SHADER_TOKEN   = "#fragmentShader";
+
     //Returning content of the text file as String
-    public static String FileToString(String shaderName) {
+    public static String getShaderStringFromFile(String shaderName) throws IOException {
         StringBuffer stringBuffer = new StringBuffer();
-        try{
-            FileReader fr = new FileReader(ABS_PROJECT_PATH + shaderName);
-            BufferedReader br = new BufferedReader( fr );
-            br.lines()
-                .forEach(line -> stringBuffer.append(line + "\n"));
-            fr.close();
-            br.close();
-            return stringBuffer.toString();
-        }
-        catch (Exception e) {System.out.println("Exception at reading file: " + shaderName + "\n" + e.getStackTrace());}
-        return null;
+        BufferedReader br = new BufferedReader( new FileReader( shaderName ) );
+        br.lines()
+            .forEach(line -> stringBuffer.append(line).append("\n"));
+        br.close();
+        return stringBuffer.toString();
     }
-    //This function takes a text file and splits it into two after each token
-    public static String[] multipleShadersFromFile(String shaderName) throws IOException{
-        String vertexShaderToken = "#vertexShader";
-        String fragmentShaderToken = "#fragmentShader";
-        String vertexShaderContent = "";
-        String fragmentShaderContent = "";
-        String path = ABS_PROJECT_PATH + shaderName;
-        List<String> lines = Files.readAllLines(Paths.get(path), StandardCharsets.UTF_8);
+    //This function takes a text file and splits it into String array after each token
+    public static String[] getTwoShaderStringsFromFile(String shaderName) throws IOException{
         boolean foundVertexShader = false;
         boolean foundFragmentShader = false;
-        for(int i = 0; i < lines.size(); i++) {
-            String line = lines.get(i);
-            //Checking if the line is our token
-            if (line.contains(vertexShaderToken)) {
+        String[] result = {"",""};
+        List<String> lines = Files.readAllLines( Paths.get( shaderName ), StandardCharsets.UTF_8 );
+        for ( String line : lines ) {
+
+            if (line.contains(VERTEX_SHADER_TOKEN)) {
                 foundVertexShader = true;
                 foundFragmentShader = false;
                 continue;
             }
-            //Checking if the line is our token
-            else if (line.contains(fragmentShaderToken)) {
+
+            else if ( line.contains(FRAGMENT_SHADER_TOKEN) ) {
                 foundVertexShader = false;
                 foundFragmentShader = true;
                 continue;
             }
-            if (foundVertexShader) {vertexShaderContent += (lines.get(i) + "\n") ;}
-            else if (foundFragmentShader) {fragmentShaderContent += (lines.get(i) + "\n");}
-        }
 
-        String[] result = new String[2];
-        result[0] = vertexShaderContent;
-        result[1] = fragmentShaderContent;
+            if ( foundVertexShader ) {
+                result[VERTEX_SHADER_IDX] += (line + "\n");
+            } else if ( foundFragmentShader ) {
+                result[FRAGMENT_SHADER_IDX] += (line + "\n");
+            }
+        }
         return result;
     }
 }
