@@ -39,9 +39,14 @@ public class Input {
     }
 
     public static void update() {
+
         Vector2i mousePos = getMousePosition();
         m_deltaMousePos = m_lastMousePos.sub(mousePos);
+        // To prevent huge jumps when the mouse leaves the application and re-enters at a different point
+        if (Math.abs(m_deltaMousePos.get(0)) > 150 || Math.abs(m_deltaMousePos.get(1)) > 150) {
+            m_deltaMousePos.zero();
+        }
         m_deltaMousePos.mul(-1, 1);
-        m_lastMousePos = mousePos; 
+        m_lastMousePos = mousePos;
     }
 }
