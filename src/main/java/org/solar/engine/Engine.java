@@ -1,5 +1,6 @@
 package org.solar.engine;
 
+import org.joml.Vector3f;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.*;
@@ -141,8 +142,18 @@ public class Engine {
 		};
 
 		Shader testColorShader = new Shader();
-		Shader testUniformShader = new Shader("testUniformShader.glsl");
 		testColorShader.load("testColorShader.glsl");
+
+		Shader testUniformShader = new Shader("testUniformShader.glsl");
+		testUniformShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
+		Transform testTransform = new Transform();
+		float[] testPosition = {0,0,0};
+		float[] testScale = {1,1,1};
+		float[] testRotation = {0,0,0};
+
+		Event.addWindowResizeCallback((width, height)-> {
+			testUniformShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
+		});
 
 		VertexArray testVertexArray = new VertexArray(indices, vertices, colours);
 		ImGuiLayer m_guiLayer = new ImGuiLayer(m_window.getHandle());
@@ -155,18 +166,25 @@ public class Engine {
 
 			//START CODE HERE
 			
-			testUniformShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
-			testUniformShader.setUniform("u_worldMatrix", m_camera.getWorldMatrix());
+			testUniformShader.setUniform("u_viewMatrix", m_camera.getWorldMatrix());
+			testTransform.setPosition(new Vector3f(testPosition));
+			testTransform.setScale(new Vector3f(testScale));
+			testTransform.setRotation(new Vector3f(testRotation));
+			testUniformShader.setUniform("u_worldMatrix", testTransform.getTransformMatrix());
 			Renderer.render(testVertexArray, testUniformShader);
 
 			Utils.updateDeltaTime();
 			Input.update();
 			m_camera.update();
 			
-			//END CODE HERER
 			m_guiLayer.update(Utils.getDeltaTime(), m_window, () -> {
 				ImGui.text("Hello world");
+				ImGui.dragFloat3("Transform", testPosition, 0.5f);
+				ImGui.dragFloat3("Scale", testScale, 0.1f);
+				ImGui.dragFloat3("Rotate", testRotation, 0.1f);
 			});
+			//END CODE HERER
+			
 
 			glfwSwapBuffers(this.getWindow().getHandle()); // swap the color buffers
 

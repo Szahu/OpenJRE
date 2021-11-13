@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+
+import org.joml.Vector3f;
+
 import java.nio.charset.*;
 
 public class Utils {
@@ -19,27 +22,24 @@ public class Utils {
     private static final String ANSI_PURPLE = "\u001B[35m";
     private static final String ANSI_CYAN = "\u001B[36m";
     private static final String ANSI_WHITE = "\u001B[37m";
-
     private static void print(Object o){
         System.out.println(o.toString());
     }
-
     public static void LOG_SUCCESS(Object o) {System.out.println(ANSI_GREEN + o.toString() + ANSI_RESET);}
     public static void LOG_ERROR(Object o) {System.out.println(ANSI_RED + o.toString() + ANSI_RESET);}
     public static void LOG_WARNING(Object o) {System.out.println(ANSI_YELLOW + o.toString() + ANSI_RESET);}
     public static void LOG_INFO(Object o) {System.out.println(ANSI_BLUE + o.toString() + ANSI_RESET);}
     public static void LOG(Object o) {System.out.println(ANSI_BLUE + o.toString() + ANSI_RESET);}
 
+    public static float[] vec3fToArray(Vector3f vec) {float[] res = {vec.get(0), vec.get(1), vec.get(2)}; return res;}
+
     private static long m_startDeltaTime = 0;
-
     private static float m_deltaTime  = 0;
-
     public static void updateDeltaTime() {
         long time = System.nanoTime();
         m_deltaTime = ((float)(time - m_startDeltaTime)) / 100000000f;
         m_startDeltaTime = time;
     }
-
     public static float getDeltaTime() {return m_deltaTime;}
 
     private final static String ABS_PROJECT_PATH = "src/main/resources/shaders/";
