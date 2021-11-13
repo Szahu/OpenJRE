@@ -30,7 +30,7 @@ public class Event {
     private static Map<String, List<Supplier<Integer>>> m_eventsList;
 
     @FunctionalInterface
-    interface WindowResizeCallback<Int> {
+    public interface WindowResizeCallback<Int> {
         public void accept(int width, int height);
     }
 

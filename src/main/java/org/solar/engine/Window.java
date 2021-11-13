@@ -4,6 +4,13 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
+import java.nio.IntBuffer;
+
+import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.system.MemoryStack;
+
+import static org.lwjgl.system.MemoryStack.*;
+
 public class Window {
     private long m_handle;
     private boolean m_shouldClose = false;
@@ -46,6 +53,26 @@ public class Window {
 
         //making sure the window will close upon closing
         glfwSetWindowCloseCallback(m_handle, (window) -> {this.m_shouldClose = true;});
+
+		// Get the thread stack and push a new frame
+		try ( MemoryStack stack = stackPush() ) {
+			IntBuffer pWidth = stack.mallocInt(1); // int*
+			IntBuffer pHeight = stack.mallocInt(1); // int*
+
+			// Get the window size passed to glfwCreateWindow
+			glfwGetWindowSize(m_handle, pWidth, pHeight);
+
+			// Get the resolution of the primary monitor
+			GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+			// Center the window
+			glfwSetWindowPos(
+				m_handle,
+				(vidmode.width() - pWidth.get(0)) / 2,
+				(vidmode.height() - pHeight.get(0)) / 2
+			);
+
+		} // the stack frame is popped automatically
     }
 
     public void terminate(){

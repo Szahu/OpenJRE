@@ -180,19 +180,18 @@ public class ImGuiLayer {
         imGuiGl3.init("#version 330 core");
     }
 
-    public void update(float dt, Window window, Runnable imGuiCallback) {
+    public void update(float dt, Window window) {
         startFrame(dt, window);
 
         // Any Dear ImGui code SHOULD go between ImGui.newFrame()/ImGui.render() methods
         ImGui.newFrame();
         //ImGui.showDemoWindow();
-        imGuiCallback.run();
         ImGui.render();
 
         endFrame();
     }
 
-    private void startFrame(final float deltaTime, Window window) {
+    public void startFrame(final float deltaTime, Window window) {
         // Get window properties and mouse position
         float[] winWidth = {window.getWidth()};
         float[] winHeight = {window.getHeight()};
@@ -211,16 +210,19 @@ public class ImGuiLayer {
         final int imguiCursor = ImGui.getMouseCursor();
         glfwSetCursor(glfwWindow, mouseCursors[imguiCursor]);
         glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        ImGui.newFrame();
+
     }
 
-    private void endFrame() {
+    public void endFrame() {
         // After Dear ImGui prepared a draw data, we use it in the LWJGL3 renderer.
         // At that moment ImGui will be rendered to the current OpenGL context.
+        ImGui.render();
         imGuiGl3.renderDrawData(ImGui.getDrawData());
     }
 
     // If you want to clean a room after yourself - do it by yourself
-    private void destroyImGui() {
+    public void destroyImGui() {
         imGuiGl3.dispose();
         ImGui.destroyContext();
     }
