@@ -9,19 +9,9 @@ import static org.lwjgl.opengl.GL20.*;
 
 public class Engine {
 
-	//Our window object
-    private static Window m_window;
 	//Our camera object
 	private ImGuiLayer m_guiLayer;
 
-    public Window getWindow() {
-        return m_window;
-    }
-
-    public static Integer closeWindow() {
-        m_window.close();
-        return 0;
-    }
 
     public void initialize() {
 
@@ -36,8 +26,7 @@ public class Engine {
 			throw new IllegalStateException("Unable to initialize GLFW");
 
 		//Creating and initialising window
-		m_window = new Window();
-		m_window.initialize(()->{
+		Window.initialize(()->{
 			GL.createCapabilities();
         	glEnable(GL_DEPTH_TEST);
         	glDepthFunc(GL_LESS); 
@@ -45,7 +34,7 @@ public class Engine {
 		});
 
 		//Initialising Input object so we can use it as a singleton
-		Input.initialise(m_window.getHandle());
+		Input.initialise(Window.getHandle());
         //Event.AddKeyCallback(m_window.getHandle(), GLFW_KEY_ESCAPE, GLFW_RELEASE, Engine::closeWindow/* );
 
 		// Get the thread stack and push a new frame
@@ -73,17 +62,18 @@ public class Engine {
 		glfwSwapInterval(1);
 
 		// Make the window visible
-		glfwShowWindow(m_window.getHandle());
+		glfwShowWindow(Window.getHandle());
 
     }
+	
 	public void mainLoop(Runnable appUpdate){
 
 		
-		m_guiLayer = new ImGuiLayer(m_window.getHandle());
+		m_guiLayer = new ImGuiLayer(Window.getHandle());
 		m_guiLayer.initImGui();
 		//TEST CODE END
 
-		while (!this.getWindow().getShouldClose()) {
+		while (!Window.getShouldClose()) {
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
@@ -92,7 +82,7 @@ public class Engine {
 			Utils.updateDeltaTime();
 			Input.update();
 
-			m_guiLayer.startFrame(Utils.getDeltaTime(), m_window);
+			m_guiLayer.startFrame(Utils.getDeltaTime());
 
 			appUpdate.run();
 			
@@ -101,18 +91,12 @@ public class Engine {
 			//END CODE HERER
 			
 
-			glfwSwapBuffers(this.getWindow().getHandle()); // swap the color buffers
+			glfwSwapBuffers(Window.getHandle()); // swap the color buffers
 
 			// Poll for window events. The key callback above will only be
 			// invoked during this call.
 			glfwPollEvents();
 		}
-
-		//test code here
-		/* testVertexArray.cleanup();
-		testColorShader.cleanup();
-		testUniformShader.cleanup(); */
-		//test code end here
 
 	}
 
@@ -120,8 +104,8 @@ public class Engine {
         
 		//m_guiLayer.destroyImGui();
 		// Free the window callbacks and destroy the window
-		glfwFreeCallbacks(m_window.getHandle());
-		glfwDestroyWindow(m_window.getHandle());
+		glfwFreeCallbacks(Window.getHandle());
+		glfwDestroyWindow(Window.getHandle());
 
 		// Terminate GLFW and free the error callback
 		glfwTerminate();

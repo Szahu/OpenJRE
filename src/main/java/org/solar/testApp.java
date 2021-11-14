@@ -21,7 +21,8 @@ public class testApp extends ApplicationTemplate {
 
     @Override
     public void initialise() {
-        //TEST CODE
+        
+		//Our data to render
 		float[] vertices = new float[] {
 			// VO
 			-0.5f,  0.5f,  0.5f,

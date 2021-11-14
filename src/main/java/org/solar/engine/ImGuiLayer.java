@@ -180,8 +180,8 @@ public class ImGuiLayer {
         imGuiGl3.init("#version 330 core");
     }
 
-    public void update(float dt, Window window) {
-        startFrame(dt, window);
+    public void update(float dt) {
+        startFrame(dt);
 
         // Any Dear ImGui code SHOULD go between ImGui.newFrame()/ImGui.render() methods
         ImGui.newFrame();
@@ -191,10 +191,10 @@ public class ImGuiLayer {
         endFrame();
     }
 
-    public void startFrame(final float deltaTime, Window window) {
+    public void startFrame(final float deltaTime) {
         // Get window properties and mouse position
-        float[] winWidth = {window.getWidth()};
-        float[] winHeight = {window.getHeight()};
+        float[] winWidth = {Window.getWidth()};
+        float[] winHeight = {Window.getHeight()};
         double[] mousePosX = {0};
         double[] mousePosY = {0};
         glfwGetCursorPos(glfwWindow, mousePosX, mousePosY);

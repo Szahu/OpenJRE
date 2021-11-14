@@ -11,18 +11,19 @@ import org.lwjgl.system.MemoryStack;
 
 import static org.lwjgl.system.MemoryStack.*;
 
+//This class is a singleton as there can't be more than one window at the time (maybe multiple windows one day)
 public class Window {
-    private long m_handle;
-    private boolean m_shouldClose = false;
-    private int m_width = 1024;
-    private int m_height = 768;
-
-    public int getWidth() {return m_width;}
-    public int getHeight() {return m_height;}
-    public long getHandle() {return m_handle;}
-    public boolean getShouldClose() {return m_shouldClose;}
-
-    public void initialize(Runnable glInitCallback){
+    private static long m_handle;
+    private static boolean m_shouldClose = false;
+    private static int m_width = 1024;
+    private static int m_height = 768;
+ 
+    public static int getWidth() {return m_width;}
+    public static int getHeight() {return m_height;}
+    public static long getHandle() {return m_handle;}
+    public static boolean getShouldClose() {return m_shouldClose;}
+ 
+    public static void initialize(Runnable glInitCallback){
                 
         // Configure GLFW
 		glfwDefaultWindowHints();
@@ -32,8 +33,8 @@ public class Window {
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
 		// Create the window
-		this.m_handle = glfwCreateWindow(this.m_width, this.m_height, "Hello World!", NULL, NULL);
-		if ( this.m_handle == NULL )
+		m_handle = glfwCreateWindow(m_width, m_height, "Hello World!", NULL, NULL);
+		if (m_handle == NULL)
 			throw new RuntimeException("Failed to create the GLFW window");
 
         //Create current contex 
@@ -46,13 +47,13 @@ public class Window {
         //resize callback
         glfwSetFramebufferSizeCallback(m_handle, (window, width, height) -> {
             Event.activateWindowResizeEvent(width, height);
-            this.m_width = width;
-            this.m_height = height;
+            m_width = width;
+            m_height = height;
             glViewport(0,0, width, height);
         });
 
         //making sure the window will close upon closing
-        glfwSetWindowCloseCallback(m_handle, (window) -> {this.m_shouldClose = true;});
+        glfwSetWindowCloseCallback(m_handle, (window) -> {m_shouldClose = true;});
 
 		// Get the thread stack and push a new frame
 		try ( MemoryStack stack = stackPush() ) {
@@ -75,12 +76,12 @@ public class Window {
 		} // the stack frame is popped automatically
     }
 
-    public void terminate(){
+    public static void terminate(){
         //Cleanup
         glfwDestroyWindow(m_handle);
     }
 
-    public void close() {
+    public static void close() {
         m_shouldClose = true;
     }
 }
