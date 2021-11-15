@@ -34,6 +34,14 @@ public class Input {
         return glfwGetKey(m_windowHandle, keyCode) == 1;
     }
 
+    // TODO create own codes
+    public static void addKeyCallback(int keyCode, int act, Runnable callback) {
+        glfwSetKeyCallback(Window.getHandle(), (window, key, scancode, action, mods) -> {
+			if ( key == keyCode && action == act)
+				callback.run(); // We will detect this in the rendering loop
+		});
+    }
+
     public static Vector2i getMousePosition() {
         return new Vector2i(m_xpos, m_ypos);
     }

@@ -2,44 +2,21 @@ package org.solar.engine;
 
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.system.*;
-import org.solar.engine.renderer.Renderer;
-import org.solar.engine.renderer.Shader;
-import java.io.IOException;
-import java.nio.*;
-import java.util.Objects;
-import org.solar.engine.renderer.VertexArray;
-import imgui.ImGui;
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.opengl.GL20.*;
 
 public class Engine {
 
-	//Our window object
-    private static Window m_window;
 	//Our camera object
-	private static Camera m_camera;
+	private ImGuiLayer m_guiLayer;
 
 
-	//One more change
-	//Maybe one more
+	public void initialize() {
 
-    public Window getWindow() {
-        return m_window;
-    }
-
-    public static Integer closeWindow() {
-        m_window.close();
-        return 0;
-    }
-
-    public void initialize() throws NullPointerException {
-        // Set up an error callback. The default implementation
 		Event.initialise();
 
-        // Setup an error callback. The default implementation
+		// Setup an error callback. The default implementation
 		// will print the error message in System.err.
 		GLFWErrorCallback.createPrint(System.err).set();
 
@@ -48,25 +25,19 @@ public class Engine {
 			throw new IllegalStateException("Unable to initialize GLFW");
 
 		//Creating and initialising window
-		m_window = new Window();
-
-		//Initialising Input object, so we can use it as a singleton
-
-		m_window.initialize(()->{
+		Window.initialize(()->{
 			GL.createCapabilities();
-        	glEnable(GL_DEPTH_TEST);
-        	glDepthFunc(GL_LESS); 
+			glEnable(GL_DEPTH_TEST);
+			glDepthFunc(GL_LESS);
 			Utils.LOG_INFO("OpenGL version: " + glGetString(GL_VERSION));
 		});
-		Input.initialise(m_window.getHandle());
-		Event.AddKeyCallback(m_window.getHandle(), GLFW_KEY_ESCAPE, GLFW_RELEASE, Engine::closeWindow);
 
 		//Initialising Input object so we can use it as a singleton
-		Input.initialise(m_window.getHandle());
-        Event.AddKeyCallback(m_window.getHandle(), GLFW_KEY_ESCAPE, GLFW_RELEASE, Engine::closeWindow);
+		Input.initialise(Window.getHandle());
+		//Event.AddKeyCallback(m_window.getHandle(), GLFW_KEY_ESCAPE, GLFW_RELEASE, Engine::closeWindow/* );
 
 		// Get the thread stack and push a new frame
-		try ( MemoryStack stack = stackPush() ) {
+		/* try ( MemoryStack stack = stackPush() ) {
 			IntBuffer pWidth = stack.mallocInt(1); // int*
 			IntBuffer pHeight = stack.mallocInt(1); // int*
 
@@ -77,123 +48,64 @@ public class Engine {
 			GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
 			// Center the window
-			assert vidmode != null;
 			glfwSetWindowPos(
 				m_window.getHandle(),
 				(vidmode.width() - pWidth.get(0)) / 2,
 				(vidmode.height() - pHeight.get(0)) / 2
 			);
 
-		} // the stack frame is popped automatically
-		
+		} */ // the stack frame is popped automatically */
+
 		// Make the OpenGL context current
 		// Enable v-sync
 		glfwSwapInterval(1);
 
 		// Make the window visible
-		glfwShowWindow(m_window.getHandle());
+		glfwShowWindow(Window.getHandle());
 
-		m_camera = new Camera(m_window.getWidth(), m_window.getHeight());
-
-    }
-
-	public void mainLoop() throws IOException, NullPointerException {
-		//TEST CODE
-		float[] vertices = new float[] {
-			// VO
-			-0.5f,  0.5f,  0.5f,
-			// V1
-			-0.5f, -0.5f,  0.5f,
-			// V2
-			0.5f, -0.5f,  0.5f,
-			// V3
-			 0.5f,  0.5f,  0.5f,
-			// V4
-			-0.5f,  0.5f, -0.5f,
-			// V5
-			 0.5f,  0.5f, -0.5f,
-			// V6
-			-0.5f, -0.5f, -0.5f,
-			// V7
-			 0.5f, -0.5f, -0.5f,
-		};
-
-		int[] indices = new int[] {
-			// Front face
-			0, 1, 3, 3, 1, 2,
-			// Top Face
-			4, 0, 3, 5, 4, 3,
-			// Right face
-			3, 2, 7, 5, 3, 7,
-			// Left face
-			6, 1, 0, 6, 0, 4,
-			// Bottom face
-			2, 1, 6, 2, 6, 7,
-			// Back face
-			7, 6, 4, 7, 4, 5,
-		};
-
-		float[] colours = new float[]{
-			0.5f, 0.0f, 0.0f,
-			0.0f, 0.5f, 0.0f,
-			0.0f, 0.0f, 0.5f,
-			0.0f, 0.5f, 0.5f,
-			0.5f, 0.0f, 0.0f,
-			0.0f, 0.5f, 0.0f,
-			0.0f, 0.0f, 0.5f,
-			0.0f, 0.5f, 0.5f,
-		};
-
-		Shader testColorShader = new Shader();
-		Shader testUniformShader = new Shader("testUniformShader.glsl");
-		testColorShader.load("testColorShader.glsl");
-
-		VertexArray testVertexArray = new VertexArray(indices, vertices, colours);
-		ImGuiLayer m_guiLayer = new ImGuiLayer(m_window.getHandle());
+		m_guiLayer = new ImGuiLayer(Window.getHandle());
 		m_guiLayer.initImGui();
+	}
+
+	public void mainLoop(Runnable appUpdate){
+
 		//TEST CODE END
-		testUniformShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
-		testUniformShader.setUniform("u_worldMatrix", m_camera.getWorldMatrix());
-		while (!this.getWindow().getShouldClose()) {
+
+		while (!Window.getShouldClose()) {
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
 			//START CODE HERE
-			
-
-			Renderer.render(testVertexArray, testUniformShader);
 
 			Utils.updateDeltaTime();
 			Input.update();
-			m_camera.update();
-			
-			//END CODE HERER
-			m_guiLayer.update(Utils.getDeltaTime(), m_window, () -> {
-				ImGui.text("Hello world");
-			});
 
-			glfwSwapBuffers(this.getWindow().getHandle()); // swap the color buffers
+			m_guiLayer.startFrame(Utils.getDeltaTime());
+
+			appUpdate.run();
+
+			m_guiLayer.endFrame();
+
+			//END CODE HERER
+
+			glfwSwapBuffers(Window.getHandle()); // swap the color buffers
 
 			// Poll for window events. The key callback above will only be
 			// invoked during this call.
 			glfwPollEvents();
 		}
 
-		//test code here
-		testVertexArray.cleanup();
-		testColorShader.cleanup();
-		testUniformShader.cleanup();
-		//test code end here
-
 	}
 
-    public void terminate() {
-        // Free the window callbacks and destroy the window
-		glfwFreeCallbacks(m_window.getHandle());
-		glfwDestroyWindow(m_window.getHandle());
+	public void terminate() {
+
+		//m_guiLayer.destroyImGui();
+		// Free the window callbacks and destroy the window
+		glfwFreeCallbacks(Window.getHandle());
+		glfwDestroyWindow(Window.getHandle());
 
 		// Terminate GLFW and free the error callback
 		glfwTerminate();
-		Objects.requireNonNull(glfwSetErrorCallback(null)).free();
-    }
+		glfwSetErrorCallback(null).free();
+	}
 }

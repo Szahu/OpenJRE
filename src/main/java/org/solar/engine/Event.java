@@ -27,10 +27,10 @@ Event.activateEvent("windowResize");
 
 public class Event { 
 
-    private static Map<String, List<Supplier<Integer>>> m_eventsList;
+    private static Map<String, List<Runnable>> m_eventsList;
 
     @FunctionalInterface
-    interface WindowResizeCallback<Int> {
+    public interface WindowResizeCallback<Int> {
         public void accept(int width, int height);
     }
 
@@ -52,7 +52,7 @@ public class Event {
         }
 
         if(m_eventsList == null) {
-            m_eventsList = new HashMap<String, List<Supplier<Integer>>>();
+            m_eventsList = new HashMap<String, List<Runnable>>();
         }
     }
 
@@ -68,9 +68,9 @@ public class Event {
     public static void activateEvent(String eventLabel) {
     
         if(m_eventsList.containsKey(eventLabel)) {
-            List<Supplier<Integer>> callbacks = m_eventsList.get(eventLabel);
+            List<Runnable> callbacks = m_eventsList.get(eventLabel);
             for(int i = 0;i < callbacks.size();i++){
-                callbacks.get(i).get();
+                callbacks.get(i).run();
             }
         } 
         else {
@@ -86,7 +86,7 @@ public class Event {
         }
     }
 
-    public static void addEventCallback(String eventLabel, Supplier<Integer> func) {
+    public static void addEventCallback(String eventLabel, Runnable func) {
         if(m_eventsList.containsKey(eventLabel)) {
             m_eventsList.get(eventLabel).add(func);
         }

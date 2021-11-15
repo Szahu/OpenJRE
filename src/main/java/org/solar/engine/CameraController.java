@@ -18,7 +18,7 @@ public class CameraController {
         m_setTransformMatrixCallback.accept(newMat);
     }
 
-    private float offset = 0;
+    private float offset = 3;
 
     public CameraController(Consumer<Matrix4f> setTransformMatrixCallback, Supplier<Matrix4f> getTransformMatrixCallback) {
         m_setTransformMatrixCallback = setTransformMatrixCallback;
@@ -28,6 +28,6 @@ public class CameraController {
     public void update() {
         Matrix4f newTrans = new Matrix4f().identity().translate(new Vector3f(0, 0, offset));
         setTransformMatrix(newTrans);
-        offset += 0.01f;
+        //offset += 0.01f;
     }
 }
