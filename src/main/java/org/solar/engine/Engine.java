@@ -10,7 +10,7 @@ import static org.lwjgl.opengl.GL20.*;
 public class Engine {
 
 	//Our camera object
-	//private ImGuiLayer m_guiLayer;
+	private ImGuiLayer m_guiLayer;
 
 
     public void initialize() {
@@ -64,19 +64,14 @@ public class Engine {
 		// Make the window visible
 		glfwShowWindow(Window.getHandle());
 
+		m_guiLayer = new ImGuiLayer(Window.getHandle());
+		m_guiLayer.initImGui();
     }
 	
 	public void mainLoop(Runnable appUpdate){
 
-		
-		//m_guiLayer = new ImGuiLayer(Window.getHandle());
-		//m_guiLayer.initImGui();
+			
 		//TEST CODE END
-
-		glfwSetKeyCallback(Window.getHandle(), (window, key, scancode, action, mods) -> {
-			if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
-				Utils.LOG("ESSA"); // We will detect this in the rendering loop
-		});
 
 		while (!Window.getShouldClose()) {
 
@@ -87,15 +82,14 @@ public class Engine {
 			Utils.updateDeltaTime();
 			Input.update();
 
-			//m_guiLayer.startFrame(Utils.getDeltaTime());
+			m_guiLayer.startFrame(Utils.getDeltaTime());
 
 			appUpdate.run();
 			
-			//m_guiLayer.endFrame();
+			m_guiLayer.endFrame();
 
 			//END CODE HERER
 			
-
 			glfwSwapBuffers(Window.getHandle()); // swap the color buffers
 
 			// Poll for window events. The key callback above will only be
