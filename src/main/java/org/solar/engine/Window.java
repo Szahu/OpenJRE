@@ -37,11 +37,6 @@ public class Window {
 		if (m_handle == NULL)
 			throw new RuntimeException("Failed to create the GLFW window");
 
-        //Create current contex 
-		glfwMakeContextCurrent(m_handle);
-        //Initialise OpenGL
-		glInitCallback.run();
-
         Event.createEvent("windowResize");
 
         //resize callback
@@ -74,6 +69,11 @@ public class Window {
 			);
 
 		} // the stack frame is popped automatically
+
+        //Create current context
+        glfwMakeContextCurrent(m_handle);
+        //Initialise OpenGL
+        glInitCallback.run();
     }
 
     public static void terminate(){
