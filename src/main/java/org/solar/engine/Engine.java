@@ -2,6 +2,7 @@ package org.solar.engine;
 
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
+
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -12,11 +13,11 @@ public class Engine {
 	private ImGuiLayer m_guiLayer;
 
 
-	public void initialize() {
+    public void initialize() {
 
 		Event.initialise();
 
-		// Setup an error callback. The default implementation
+        // Setup an error callback. The default implementation
 		// will print the error message in System.err.
 		GLFWErrorCallback.createPrint(System.err).set();
 
@@ -27,14 +28,14 @@ public class Engine {
 		//Creating and initialising window
 		Window.initialize(()->{
 			GL.createCapabilities();
-			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(GL_LESS);
+        	glEnable(GL_DEPTH_TEST);
+        	glDepthFunc(GL_LESS); 
 			Utils.LOG_INFO("OpenGL version: " + glGetString(GL_VERSION));
 		});
 
 		//Initialising Input object so we can use it as a singleton
 		Input.initialise(Window.getHandle());
-		//Event.AddKeyCallback(m_window.getHandle(), GLFW_KEY_ESCAPE, GLFW_RELEASE, Engine::closeWindow/* );
+        //Event.AddKeyCallback(m_window.getHandle(), GLFW_KEY_ESCAPE, GLFW_RELEASE, Engine::closeWindow/* );
 
 		// Get the thread stack and push a new frame
 		/* try ( MemoryStack stack = stackPush() ) {
@@ -55,7 +56,7 @@ public class Engine {
 			);
 
 		} */ // the stack frame is popped automatically */
-
+		
 		// Make the OpenGL context current
 		// Enable v-sync
 		glfwSwapInterval(1);
@@ -65,9 +66,10 @@ public class Engine {
 
 		m_guiLayer = new ImGuiLayer(Window.getHandle());
 		m_guiLayer.initImGui();
-	}
-
+    }
+	
 	public void mainLoop(Runnable appUpdate){
+
 
 		//TEST CODE END
 
@@ -83,11 +85,11 @@ public class Engine {
 			m_guiLayer.startFrame(Utils.getDeltaTime());
 
 			appUpdate.run();
-
+			
 			m_guiLayer.endFrame();
 
 			//END CODE HERER
-
+			
 			glfwSwapBuffers(Window.getHandle()); // swap the color buffers
 
 			// Poll for window events. The key callback above will only be
@@ -97,8 +99,8 @@ public class Engine {
 
 	}
 
-	public void terminate() {
-
+    public void terminate() {
+        
 		//m_guiLayer.destroyImGui();
 		// Free the window callbacks and destroy the window
 		glfwFreeCallbacks(Window.getHandle());
@@ -107,5 +109,5 @@ public class Engine {
 		// Terminate GLFW and free the error callback
 		glfwTerminate();
 		glfwSetErrorCallback(null).free();
-	}
+    }
 }
