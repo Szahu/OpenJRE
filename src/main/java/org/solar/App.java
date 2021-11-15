@@ -12,7 +12,7 @@ import org.solar.engine.Utils;
 public class App {
 
 	private Engine m_engine;
-	private ApplicationTemplate m_application;
+	private final ApplicationTemplate m_application;
 
 	public App(ApplicationTemplate appToRun) {
 		m_application = appToRun;
@@ -25,7 +25,7 @@ public class App {
 
 		m_engine.initialize();
 		m_application.initialise();
-		m_engine.mainLoop(() -> m_application.update());
+		m_engine.mainLoop(m_application::update);
 		m_application.terminate();
 		m_engine.terminate();
 	}
