@@ -74,6 +74,8 @@ public class Window {
         glfwMakeContextCurrent(m_handle);
         //Initialise OpenGL
         glInitCallback.run();
+
+        Input.addKeyCallback(GLFW_KEY_ESCAPE, GLFW_RELEASE, Window::close);
     }
 
     public static void terminate(){

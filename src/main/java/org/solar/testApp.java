@@ -79,8 +79,10 @@ public class testApp extends ApplicationTemplate {
 		}); 
 
 		m_testVertexArray = new VertexArray(indices, vertices, colours);
-
+		
 		Input.addKeyCallback(GLFW_KEY_SPACE, GLFW_PRESS, () -> {Utils.LOG("it works now");});
+		Input.addKeyCallback(GLFW_KEY_ESCAPE, GLFW_RELEASE, Window::close);
+
     }
 
     @Override
