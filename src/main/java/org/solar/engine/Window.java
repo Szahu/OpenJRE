@@ -13,7 +13,7 @@ import static org.lwjgl.system.MemoryStack.*;
 
 //This class is a singleton as there can't be more than one window at the time (maybe multiple windows one day)
 public class Window {
-    private static long m_handle = 0;
+    private static long m_handle;
     private static boolean m_shouldClose = false;
     private static int m_width = 1024;
     private static int m_height = 768;
@@ -27,6 +27,8 @@ public class Window {
                 
         // Configure GLFW
 		glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2); // optional, the current window hints are already the default
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
@@ -34,6 +36,11 @@ public class Window {
 		m_handle = glfwCreateWindow(m_width, m_height, "Hello World!", NULL, NULL);
 		if (m_handle == NULL)
 			throw new RuntimeException("Failed to create the GLFW window");
+
+        //Create current contex 
+		glfwMakeContextCurrent(m_handle);
+        //Initialise OpenGL
+		glInitCallback.run();
 
         Event.createEvent("windowResize");
 
@@ -46,7 +53,7 @@ public class Window {
         });
 
         //making sure the window will close upon closing
-        glfwSetWindowCloseCallback(m_handle, (window) -> m_shouldClose = true;);
+        glfwSetWindowCloseCallback(m_handle, (window) -> {m_shouldClose = true;});
 
 		// Get the thread stack and push a new frame
 		try ( MemoryStack stack = stackPush() ) {
@@ -66,20 +73,8 @@ public class Window {
 				(vidmode.height() - pHeight.get(0)) / 2
 			);
 
-        }
-
-        glfwMakeContextCurrent(m_handle);
-        //Initialise OpenGL
-        glInitCallback.run();
-
-        // Make the OpenGL context current
-        // Enable v-sync
-        glfwSwapInterval(1);
-
-        // Make the window visible
-        glfwShowWindow(Window.getHandle());// the stack frame is popped automatically
+		} // the stack frame is popped automatically
     }
-
 
     public static void terminate(){
         //Cleanup

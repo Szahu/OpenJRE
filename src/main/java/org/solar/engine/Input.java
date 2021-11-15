@@ -3,7 +3,6 @@ package org.solar.engine;
 import static org.lwjgl.glfw.GLFW.*;
 
 import org.joml.Vector2i;
-import org.lwjgl.glfw.GLFWKeyCallback;
 
 public class Input {
     private Input() {}
@@ -29,21 +28,6 @@ public class Input {
             m_xpos = (int)xpos;
             m_ypos = (int)ypos;
         });
-    }
-
-    public static void addKeyCallback(int GLFWKeyCode, Runnable callback) {
-
-        glfwSetKeyCallback(Window.getHandle(), (window, key, scancode, action, mods) -> {
-            if ( key == GLFWKeyCode && action == GLFW_RELEASE ){
-                callback.run(); // We will detect this in the rendering loop
-            }
-        });
-
-        glfwSetKeyCallback(Window.getHandle(), (window, key, scancode, action, mods) -> {
-            if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
-                System.out.println("ESSA"); // We will detect this in the rendering loop
-        });
-
     }
 
     public static boolean isKeyDown(int keyCode) {
