@@ -1,13 +1,11 @@
 package org.solar;
 
-import org.solar.engine.Transform;
+import org.solar.engine.*;
 
-import org.solar.engine.ApplicationTemplate;
-import org.solar.engine.Camera;
-import org.solar.engine.Event;
 import org.solar.engine.renderer.Renderer;
 import org.solar.engine.renderer.Shader;
 import org.solar.engine.renderer.VertexArray;
+import static org.lwjgl.glfw.GLFW.*;
 
 import imgui.ImGui;
 
@@ -81,6 +79,11 @@ public class testApp extends ApplicationTemplate {
 		}); 
 
 		m_testVertexArray = new VertexArray(indices, vertices, colours);
+
+		glfwSetKeyCallback(Window.getHandle(), (window, key, scancode, action, mods) -> {
+			if ( key == GLFW_KEY_SPACE && action == GLFW_RELEASE )
+				System.out.println("ESSA"); // We will detect this in the rendering loop
+		});
     }
 
     @Override

@@ -64,13 +64,13 @@ public class Engine {
 		// Make the window visible
 		glfwShowWindow(Window.getHandle());
 
+		m_guiLayer = new ImGuiLayer(Window.getHandle());
+		m_guiLayer.initImGui();
     }
 	
 	public void mainLoop(Runnable appUpdate){
 
-		
-		//m_guiLayer = new ImGuiLayer(Window.getHandle());
-		//m_guiLayer.initImGui();
+
 		//TEST CODE END
 
 		while (!Window.getShouldClose()) {
@@ -90,7 +90,6 @@ public class Engine {
 
 			//END CODE HERER
 			
-
 			glfwSwapBuffers(Window.getHandle()); // swap the color buffers
 
 			// Poll for window events. The key callback above will only be
