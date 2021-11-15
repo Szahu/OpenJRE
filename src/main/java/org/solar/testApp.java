@@ -80,10 +80,7 @@ public class testApp extends ApplicationTemplate {
 
 		m_testVertexArray = new VertexArray(indices, vertices, colours);
 
-		glfwSetKeyCallback(Window.getHandle(), (window, key, scancode, action, mods) -> {
-			if ( key == GLFW_KEY_SPACE && action == GLFW_RELEASE )
-				System.out.println("ESSA"); // We will detect this in the rendering loop
-		});
+		Input.addKeyCallback(GLFW_KEY_SPACE, GLFW_RELEASE, () -> {Utils.LOG("it works now");});
     }
 
     @Override
@@ -95,8 +92,8 @@ public class testApp extends ApplicationTemplate {
 
         m_camera.update();
 			
-        //ImGui.text("Hello world!");
-        //m_testTransform.debugGui();
+        ImGui.text("Hello world!");
+        m_testTransform.debugGui();
     }
 
     @Override

@@ -10,7 +10,7 @@ import static org.lwjgl.opengl.GL20.*;
 public class Engine {
 
 	//Our camera object
-	//private ImGuiLayer m_guiLayer;
+	private ImGuiLayer m_guiLayer;
 
 
     public void initialize() {
@@ -82,11 +82,11 @@ public class Engine {
 			Utils.updateDeltaTime();
 			Input.update();
 
-			//m_guiLayer.startFrame(Utils.getDeltaTime());
+			m_guiLayer.startFrame(Utils.getDeltaTime());
 
 			appUpdate.run();
 			
-			//m_guiLayer.endFrame();
+			m_guiLayer.endFrame();
 
 			//END CODE HERER
 			
