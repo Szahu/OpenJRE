@@ -95,8 +95,8 @@ public class testApp extends ApplicationTemplate {
 
         m_camera.update();
 			
-        ImGui.text("Hello world!");
-        m_testTransform.debugGui();
+        //ImGui.text("Hello world!");
+        //m_testTransform.debugGui();
     }
 
     @Override
