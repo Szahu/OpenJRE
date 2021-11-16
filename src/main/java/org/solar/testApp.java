@@ -1,5 +1,6 @@
 package org.solar;
 
+import org.joml.Vector3f;
 import org.solar.engine.*;
 
 import org.solar.engine.renderer.Renderer;
@@ -93,7 +94,7 @@ public class testApp extends ApplicationTemplate {
 		m_testShader.setUniform("u_viewMatrix", m_camera.getWorldMatrix());
 		m_testShader.setUniform("u_worldMatrix", m_testTransform.getTransformMatrix());
 		Renderer.render(m_testVertexArray, m_testShader);
-
+		this.m_testTransform.rotate(new Vector3f(0.33f,1,0.165f));
 		m_camera.update();
 
 		ImGui.text("Hello world!");

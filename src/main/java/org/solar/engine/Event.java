@@ -1,31 +1,13 @@
 package org.solar.engine;
 
 import static org.lwjgl.glfw.GLFW.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-/*
-EVENT SYSTEM:
-How to use: 
-create Event with a label, then activate it each time you want to call all the callbacks, using the same label. 
-Add callbacks using addCallbackFunction, example: 
-
-Event.createEvent("windowResize");
-
-Event.addEventCallback("windowResize", () -> {
-    System.out.println("Window has been resized");
-    return 0;
-});
-
-Event.activateEvent("windowResize");
-     
-*/
-
-public class Event { 
+public class Event {
 
     private static Map<String, List<Runnable>> m_eventsList;
 
