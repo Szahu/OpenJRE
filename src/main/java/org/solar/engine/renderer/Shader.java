@@ -73,9 +73,17 @@ public class Shader {
             glUniformMatrix4fv(m_uniforms.get(uniformName), false, m_floatBuffer16);
             m_floatBuffer16.flip();
         } else {
-            Utils.LOG_ERROR("Trying to set value of the uniform that does not exist");
+            Utils.LOG_ERROR("Trying to set value of the uniform that does not exist: " + uniformName);
         }
 
+    }
+
+    public void setUniform(String uniformName, int value) {
+        if(m_uniforms.containsKey(uniformName)) {
+            glUniform1i(m_uniforms.get(uniformName), value);
+        } else {
+            Utils.LOG_ERROR("Trying to set value of the uniform that does not exist: " + uniformName);
+        }
     }
 
     public void generateUniforms(String shaderCode) throws Exception {
@@ -118,6 +126,7 @@ public class Shader {
             createFragmentShader(shadersContent[1]);
             link();
             generateUniforms(shadersContent[0]);
+            generateUniforms(shadersContent[1]);
         } catch (Exception e) {
             Utils.LOG_ERROR("Error while loading shaders from path: " + bothShadersFileName + " , " + e.toString());
         }
