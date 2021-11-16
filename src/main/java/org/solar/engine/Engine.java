@@ -2,7 +2,9 @@ package org.solar.engine;
 
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
+
 import java.util.Objects;
+
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -12,11 +14,14 @@ public class Engine {
 	//Our camera object
 	private ImGuiLayer m_guiLayer;
 
-	public void initialize(){
+
+    public void initialize() {
 
 		Event.initialise();
 
-		// Set up an error callback
+        // Setup an error callback. The default implementation
+		// will print the error message in System.err.
+
 		GLFWErrorCallback.createPrint(System.err).set();
 
 		// Initialize GLFW. Most GLFW functions will not work before doing this.
@@ -26,8 +31,8 @@ public class Engine {
 		//Creating and initialising window
 		Window.initialize(()->{
 			GL.createCapabilities();
-			glEnable(GL_DEPTH_TEST);
-			glDepthFunc(GL_LESS);
+        	glEnable(GL_DEPTH_TEST);
+        	glDepthFunc(GL_LESS); 
 			Utils.LOG_INFO("OpenGL version: " + glGetString(GL_VERSION));
 		});
 
@@ -42,8 +47,8 @@ public class Engine {
 
 		m_guiLayer = new ImGuiLayer(Window.getHandle());
 		m_guiLayer.initImGui();
-	}
-
+    }
+	
 	public void mainLoop(Runnable appUpdate){
 
 		while (!Window.getShouldClose()) {
@@ -56,17 +61,22 @@ public class Engine {
 
 			m_guiLayer.startFrame(Utils.getDeltaTime());
 			appUpdate.run();
+			
 			m_guiLayer.endFrame();
 
-			// swap the color buffers
-			glfwSwapBuffers(Window.getHandle());
+			//END CODE HERER
+			
+			glfwSwapBuffers(Window.getHandle()); // swap the color buffers
 
 			// Poll for window events
 			glfwPollEvents();
 		}
 	}
 
-	public void terminate() {
+
+    public void terminate() {
+        
+		//m_guiLayer.destroyImGui();
 
 		// Free the window callbacks and destroy the window
 		glfwFreeCallbacks(Window.getHandle());
@@ -74,6 +84,8 @@ public class Engine {
 
 		// Terminate GLFW and free the error callback
 		glfwTerminate();
+
 		Objects.requireNonNull(glfwSetErrorCallback(null)).free();
 	}
+
 }
