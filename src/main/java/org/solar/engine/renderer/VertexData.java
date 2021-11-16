@@ -1,7 +1,5 @@
 package org.solar.engine.renderer;
 
-import org.solar.engine.Utils;
-
 public class VertexData {
     public FloatArray[] arrays;
     public float[] rawData;

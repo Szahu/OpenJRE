@@ -83,7 +83,7 @@ public class testApp extends ApplicationTemplate {
 
 		m_camera = new Camera(1024, 768);
 
-		m_testShader = new Shader("testUniformShader.glsl");
+		m_testShader = new Shader("testTextureShader.glsl");
 		m_testShader.bind();
 		m_testShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
 		m_testShader.unbind();
@@ -96,7 +96,7 @@ public class testApp extends ApplicationTemplate {
 			m_testShader.unbind();
 		}); 
 
-		m_testVertexArray = new VertexArray(indices, new VertexData(new FloatArray(3, vertices), new FloatArray(3, colours)));
+		m_testVertexArray = new VertexArray(indices, new VertexData(new FloatArray(3, vertices), new FloatArray(3, colours),  new FloatArray(2, texCoords)));
 		
 		Input.addKeyCallback(GLFW_KEY_SPACE, GLFW_PRESS, () -> {Utils.LOG("it works now");});
 		Input.addKeyCallback(GLFW_KEY_ESCAPE, GLFW_RELEASE, Window::close);
