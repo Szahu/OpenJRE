@@ -55,10 +55,6 @@ public class Renderer {
 
         glDrawElements(GL_TRIANGLES, vao.getIndexCount(), GL_UNSIGNED_INT, 0);
 
-        for(int i = 0;i < VertexArray.getNumberOfAttributes(); i++) {
-            glEnableVertexAttribArray(i);
-        }
-
         // Restore state
         VertexArray.unbind();
 

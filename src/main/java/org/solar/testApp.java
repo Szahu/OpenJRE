@@ -1,10 +1,12 @@
 package org.solar;
 
 import org.solar.engine.*;
-
+import org.solar.engine.renderer.FloatArray;
 import org.solar.engine.renderer.Renderer;
 import org.solar.engine.renderer.Shader;
 import org.solar.engine.renderer.VertexArray;
+import org.solar.engine.renderer.VertexData;
+
 import static org.lwjgl.glfw.GLFW.*;
 
 import org.joml.Vector3f;
@@ -40,6 +42,17 @@ public class testApp extends ApplicationTemplate {
 			-0.5f, -0.5f, -0.5f,
 			// V7
 			 0.5f, -0.5f, -0.5f,
+		};
+
+		float[] texCoords = new float[] {
+			0.0f, 0.0f,
+			0.0f, 0.5f, 
+			0.5f, 0.5f,
+			0.5f, 0.0f,
+			0.0f, 0.5f,
+			0.5f, 0.5f,
+			0.0f, 1.0f,
+			0.5f, 1.0f
 		};
 
 		int[] indices = new int[] {
@@ -83,7 +96,7 @@ public class testApp extends ApplicationTemplate {
 			m_testShader.unbind();
 		}); 
 
-		m_testVertexArray = new VertexArray(indices, vertices, colours);
+		m_testVertexArray = new VertexArray(indices, new VertexData(new FloatArray(3, vertices), new FloatArray(3, colours)));
 		
 		Input.addKeyCallback(GLFW_KEY_SPACE, GLFW_PRESS, () -> {Utils.LOG("it works now");});
 		Input.addKeyCallback(GLFW_KEY_ESCAPE, GLFW_RELEASE, Window::close);
