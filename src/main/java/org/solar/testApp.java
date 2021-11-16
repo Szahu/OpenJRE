@@ -1,5 +1,6 @@
 package org.solar;
 
+import org.joml.Vector3f;
 import org.solar.engine.*;
 
 import org.solar.engine.renderer.Renderer;
@@ -85,12 +86,14 @@ public class testApp extends ApplicationTemplate {
 
     }
 
+
     @Override
     public void update() {
 
         m_testShader.setUniform("u_viewMatrix", m_camera.getWorldMatrix());
         m_testShader.setUniform("u_worldMatrix", m_testTransform.getTransformMatrix());
         Renderer.render(m_testVertexArray, m_testShader);
+
 
         m_camera.update();
 			

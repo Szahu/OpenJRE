@@ -59,6 +59,7 @@ public class Shader {
         
         // Dump the matrix into a float buffer
         if(m_uniforms.containsKey(uniformName)) {
+
             try (MemoryStack stack = MemoryStack.stackPush()) {
                 FloatBuffer fb = stack.mallocFloat(16);
                 value.get(fb);
@@ -69,8 +70,7 @@ public class Shader {
         } else {
             Utils.LOG_ERROR("Trying to set value of the uniform that does not exist");
         }
-        
-        
+
     }
 
     public void generateUniforms(String shaderCode) throws Exception {

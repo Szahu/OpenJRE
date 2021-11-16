@@ -13,6 +13,12 @@ import java.nio.charset.*;
 
 public class Utils {
 
+    public final static String ABS_PROJECT_PATH        = "src/main/resources/shaders/";
+    public final static char    VERTEX_SHADER_IDX       = 0;
+    public final static char    FRAGMENT_SHADER_IDX     = 1;
+    private final static String VERTEX_SHADER_TOKEN     = "#vertexShader";
+    private final static String FRAGMENT_SHADER_TOKEN   = "#fragmentShader";
+
     private static final String ANSI_RESET = "\u001B[0m";
     private static final String ANSI_BLACK = "\u001B[30m";
     private static final String ANSI_RED = "\u001B[31m";
@@ -22,29 +28,10 @@ public class Utils {
     private static final String ANSI_PURPLE = "\u001B[35m";
     private static final String ANSI_CYAN = "\u001B[36m";
     private static final String ANSI_WHITE = "\u001B[37m";
-    private static void print(Object o){
-        System.out.println(o.toString());
-    }
-    public static void LOG_SUCCESS(Object o) {System.out.println(ANSI_GREEN + o.toString() + ANSI_RESET);}
-    public static void LOG_ERROR(Object o) {System.out.println(ANSI_RED + o.toString() + ANSI_RESET);}
-    public static void LOG_WARNING(Object o) {System.out.println(ANSI_YELLOW + o.toString() + ANSI_RESET);}
-    public static void LOG_INFO(Object o) {System.out.println(ANSI_BLUE + o.toString() + ANSI_RESET);}
-    public static void LOG(Object o) {System.out.println(o.toString());}
-
-    public static float[] vec3fToArray(Vector3f vec) {float[] res = {vec.get(0), vec.get(1), vec.get(2)}; return res;}
-
     private static long m_startDeltaTime = 0;
     private static float m_deltaTime  = 0;
-    public static void updateDeltaTime() {
-        long time = System.nanoTime();
-        m_deltaTime = ((float)(time - m_startDeltaTime)) / 100000000f;
-        m_startDeltaTime = time;
-    }
-    public static float getDeltaTime() {return m_deltaTime;}
 
-    private final static String ABS_PROJECT_PATH = "src/main/resources/shaders/";
-    //Returning content of the text file as String
-    public static String FileToString(String shaderName) {
+    public static String getShaderStringFromFile(String shaderName) throws IOException {
         StringBuffer stringBuffer = new StringBuffer();
         try{
             FileReader fr = new FileReader(ABS_PROJECT_PATH + shaderName);
@@ -58,6 +45,7 @@ public class Utils {
         catch (Exception e) {System.out.println("Exception at reading file: " + shaderName + "\n" + e.getStackTrace());}
         return null;
     }
+
     //This function takes a text file and splits it into two after each token
     public static String[] multipleShadersFromFile(String shaderName) throws IOException{
         String vertexShaderToken = "#vertexShader";
@@ -66,6 +54,7 @@ public class Utils {
         String fragmentShaderContent = "";
         String path = ABS_PROJECT_PATH + shaderName;
         List<String> lines = Files.readAllLines(Paths.get(path), StandardCharsets.UTF_8);
+
         boolean foundVertexShader = false;
         boolean foundFragmentShader = false;
         for(int i = 0; i < lines.size(); i++) {
@@ -91,4 +80,19 @@ public class Utils {
         result[1] = fragmentShaderContent;
         return result;
     }
+
+    public static void updateDeltaTime() {
+        long time = System.nanoTime();
+        m_deltaTime = ((float)(time - m_startDeltaTime)) / 100000000f;
+        m_startDeltaTime = time;
+    }
+
+    public static float     getDeltaTime ()                 { return m_deltaTime; }
+    public static void      LOG_SUCCESS  (Object o)         { System.out.println(ANSI_GREEN + o.toString() + ANSI_RESET); }
+    public static void      LOG_ERROR    (Object o)         { System.out.println(ANSI_RED + o.toString() + ANSI_RESET); }
+    public static void      LOG_WARNING  (Object o)         { System.out.println(ANSI_YELLOW + o.toString() + ANSI_RESET); }
+    public static void      LOG_INFO     (Object o)         { System.out.println(ANSI_BLUE + o.toString() + ANSI_RESET); }
+    public static void      LOG          (Object o)         { System.out.println(o.toString()); }
+    public static float[]   vec3fToArray (Vector3f vec)     { return new float[] {vec.get(0), vec.get(1), vec.get(2)}; }
+    private static void     print        (Object o)         { System.out.println(o.toString());}
 }
