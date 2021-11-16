@@ -29,9 +29,10 @@ public class Event {
 
     private static Map<String, List<Runnable>> m_eventsList;
 
+    @SuppressWarnings("unused")
     @FunctionalInterface
     public interface WindowResizeCallback<Int> {
-        public void accept(int width, int height);
+        void accept(int width, int height);
     }
 
     private static List<WindowResizeCallback<Integer>> m_ResizeCallbacks;
@@ -52,7 +53,7 @@ public class Event {
         }
 
         if(m_eventsList == null) {
-            m_eventsList = new HashMap<String, List<Runnable>>();
+            m_eventsList = new HashMap<>();
         }
     }
 
@@ -69,8 +70,8 @@ public class Event {
     
         if(m_eventsList.containsKey(eventLabel)) {
             List<Runnable> callbacks = m_eventsList.get(eventLabel);
-            for(int i = 0;i < callbacks.size();i++){
-                callbacks.get(i).run();
+            for (Runnable callback : callbacks) {
+                callback.run();
             }
         } 
         else {
@@ -79,13 +80,13 @@ public class Event {
     }
 
     public static void activateWindowResizeEvent(int width, int height) {
-        activateEvent("windowResize"); 
-        
-        for(int i = 0;i < m_ResizeCallbacks.size();i++){
-            m_ResizeCallbacks.get(i).accept(width, height);
+        activateEvent("windowResize");
+
+        for (WindowResizeCallback<Integer> m_resizeCallback : m_ResizeCallbacks) {
+            m_resizeCallback.accept(width, height);
         }
     }
-
+    @SuppressWarnings("unused")
     public static void addEventCallback(String eventLabel, Runnable func) {
         if(m_eventsList.containsKey(eventLabel)) {
             m_eventsList.get(eventLabel).add(func);
@@ -95,9 +96,9 @@ public class Event {
         }
     }
 
-
+    @SuppressWarnings("unused")
     public static void AddKeyCallback(long windowHandle, int keyCode, int actionCode, Supplier<Integer> func) {
-        // Setup a key callback. It will be called every time a key is pressed, repeated or released.
+        // Set up a key callback. It will be called every time a key is pressed, repeated or released.
 		glfwSetKeyCallback(windowHandle, (window, key, scancode, action, mods) -> {
 			if ( key == keyCode && action == actionCode )
                 func.get();
