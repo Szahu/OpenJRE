@@ -1,12 +1,13 @@
 package org.solar;
 
-import org.joml.Vector3f;
 import org.solar.engine.*;
 
 import org.solar.engine.renderer.Renderer;
 import org.solar.engine.renderer.Shader;
 import org.solar.engine.renderer.VertexArray;
 import static org.lwjgl.glfw.GLFW.*;
+
+import org.joml.Vector3f;
 
 import imgui.ImGui;
 
@@ -67,16 +68,19 @@ public class testApp extends ApplicationTemplate {
 			0.0f, 0.5f, 0.5f,
 		};
 
-        //TODO make window class a singleton
 		m_camera = new Camera(1024, 768);
 
 		m_testShader = new Shader("testUniformShader.glsl");
+		m_testShader.bind();
 		m_testShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
+		m_testShader.unbind();
 
 		m_testTransform = new Transform();
 
 		Event.addWindowResizeCallback((width, height)-> {
+			m_testShader.bind();
 			m_testShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
+			m_testShader.unbind();
 		}); 
 
 		m_testVertexArray = new VertexArray(indices, vertices, colours);
@@ -90,14 +94,18 @@ public class testApp extends ApplicationTemplate {
     @Override
     public void update() {
 
-        m_testShader.setUniform("u_viewMatrix", m_camera.getWorldMatrix());
+		Renderer.setClearColor(new Vector3f(77f/255f, 200f/255f, 233f/255f));
+
+		m_testShader.bind();
+        m_testShader.setUniform("u_viewMatrix", m_camera.getViewMatrix());
         m_testShader.setUniform("u_worldMatrix", m_testTransform.getTransformMatrix());
         Renderer.render(m_testVertexArray, m_testShader);
+		m_testShader.unbind();
 
         m_camera.update();
 			
         ImGui.text("Hello world!");
-        m_testTransform.debugGui();
+        m_testTransform.debugGui("test Transform");
     }
 
     @Override

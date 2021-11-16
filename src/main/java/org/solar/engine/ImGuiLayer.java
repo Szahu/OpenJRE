@@ -207,7 +207,7 @@ public class ImGuiLayer {
         io.setDeltaTime(deltaTime);
 
         // Update the mouse cursor
-        final int imguiCursor = ImGui.getMouseCursor();
+        //final int imguiCursor = ImGui.getMouseCursor();
         //glfwSetCursor(glfwWindow, mouseCursors[imguiCursor]);
         //glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         ImGui.newFrame();

@@ -29,6 +29,10 @@ public class Shader {
         }
     }
 
+    /**
+     * Creates a shader program from a file which stores two shader, each one starting with a proper token (#vertexShader, #fragmentShader).
+     * @param bothShadersFileName Name of the file (including suffix) in which both of our shaders are stored
+     */
     public Shader(String bothShadersFileName) {
         m_uniforms = new HashMap<>();
 
@@ -41,6 +45,11 @@ public class Shader {
         load(bothShadersFileName);
     }
 
+    /**
+     * Creates a shader program from two files containing vertex and fragment shaders.
+     * @param vertexShaderName Name of the file (including suffix) containing the vertex shader (no token).
+     * @param fragmentShaderName Name of the file (including suffix) containing the fragment shader (no token).
+     */
     public Shader(String vertexShaderName, String fragmentShaderName) {
         m_uniforms = new HashMap<>();
 
@@ -54,9 +63,6 @@ public class Shader {
     }
 
     public void setUniform(String uniformName, Matrix4f value) {
-        
-        //TODO move it to the render function
-        bind();
         
         // Dump the matrix into a float buffer
         if(m_uniforms.containsKey(uniformName)) {

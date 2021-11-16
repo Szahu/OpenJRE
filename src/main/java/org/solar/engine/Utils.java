@@ -13,11 +13,11 @@ import java.nio.charset.*;
 
 public class Utils {
 
-    public final static String ABS_PROJECT_PATH        = "src/main/resources/shaders/";
-    public final static char    VERTEX_SHADER_IDX       = 0;
-    public final static char    FRAGMENT_SHADER_IDX     = 1;
-    private final static String VERTEX_SHADER_TOKEN     = "#vertexShader";
-    private final static String FRAGMENT_SHADER_TOKEN   = "#fragmentShader";
+    public final static String ABS_PROJECT_PATH = "src/main/resources/shaders/";
+    public final static int VERTEX_SHADER_IDX = 0;
+    public final static int FRAGMENT_SHADER_IDX = 1;
+    private final static String VERTEX_SHADER_TOKEN = "#vertexShader";
+    private final static String FRAGMENT_SHADER_TOKEN = "#fragmentShader";
 
     private static long m_startDeltaTime = 0;
     private static float m_deltaTime  = 0;
@@ -39,8 +39,6 @@ public class Utils {
 
     //This function takes a text file and splits it into two after each token
     public static String[] multipleShadersFromFile(String shaderName) throws IOException{
-        String vertexShaderToken = "#vertexShader";
-        String fragmentShaderToken = "#fragmentShader";
         String vertexShaderContent = "";
         String fragmentShaderContent = "";
         String path = ABS_PROJECT_PATH + shaderName;
@@ -51,13 +49,13 @@ public class Utils {
         for(int i = 0; i < lines.size(); i++) {
             String line = lines.get(i);
             //Checking if the line is our token
-            if (line.contains(vertexShaderToken)) {
+            if (line.contains(VERTEX_SHADER_TOKEN)) {
                 foundVertexShader = true;
                 foundFragmentShader = false;
                 continue;
             }
             //Checking if the line is our token
-            else if (line.contains(fragmentShaderToken)) {
+            else if (line.contains(FRAGMENT_SHADER_TOKEN)) {
                 foundVertexShader = false;
                 foundFragmentShader = true;
                 continue;
@@ -67,8 +65,8 @@ public class Utils {
         }
 
         String[] result = new String[2];
-        result[0] = vertexShaderContent;
-        result[1] = fragmentShaderContent;
+        result[VERTEX_SHADER_IDX] = vertexShaderContent;
+        result[FRAGMENT_SHADER_IDX] = fragmentShaderContent;
         return result;
     }
 
