@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.joml.Matrix4f;
-import org.lwjgl.system.MemoryStack;
+import org.lwjgl.BufferUtils;
 import org.solar.engine.Utils;
 
 public class Shader {
@@ -16,6 +16,7 @@ public class Shader {
     private int vertexShaderId;
     private int fragmentShaderId;
     private final Map<String, Integer> m_uniforms;
+    private FloatBuffer m_floatBuffer16;
 
     public Shader() {
 
@@ -59,13 +60,12 @@ public class Shader {
         
         // Dump the matrix into a float buffer
         if(m_uniforms.containsKey(uniformName)) {
-            try (MemoryStack stack = MemoryStack.stackPush()) {
-                FloatBuffer fb = stack.mallocFloat(16);
-                value.get(fb);
-                glUniformMatrix4fv(m_uniforms.get(uniformName), false, fb);
-            } catch (Exception e) {
-                Utils.LOG_ERROR(e.toString());
-            }
+            if (m_floatBuffer16==null)
+                m_floatBuffer16 = BufferUtils.createFloatBuffer(16);
+            m_floatBuffer16.clear();
+            value.get(m_floatBuffer16);
+            glUniformMatrix4fv(m_uniforms.get(uniformName), false, m_floatBuffer16);
+            m_floatBuffer16.flip();
         } else {
             Utils.LOG_ERROR("Trying to set value of the uniform that does not exist");
         }
