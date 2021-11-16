@@ -94,7 +94,6 @@ public class testApp extends ApplicationTemplate {
         m_testShader.setUniform("u_worldMatrix", m_testTransform.getTransformMatrix());
         Renderer.render(m_testVertexArray, m_testShader);
 
-
         m_camera.update();
 			
         ImGui.text("Hello world!");

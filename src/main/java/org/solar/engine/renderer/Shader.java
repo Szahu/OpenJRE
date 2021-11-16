@@ -120,7 +120,7 @@ public class Shader {
     public void load(String vertexShaderName, String fragmentShaderName) {
 
         try {
-            String shaderCode = Utils.FileToString(vertexShaderName);
+            String shaderCode = Utils.getShaderStringFromFile(vertexShaderName);
             createVertexShader(shaderCode);
             generateUniforms(shaderCode);
         } catch (Exception e) {
@@ -130,7 +130,7 @@ public class Shader {
 
         try {
 
-            String shaderCode = Utils.FileToString(fragmentShaderName);
+            String shaderCode = Utils.getShaderStringFromFile(fragmentShaderName);
             createFragmentShader(shaderCode);
         } catch (Exception e) {
             Utils.LOG_ERROR("Error while loading shaders from path: " + fragmentShaderName + " , " + e.toString());

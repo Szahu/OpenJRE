@@ -19,15 +19,6 @@ public class Utils {
     private final static String VERTEX_SHADER_TOKEN     = "#vertexShader";
     private final static String FRAGMENT_SHADER_TOKEN   = "#fragmentShader";
 
-    private static final String ANSI_RESET = "\u001B[0m";
-    private static final String ANSI_BLACK = "\u001B[30m";
-    private static final String ANSI_RED = "\u001B[31m";
-    private static final String ANSI_GREEN = "\u001B[32m";
-    private static final String ANSI_YELLOW = "\u001B[33m";
-    private static final String ANSI_BLUE = "\u001B[34m";
-    private static final String ANSI_PURPLE = "\u001B[35m";
-    private static final String ANSI_CYAN = "\u001B[36m";
-    private static final String ANSI_WHITE = "\u001B[37m";
     private static long m_startDeltaTime = 0;
     private static float m_deltaTime  = 0;
 
@@ -87,6 +78,16 @@ public class Utils {
         m_startDeltaTime = time;
     }
 
+
+    private static final String ANSI_RESET = "\u001B[0m";
+    //private static final String ANSI_BLACK = "\u001B[30m";
+    private static final String ANSI_RED = "\u001B[31m";
+    private static final String ANSI_GREEN = "\u001B[32m";
+    private static final String ANSI_YELLOW = "\u001B[33m";
+    private static final String ANSI_BLUE = "\u001B[34m";
+    //private static final String ANSI_PURPLE = "\u001B[35m";
+    //private static final String ANSI_CYAN = "\u001B[36m";
+    //private static final String ANSI_WHITE = "\u001B[37m";
     public static float     getDeltaTime ()                 { return m_deltaTime; }
     public static void      LOG_SUCCESS  (Object o)         { System.out.println(ANSI_GREEN + o.toString() + ANSI_RESET); }
     public static void      LOG_ERROR    (Object o)         { System.out.println(ANSI_RED + o.toString() + ANSI_RESET); }
@@ -94,5 +95,5 @@ public class Utils {
     public static void      LOG_INFO     (Object o)         { System.out.println(ANSI_BLUE + o.toString() + ANSI_RESET); }
     public static void      LOG          (Object o)         { System.out.println(o.toString()); }
     public static float[]   vec3fToArray (Vector3f vec)     { return new float[] {vec.get(0), vec.get(1), vec.get(2)}; }
-    private static void     print        (Object o)         { System.out.println(o.toString());}
+    //private static void     print        (Object o)         { System.out.println(o.toString());}
 }
