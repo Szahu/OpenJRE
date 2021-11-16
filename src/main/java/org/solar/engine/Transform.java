@@ -30,7 +30,7 @@ public class Transform {
     public void scale(Vector3f vec) {m_scale = Utils.vec3fToArray(new Vector3f(m_scale).mul(vec)); recalculateMatrix();}
 
     private void recalculateMatrix() {
-        //TODO implement local/gloabl rotation
+        //TODO implement local/global rotation
         m_transformMatrix = new Matrix4f().identity()
         .translate(new Vector3f(m_position))
         .rotate((float) Math.toRadians(m_rotation[0]), new Vector3f(1,0,0))

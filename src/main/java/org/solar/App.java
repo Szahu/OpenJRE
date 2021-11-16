@@ -4,6 +4,7 @@ import org.lwjgl.*;
 import org.solar.engine.ApplicationTemplate;
 import org.solar.engine.Engine;
 import org.solar.engine.Utils;
+import java.io.IOException;
 
 //########################
 //APPLICATION ENTRY POINT
@@ -11,18 +12,15 @@ import org.solar.engine.Utils;
 
 public class App {
 
-	private Engine m_engine;
 	private ApplicationTemplate m_application;
 
 	public App(ApplicationTemplate appToRun) {
 		m_application = appToRun;
 	}
 
-	public void run() {
+	public void run() throws IOException{
 		Utils.LOG_SUCCESS("Hello LWJGL " + Version.getVersion() + "!");
-		
-		m_engine = new Engine();
-
+		Engine m_engine = new Engine();
 		m_engine.initialize();
 		m_application.initialise();
 		m_engine.mainLoop(() -> m_application.update());
@@ -30,8 +28,8 @@ public class App {
 		m_engine.terminate();
 	}
 
-	public static void main(String[] args) {
-		new App(new testApp()).run();
+	public static void main(String[] args) throws IOException {
+		new App( new testApp( args[0] ) ).run();
 	}
 
 }
