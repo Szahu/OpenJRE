@@ -69,8 +69,7 @@ public class Shader {
         } else {
             Utils.LOG_ERROR("Trying to set value of the uniform that does not exist");
         }
-        
-        
+
     }
 
     public void generateUniforms(String shaderCode) throws Exception {
