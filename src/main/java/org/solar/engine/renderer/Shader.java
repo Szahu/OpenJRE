@@ -53,10 +53,11 @@ public class Shader {
 
         // Dump the matrix into a float buffer
         if(m_uniforms.containsKey(uniformName)) {
-            MemoryStack stack = MemoryStack.stackPush();
-            FloatBuffer fb = stack.mallocFloat(16);
-            value.get(fb);
-            glUniformMatrix4fv(m_uniforms.get(uniformName), false, fb);
+            try(MemoryStack stack = MemoryStack.stackPush()) {
+                FloatBuffer fb = stack.mallocFloat(16);
+                value.get(fb);
+                glUniformMatrix4fv(m_uniforms.get(uniformName), false, fb);
+            }
         } else Utils.LOG_ERROR("Trying to set value of the uniform that does not exist");
 
     }
