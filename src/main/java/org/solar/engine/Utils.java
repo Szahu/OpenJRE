@@ -30,7 +30,8 @@ public class Utils {
     private final static String ANSI_CYAN               = "\u001B[36m";
     private final static String ANSI_WHITE              = "\u001B[37m";
     private final static String VERTICES_PATTERN        = "(v (-?[0-9]+\\.[0-9]+) (-?[0-9]+\\.[0-9]+) (-?[0-9]+\\.[0-9]+)\n)+";
-    private final static String INDICES_PATTERN         = "(f ([0-9]+)/[0-9]+/[0-9]+ ([0-9]+)/[0-9]+/[0-9]+ ([0-9]+)/[0-9]+/[0-9]+\n)+";
+    private final static String INDICES_PATTERN         = "(f [0-9]+/([0-9]+)/[0-9]+ ([0-9]+)/[0-9]+/[0-9]+ ([0-9]+)/[0-9]+/[0-9]+\n)+";
+    private final static String TEXELS_PATTERN          = "(vt ([0-9]+)/[0-9]+/[0-9]+ ([0-9]+)/[0-9]+/[0-9]+ ([0-9]+)/[0-9]+/[0-9]+\n)+";
     private       static long   m_startDeltaTime        = 0;
     private       static float  m_deltaTime             = 0;
 

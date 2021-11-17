@@ -13,7 +13,6 @@ import java.io.IOException;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.glfw.GLFW.*;
 
-
 public class testApp extends ApplicationTemplate {
 
 	private Camera 		m_camera;
@@ -52,7 +51,7 @@ public class testApp extends ApplicationTemplate {
 			16, 18, 19, 17, 16, 19,
 			// Back face
 			4, 6, 7, 5, 4, 7,};
-	private float[] colours = new float[]{};
+	//private float[] colours = new float[]{};
 	private float[] positions = new float[]{
 			// V0
 			-0.5f, 0.5f, 0.5f,
@@ -125,8 +124,11 @@ public class testApp extends ApplicationTemplate {
 			1.0f, 0.5f
 	};
 
-	public testApp( String inputObjFile ) throws IOException{
+	public testApp(){
 		super();
+	};
+
+	public testApp( String inputObjFile ) throws IOException{
 		vertices = Utils.getVertices( Utils.getWholeFileAsString( "src/main/resources/" + inputObjFile ) );
 		indices  = Utils.getIndices( Utils.getWholeFileAsString( "src/main/resources/" + inputObjFile ) );
 		Utils.LOG_INFO("input file: " + inputObjFile);
@@ -137,15 +139,22 @@ public class testApp extends ApplicationTemplate {
 
 		//TODO make window class a singleton
 		m_camera 			= new Camera(1024, 768);
+
+
 		m_testShader 		= new Shader("testTextureShader.glsl"); //was - testUniformShader.glsl
-		m_testTransform		= new Transform();
-		m_testVertexArray	= new VertexArray(indices, vertices, colours);
+		m_testShader		.bind();
 		m_testShader		.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
+		m_testShader		.unbind();
+
+		m_testTransform		= new Transform();
+		//m_testVertexArray	= new VertexArray(indices, vertices, colours);
+
 		m_testShader		.unbind();
 
 		Event.addWindowResizeCallback((width, height)-> {
 			m_testShader.bind();
 			m_testShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
+			m_testShader.unbind();
 		});
 
 		m_testVertexArray = new VertexArray(indices, new VertexData(new FloatArray(3, positions),  new FloatArray(2, textCoords)));
@@ -158,6 +167,7 @@ public class testApp extends ApplicationTemplate {
 
 	@Override
 	public void update() {
+		ImGui.text("Hello world!");
 		Renderer.setClearColor(new Vector3f(77f/255f, 200f/255f, 233f/255f));
 
 		m_testShader.bind();
@@ -173,33 +183,8 @@ public class testApp extends ApplicationTemplate {
 
 		m_camera.update();
 
-		ImGui.text("Hello world!");
 		m_testTransform.debugGui("test Transform");
 	}
-////=======
-//
-//    @Override
-//    public void update() {
-//
-//		Renderer.setClearColor(new Vector3f(77f/255f, 200f/255f, 233f/255f));
-//
-//		m_testShader.bind();
-//		m_testShader.setUniform("u_texture_sampler", 0);
-//        m_testShader.setUniform("u_viewMatrix", m_camera.getViewMatrix());
-//        m_testShader.setUniform("u_worldMatrix", m_testTransform.getTransformMatrix());
-//		// Activate first texture unit
-//		glActiveTexture(GL_TEXTURE0);
-//		// Bind the texture
-//		glBindTexture(GL_TEXTURE_2D, m_texture.getTextureId());
-//        Renderer.render(m_testVertexArray, m_testShader);
-//		m_testShader.unbind();
-//
-//        m_camera.update();
-//
-//        ImGui.text("Hello world!");
-//        m_testTransform.debugGui("test Transform");
-//    }
-//>>>>>>> upstream/main
 
 	@Override
 	public void terminate() {

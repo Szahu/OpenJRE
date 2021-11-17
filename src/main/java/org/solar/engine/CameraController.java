@@ -15,7 +15,7 @@ public class CameraController {
 
     public CameraController(Consumer<Matrix4f> setTransformMatrixCallback) {
         m_setTransformMatrixCallback = setTransformMatrixCallback;
-        m_Transform.setPosition(new float[] {0,0,3});
+        m_Transform.setPosition(new float[] {1,1,4});
     }
 
     public void update() {
