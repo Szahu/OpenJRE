@@ -2,7 +2,6 @@ package org.solar.engine;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-
 import imgui.ImGui;
 
 public class Transform {
@@ -29,20 +28,25 @@ public class Transform {
     public void rotate(Vector3f vec) {m_rotation = Utils.vec3fToArray(new Vector3f(m_rotation).add(vec)); recalculateMatrix();}
     public void scale(Vector3f vec) {m_scale = Utils.vec3fToArray(new Vector3f(m_scale).mul(vec)); recalculateMatrix();}
 
-    private void recalculateMatrix() {
-        //TODO implement local/global rotation
+    public void recalculateMatrix() {
+        //TODO implement local/gloabl rotation
+
+        Matrix4f rotation = new Matrix4f();
+        rotation.rotate(m_rotation[0], 0, 1, 0);
+        rotation.rotate(m_rotation[1], 1, 0, 0);
+        rotation.rotate(m_rotation[2], 0, 0, 1);
+
         m_transformMatrix = new Matrix4f().identity()
         .translate(new Vector3f(m_position))
-        .rotate((float) Math.toRadians(m_rotation[0]), new Vector3f(1,0,0))
-        .rotate((float) Math.toRadians(m_rotation[1]), new Vector3f(0,1,0))
-        .rotate((float) Math.toRadians(m_rotation[2]), new Vector3f(0,0,1))
-        .scale(new Vector3f(m_scale));
+        .mul(rotation)
+        .scale(new Vector3f(m_scale)); 
+
     }
 
-    public void debugGui() {
-        ImGui.dragFloat3("Translation", m_position, 0.1f);
-        ImGui.dragFloat3("Rotation", m_rotation, 0.1f);
-        ImGui.dragFloat3("Scale", m_scale, 0.1f);
+    public void debugGui(String title) {
+        ImGui.dragFloat3(title + ": Translation", m_position, 0.1f);
+        ImGui.dragFloat3(title + ": Rotation", m_rotation, 0.1f);
+        ImGui.dragFloat3(title + ": Scale", m_scale, 0.1f);
         recalculateMatrix();
     }
 

@@ -1,7 +1,7 @@
 package org.solar.engine;
 
 import org.lwjgl.glfw.*;
-import org.lwjgl.opengl.GL;
+import org.solar.engine.renderer.Renderer;
 
 import java.util.Objects;
 
@@ -17,11 +17,11 @@ public class Engine {
 
     public void initialize() {
 
+		//Initialise Event static class
 		Event.initialise();
 
         // Setup an error callback. The default implementation
 		// will print the error message in System.err.
-
 		GLFWErrorCallback.createPrint(System.err).set();
 
 		// Initialize GLFW. Most GLFW functions will not work before doing this.
@@ -29,22 +29,18 @@ public class Engine {
 			throw new IllegalStateException("Unable to initialize GLFW");
 
 		//Creating and initialising window
-		Window.initialize(()->{
-			GL.createCapabilities();
-        	glEnable(GL_DEPTH_TEST);
-        	glDepthFunc(GL_LESS); 
-			Utils.LOG_INFO("OpenGL version: " + glGetString(GL_VERSION));
-		});
+		Window.initialize();
+
+		//Initialise all the render and OpenGL stuff
+		Renderer.initialise();
 
 		//Initialising Input object, so we can use it as a singleton
 		Input.initialise(Window.getHandle());
 
-		// Enable v-sync
-		glfwSwapInterval(1);
-
 		// Make the window visible
 		glfwShowWindow(Window.getHandle());
 
+		//Initialise imgui layer
 		m_guiLayer = new ImGuiLayer(Window.getHandle());
 		m_guiLayer.initImGui();
     }
@@ -61,7 +57,6 @@ public class Engine {
 
 			m_guiLayer.startFrame(Utils.getDeltaTime());
 			appUpdate.run();
-			
 			m_guiLayer.endFrame();
 
 			//END CODE HERER
@@ -76,7 +71,7 @@ public class Engine {
 
     public void terminate() {
         
-		//m_guiLayer.destroyImGui();
+		m_guiLayer.destroyImGui();
 
 		// Free the window callbacks and destroy the window
 		glfwFreeCallbacks(Window.getHandle());

@@ -9,12 +9,12 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import org.joml.Vector3f;
-
 import java.util.Vector;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 public class Utils {
+
     public  final static String  ABS_PROJECT_PATH       = "src/main/resources/shaders/";
     public  final static char    VERTEX_SHADER_IDX      = 0;
     public  final static char    FRAGMENT_SHADER_IDX    = 1;
@@ -31,10 +31,10 @@ public class Utils {
     private final static String ANSI_WHITE              = "\u001B[37m";
     private final static String VERTICES_PATTERN        = "(v (-?[0-9]+\\.[0-9]+) (-?[0-9]+\\.[0-9]+) (-?[0-9]+\\.[0-9]+)\n)+";
     private final static String INDICES_PATTERN         = "(f ([0-9]+)/[0-9]+/[0-9]+ ([0-9]+)/[0-9]+/[0-9]+ ([0-9]+)/[0-9]+/[0-9]+\n)+";
-    private       static long m_startDeltaTime          = 0;
-    private       static float m_deltaTime              = 0;
+    private       static long   m_startDeltaTime        = 0;
+    private       static float  m_deltaTime             = 0;
 
-    public static String getStringFromFile(String shaderName) throws IOException {
+    public static String getWholeFileAsString(String shaderName) throws IOException {
         StringBuffer stringBuffer = new StringBuffer();
         BufferedReader br = new BufferedReader( new FileReader( shaderName ) );
         br.lines()
@@ -49,19 +49,16 @@ public class Utils {
         String[] result = {"",""};
         List<String> lines = Files.readAllLines( Paths.get( shaderName ), StandardCharsets.UTF_8 );
         for ( String line : lines ) {
-
             if (line.contains(VERTEX_SHADER_TOKEN)) {
                 foundVertexShader = true;
                 foundFragmentShader = false;
                 continue;
             }
-
             else if ( line.contains(FRAGMENT_SHADER_TOKEN) ) {
                 foundVertexShader = false;
                 foundFragmentShader = true;
                 continue;
             }
-
             if ( foundVertexShader ) {
                 result[VERTEX_SHADER_IDX] += (line + "\n");
             } else if ( foundFragmentShader ) {
@@ -120,5 +117,4 @@ public class Utils {
     public static void      LOG_INFO     (Object o)         { System.out.println(ANSI_BLUE + o.toString() + ANSI_RESET); }
     public static void      LOG          (Object o)         { System.out.println( o.toString() ); }
     public static float[]   vec3fToArray (Vector3f vec)     { return new float[] {vec.get(0), vec.get(1), vec.get(2)}; }
-    private static void     print        (Object o)         { System.out.println(o.toString());}
 }

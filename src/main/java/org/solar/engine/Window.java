@@ -23,7 +23,7 @@ public class Window {
     public static long getHandle() {return m_handle;}
     public static boolean getShouldClose() {return m_shouldClose;}
  
-    public static void initialize(Runnable glInitCallback){
+    public static void initialize(){
                 
         // Configure GLFW
 		glfwDefaultWindowHints();
@@ -51,7 +51,7 @@ public class Window {
         glfwSetWindowCloseCallback(m_handle, (window) -> {m_shouldClose = true;});
 
 		// Get the thread stack and push a new frame
-		try ( MemoryStack stack = stackPush() ) {
+		try (MemoryStack stack = stackPush()) {
 			IntBuffer pWidth = stack.mallocInt(1); // int*
 			IntBuffer pHeight = stack.mallocInt(1); // int*
 
@@ -72,8 +72,9 @@ public class Window {
 
         //Create current context
         glfwMakeContextCurrent(m_handle);
-        //Initialise OpenGL
-        glInitCallback.run();
+
+        // Enable v-sync
+		glfwSwapInterval(1);
 
         Input.addKeyCallback(GLFW_KEY_ESCAPE, GLFW_RELEASE, Window::close);
     }
