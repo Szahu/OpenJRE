@@ -18,6 +18,7 @@ public class Camera {
     public void setTransformMatrix(Matrix4f newMatrix) {
         m_transformMatrix = newMatrix;
     }
+    public Matrix4f getTramsformMatrix(){ return this.m_transformMatrix; }
 
     private void recalculateProjection(float aspectRatio) {
         m_projectionMatrix = new Matrix4f().perspective(m_FOV, aspectRatio, m_Z_NEAR, m_Z_FAR);
