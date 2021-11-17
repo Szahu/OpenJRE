@@ -33,9 +33,6 @@ public class testApp extends ApplicationTemplate {
 
 	private Texture m_texture;
 
-    private Terrain m_testTerrain;
-    private int terrainVAO;
-
     @Override
     public void initialise() {
         
@@ -146,22 +143,6 @@ public class testApp extends ApplicationTemplate {
 
 		m_texture = new Texture("assets/cube_texture.png");
 
-        m_testTerrain.generateMesh();
-
-        terrainVAO = glGenVertexArrays();
-        glBindVertexArray(terrainVAO);
-
-        IntBuffer data = MemoryUtil.memAllocInt(m_testTerrain.getVertices().length);
-        data.put(m_testTerrain.getVertices()).flip();
-        int vertexBufferId = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vertexBufferId);
-        glBufferData(GL_ARRAY_BUFFER, data, GL_STATIC_DRAW);        
-
-        glVertexAttribPointer(0, 3, GL_INT, false, 0, 0);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        memFree(data); 
-        glBindVertexArray(terrainVAO);
 	}
 
     @Override
@@ -169,7 +150,7 @@ public class testApp extends ApplicationTemplate {
 
 		Renderer.setClearColor(new Vector3f(77f/255f, 200f/255f, 233f/255f));
 
-		/* m_testShader.bind();
+		 m_testShader.bind();
 		m_testShader.setUniform("u_texture_sampler", 0);
         m_testShader.setUniform("u_viewMatrix", m_camera.getViewMatrix());
         m_testShader.setUniform("u_worldMatrix", m_testTransform.getTransformMatrix());
@@ -178,9 +159,7 @@ public class testApp extends ApplicationTemplate {
 		// Bind the texture
 		glBindTexture(GL_TEXTURE_2D, m_texture.getTextureId());
         Renderer.render(m_testVertexArray, m_testShader);
-		m_testShader.unbind(); */
-
-        
+		m_testShader.unbind(); 
 
         m_camera.update();
 			
