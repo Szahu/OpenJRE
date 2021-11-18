@@ -36,13 +36,15 @@ public class Engine {
 
 		//Initialising Input object, so we can use it as a singleton
 		Input.initialise(Window.getHandle());
-
+		
 		// Make the window visible
 		glfwShowWindow(Window.getHandle());
 
 		//Initialise imgui layer
 		m_guiLayer = new ImGuiLayer(Window.getHandle());
 		m_guiLayer.initImGui();
+
+		Input.addKeyCallback(GLFW_KEY_ESCAPE, GLFW_RELEASE, Window::close);
     }
 	
 	public void mainLoop(Runnable appUpdate){

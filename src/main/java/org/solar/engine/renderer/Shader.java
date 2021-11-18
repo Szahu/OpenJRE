@@ -23,6 +23,10 @@ public class Shader {
     private final Map<String, Integer> m_uniforms; //map of uniform names and locations
     private FloatBuffer m_floatBuffer16; //FloatBuffer for loading matrices
 
+    public static final String uniformProjectionMatrixToken = "u_projectionMatrix"; 
+    public static final String uniformViewMatrixToken = "u_viewMatrix"; 
+    public static final String uniformTransformMatrixToken = "u_worldMatrix"; 
+
     public Shader() {
 
         m_uniforms = new HashMap<>();

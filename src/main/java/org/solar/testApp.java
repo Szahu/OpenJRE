@@ -73,29 +73,29 @@ public class testApp extends ApplicationTemplate {
             0.5f, -0.5f, 0.5f,};
         float[] textCoords = new float[]{
             0.0f, 0.0f,
-            0.0f, 0.5f,
-            0.5f, 0.5f,
-            0.5f, 0.0f,
-            0.0f, 0.0f,
-            0.5f, 0.0f,
-            0.0f, 0.5f,
-            0.5f, 0.5f,
-            // For text coords in top face
-            0.0f, 0.5f,
-            0.5f, 0.5f,
             0.0f, 1.0f,
-            0.5f, 1.0f,
+            1.0f, 1.0f,
+            1.0f, 0.0f,
+
+            1.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+            0.0f, 0.0f,
+            // For text coords in top face
+            1.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+            0.0f, 0.0f,
             // For text coords in right face
             0.0f, 0.0f,
-            0.0f, 0.5f,
-            // For text coords in left face
-            0.5f, 0.0f,
-            0.5f, 0.5f,
-            // For text coords in bottom face
-            0.5f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 1.0f,
             1.0f, 0.0f,
-            0.5f, 0.5f,
-            1.0f, 0.5f,};
+            // For text coords in bottom face
+            1.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+            0.0f, 1.0f,};
         int[] indices = new int[]{
             // Front face
             0, 1, 3, 3, 1, 2,
@@ -112,6 +112,7 @@ public class testApp extends ApplicationTemplate {
 
 
 		m_camera = new Camera(Window.getWidth(), Window.getHeight());
+        Renderer.setCameraRefrence(m_camera);
 
 		m_testShader = new Shader("testTextureShader.glsl");
 		m_testShader.bind();
@@ -126,13 +127,10 @@ public class testApp extends ApplicationTemplate {
 			m_testShader.unbind();
 		}); 
 
-		//m_testVertexArray = new VertexArray(indices, new VertexData(new FloatArray(3, positions),  new FloatArray(2, textCoords)));
-		m_testVertexArray = ModelLoader.loadModel("assets/barn.obj");
+		//m_testVertexArray = new VertexArray(indices, new FloatArray(3, positions),  new FloatArray(2, textCoords));
+		m_testVertexArray = ModelLoader.loadModel("assets/cube.obj");
 		
-		Input.addKeyCallback(GLFW_KEY_SPACE, GLFW_PRESS, () -> {Utils.LOG("works now");});
-		Input.addKeyCallback(GLFW_KEY_ESCAPE, GLFW_RELEASE, Window::close);
-
-		m_texture = new Texture("assets/testTexture.png", true);
+		m_texture = new Texture("assets/block.png", true);
 
 	}
 
@@ -143,17 +141,15 @@ public class testApp extends ApplicationTemplate {
 
 		m_testShader.bind();
 		m_testShader.setUniform("u_texture_sampler", 0);
-        m_testShader.setUniform("u_viewMatrix", m_camera.getViewMatrix());
-        m_testShader.setUniform("u_worldMatrix", m_testTransform.getTransformMatrix());
 		// Activate first texture unit
 		m_texture.bind();
 		// Bind the texture
-        Renderer.render(m_testVertexArray, m_testShader);
+        Renderer.render(m_testVertexArray, m_testShader, m_testTransform);
 		m_testShader.unbind(); 
 
         m_camera.update();
 			
-        ImGui.text("Hello world!");
+        ImGui.text("FPS: " +  (int)(10f/Utils.getDeltaTime()));
         m_testTransform.debugGui("test Transform");
     }
 

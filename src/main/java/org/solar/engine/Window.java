@@ -74,9 +74,7 @@ public class Window {
         glfwMakeContextCurrent(m_handle);
 
         // Enable v-sync
-		glfwSwapInterval(1);
-
-        Input.addKeyCallback(GLFW_KEY_ESCAPE, GLFW_RELEASE, Window::close);
+		glfwSwapInterval(0);
     }
 
     public static void terminate(){
