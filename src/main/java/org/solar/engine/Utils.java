@@ -2,27 +2,17 @@ package org.solar.engine;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
 
 import org.joml.Vector3f;
 
-import java.nio.charset.*;
-
 public class Utils {
 
-    public final static String ABS_PROJECT_PATH = "src/main/resources/shaders/";
-    public final static int VERTEX_SHADER_IDX = 0;
-    public final static int FRAGMENT_SHADER_IDX = 1;
-    private final static String VERTEX_SHADER_TOKEN = "#vertexShader";
-    private final static String FRAGMENT_SHADER_TOKEN = "#fragmentShader";
-
-    private static long m_startDeltaTime = 0;
-    private static float m_deltaTime  = 0;
-
-    public static String getWholeFileAsString(String path) {
+    /**
+     * Loads content of a file to a String.
+     * @param Path Path of the file to load.
+     * @return Returns the content of the file as a string.
+     */
+    public static String getFileAsString(String path) {
         try {
         StringBuffer stringBuffer = new StringBuffer();
         BufferedReader br = new BufferedReader( new FileReader( path ) );
@@ -30,60 +20,15 @@ public class Utils {
         br.close();
         return stringBuffer.toString();
         } catch (Exception e) {
-            Utils.LOG_ERROR(e.toString());
-            return e.toString();
+            Utils.LOG_ERROR("Couldn't load file as a String from path: " + path);
+            Utils.LOG_ERROR("Error message: " + path);
+            return "";
         }
 
     }
 
-    public static String getShaderStringFromFile(String shaderName) throws IOException {
-        StringBuffer stringBuffer = new StringBuffer();
-        try{
-            FileReader fr = new FileReader(ABS_PROJECT_PATH + shaderName);
-            BufferedReader br = new BufferedReader( fr );
-            br.lines()
-                .forEach(line -> stringBuffer.append(line + "\n"));
-            fr.close();
-            br.close();
-            return stringBuffer.toString();
-        }
-        catch (Exception e) {System.out.println("Exception at reading file: " + shaderName + "\n" + e.getStackTrace());}
-        return null;
-    }
-
-    //This function takes a text file and splits it into two after each token
-    public static String[] multipleShadersFromFile(String shaderName) throws IOException{
-        String vertexShaderContent = "";
-        String fragmentShaderContent = "";
-        String path = ABS_PROJECT_PATH + shaderName;
-        List<String> lines = Files.readAllLines(Paths.get(path), StandardCharsets.UTF_8);
-
-        boolean foundVertexShader = false;
-        boolean foundFragmentShader = false;
-        for(int i = 0; i < lines.size(); i++) {
-            String line = lines.get(i);
-            //Checking if the line is our token
-            if (line.contains(VERTEX_SHADER_TOKEN)) {
-                foundVertexShader = true;
-                foundFragmentShader = false;
-                continue;
-            }
-            //Checking if the line is our token
-            else if (line.contains(FRAGMENT_SHADER_TOKEN)) {
-                foundVertexShader = false;
-                foundFragmentShader = true;
-                continue;
-            }
-            if (foundVertexShader) {vertexShaderContent += (lines.get(i) + "\n") ;}
-            else if (foundFragmentShader) {fragmentShaderContent += (lines.get(i) + "\n");}
-        }
-
-        String[] result = new String[2];
-        result[VERTEX_SHADER_IDX] = vertexShaderContent;
-        result[FRAGMENT_SHADER_IDX] = fragmentShaderContent;
-        return result;
-    }
-
+    private static long m_startDeltaTime = 0;
+    private static float m_deltaTime  = 0;
     public static void updateDeltaTime() {
         long time = System.nanoTime();
         m_deltaTime = ((float)(time - m_startDeltaTime)) / 100000000f;

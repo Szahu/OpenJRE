@@ -2,8 +2,13 @@ package org.solar.engine.renderer;
 
 import static org.lwjgl.opengl.GL20.*;
 
+import java.io.IOException;
 import java.nio.FloatBuffer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.joml.Matrix4f;
@@ -12,11 +17,11 @@ import org.solar.engine.Utils;
 
 public class Shader {
 
-    private final int m_programId;
-    private int vertexShaderId;
-    private int fragmentShaderId;
-    private final Map<String, Integer> m_uniforms;
-    private FloatBuffer m_floatBuffer16;
+    private final int m_programId; //openGL id of the shader program
+    private int vertexShaderId; //openGl id of the vertex shader program
+    private int fragmentShaderId; //openGl id of the fragment shader program
+    private final Map<String, Integer> m_uniforms; //map of uniform names and locations
+    private FloatBuffer m_floatBuffer16; //FloatBuffer for loading matrices
 
     public Shader() {
 
@@ -62,6 +67,11 @@ public class Shader {
         load(vertexShaderName, fragmentShaderName);
     }
 
+    /**
+     * Sets a value of a uniform in a shader.
+     * @param uniformName Name of the uniform to be set.
+     * @param value Data to be sent to the gpu.
+     */
     public void setUniform(String uniformName, Matrix4f value) {
         
         // Dump the matrix into a float buffer
@@ -78,6 +88,11 @@ public class Shader {
 
     }
 
+     /**
+     * Sets a value of a uniform in a shader.
+     * @param uniformName Name of the uniform to be set.
+     * @param value Data to be sent to the gpu.
+     */
     public void setUniform(String uniformName, int value) {
         if(m_uniforms.containsKey(uniformName)) {
             glUniform1i(m_uniforms.get(uniformName), value);
@@ -86,7 +101,7 @@ public class Shader {
         }
     }
 
-    public void generateUniforms(String shaderCode) throws Exception {
+    private void generateUniforms(String shaderCode) throws Exception {
         
         for(int index = shaderCode.indexOf("uniform");index >= 0; index = shaderCode.indexOf("uniform", index + 1)) {
 
@@ -116,12 +131,15 @@ public class Shader {
 
     }
 
-    //Load and crate shaders from a file containing two shaders
-    public void load(String bothShadersFileName) {
+    /**
+     * Loads a shader program from a single file. Vertex shader must beging with #vertexShader 
+     * and fragment shader needs to begin with #fragmentShader
+     * @param bothShadersFileName Name of the file containing shader code. 
+     */
+    private void load(String bothShadersFileName) {
         
         try {
-
-            String[] shadersContent = Utils.multipleShadersFromFile(bothShadersFileName);
+            String[] shadersContent = multipleShadersFromFile(bothShadersFileName);
             createVertexShader(shadersContent[0]);
             createFragmentShader(shadersContent[1]);
             link();
@@ -135,7 +153,7 @@ public class Shader {
     public void load(String vertexShaderName, String fragmentShaderName) {
 
         try {
-            String shaderCode = Utils.getShaderStringFromFile(vertexShaderName);
+            String shaderCode = Utils.getFileAsString(vertexShaderName);
             createVertexShader(shaderCode);
             generateUniforms(shaderCode);
         } catch (Exception e) {
@@ -145,7 +163,7 @@ public class Shader {
 
         try {
 
-            String shaderCode = Utils.getShaderStringFromFile(fragmentShaderName);
+            String shaderCode = Utils.getFileAsString(fragmentShaderName);
             createFragmentShader(shaderCode);
         } catch (Exception e) {
             Utils.LOG_ERROR("Error while loading shaders from path: " + fragmentShaderName + " , " + e.toString());
@@ -212,5 +230,44 @@ public class Shader {
         if (m_programId != 0) {
             glDeleteProgram(m_programId);
         }
+    }
+    
+    public final static String SHADERS_FOLDER_PATH = "src/main/resources/shaders/";
+    public final static int VERTEX_SHADER_IDX = 0;
+    public final static int FRAGMENT_SHADER_IDX = 1;
+    private final static String VERTEX_SHADER_TOKEN = "#vertexShader";
+    private final static String FRAGMENT_SHADER_TOKEN = "#fragmentShader";
+
+    //This function takes a text file and splits it into two after each token
+    private static String[] multipleShadersFromFile(String shaderName) throws IOException{
+        String vertexShaderContent = "";
+        String fragmentShaderContent = "";
+        String path = SHADERS_FOLDER_PATH + shaderName;
+        List<String> lines = Files.readAllLines(Paths.get(path), StandardCharsets.UTF_8);
+
+        boolean foundVertexShader = false;
+        boolean foundFragmentShader = false;
+        for(int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+            //Checking if the line is our token
+            if (line.contains(VERTEX_SHADER_TOKEN)) {
+                foundVertexShader = true;
+                foundFragmentShader = false;
+                continue;
+            }
+            //Checking if the line is our token
+            else if (line.contains(FRAGMENT_SHADER_TOKEN)) {
+                foundVertexShader = false;
+                foundFragmentShader = true;
+                continue;
+            }
+            if (foundVertexShader) {vertexShaderContent += (lines.get(i) + "\n") ;}
+            else if (foundFragmentShader) {fragmentShaderContent += (lines.get(i) + "\n");}
+        }
+
+        String[] result = new String[2];
+        result[VERTEX_SHADER_IDX] = vertexShaderContent;
+        result[FRAGMENT_SHADER_IDX] = fragmentShaderContent;
+        return result;
     }
 }

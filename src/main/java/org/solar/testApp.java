@@ -6,20 +6,10 @@ import org.solar.engine.renderer.Renderer;
 import org.solar.engine.renderer.Shader;
 import org.solar.engine.renderer.Texture;
 import org.solar.engine.renderer.VertexArray;
-import org.solar.engine.renderer.VertexData;
-import org.solar.mcunlimited.Terrain;
-
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
-
-import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.system.MemoryUtil.*;
 
 import org.joml.Vector3f;
-import org.lwjgl.system.MemoryUtil;
 
 import imgui.ImGui;
 
@@ -121,7 +111,7 @@ public class testApp extends ApplicationTemplate {
             4, 6, 7, 5, 4, 7,};
 
 
-		m_camera = new Camera(1024, 768);
+		m_camera = new Camera(Window.getWidth(), Window.getHeight());
 
 		m_testShader = new Shader("testTextureShader.glsl");
 		m_testShader.bind();

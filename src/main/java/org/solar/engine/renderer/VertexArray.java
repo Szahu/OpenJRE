@@ -16,15 +16,15 @@ public class VertexArray {
     
     private boolean m_initialised = false;
 
-    private static int m_vertexArrayId;
+    private int m_vertexArrayId;
     private int m_indexBufferId;
     private List<Integer> m_floatBuffersIds;
-    private static int m_numberOfAttributes = 0;
+    private int m_numberOfAttributes = 0;
 
     private int m_indexCount = 0;
     public int getIndexCount() {return m_indexCount;}
 
-    public static int getNumberOfAttributes() { return m_numberOfAttributes; }
+    public int getNumberOfAttributes() { return m_numberOfAttributes; }
 
 
     public void initialise(int[] indices, float[] ...floatArrays) {
@@ -113,11 +113,11 @@ public class VertexArray {
         initialise(indices, vData);
     }
 
-    public static void bind()  {
+    public void bind()  {
         glBindVertexArray(m_vertexArrayId);
     }
 
-    public static void unbind() {
+    public void unbind() {
         glBindVertexArray(0);
     }
 

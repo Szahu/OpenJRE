@@ -13,7 +13,7 @@ public class ModelLoader {
     
 
     public static VertexArray loadModel(String path) {;
-		String inputObjContent = Utils.getWholeFileAsString(path);
+		String inputObjContent = Utils.getFileAsString(path);
 		float[] vertices = getVertices( inputObjContent ); // non-indexed!
 		int[] verticesIndices = getIndices ( inputObjContent, VERTICES_IDX);
 		float[] texels = getTexels  ( inputObjContent ); // non-indexed!
