@@ -138,10 +138,10 @@ public class testApp extends ApplicationTemplate {
 
 		m_testVertexArray = new VertexArray(indices, new VertexData(new FloatArray(3, positions),  new FloatArray(2, textCoords)));
 		
-		Input.addKeyCallback(GLFW_KEY_SPACE, GLFW_PRESS, () -> {Utils.LOG("it works now");});
+		Input.addKeyCallback(GLFW_KEY_SPACE, GLFW_PRESS, () -> {Utils.LOG("works now");});
 		Input.addKeyCallback(GLFW_KEY_ESCAPE, GLFW_RELEASE, Window::close);
 
-		m_texture = new Texture("assets/cube_texture.png");
+		m_texture = new Texture("assets/block.png");
 
 	}
 
