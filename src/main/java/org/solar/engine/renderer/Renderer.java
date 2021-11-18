@@ -12,13 +12,19 @@ public class Renderer {
 
     private static Camera m_CameraRefrence;
 
+    private static FrameBuffer m_frameBuffer;
+
     private Renderer() {}
+
+    public static FrameBuffer getFrameBuffer() {return m_frameBuffer;}
 
     public static void initialise() {
         GL.createCapabilities();
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS); 
         Utils.LOG_INFO("OpenGL version: " + glGetString(GL_VERSION));
+
+        m_frameBuffer = new FrameBuffer();
     }   
 
     public static void setCameraRefrence(Camera cam) {m_CameraRefrence = cam;}
@@ -66,6 +72,21 @@ public class Renderer {
         vao.unbind();
 
         shader.unbind();
+    }
+
+    public static void renderToScreen() {
+        
+        FrameBuffer.getVertexArray().bind();
+        FrameBuffer.getShader().bind();
+        FrameBuffer.getShader().setUniform("u_texture_sampler", 0);
+        m_frameBuffer.bindTexture();
+
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glDrawElements(GL_TRIANGLES,  FrameBuffer.getVertexArray().getIndexCount(), GL_UNSIGNED_INT, 0);
+        FrameBuffer.getShader().unbind();
+        FrameBuffer.getVertexArray().unbind(); 
+
     }
 
 }

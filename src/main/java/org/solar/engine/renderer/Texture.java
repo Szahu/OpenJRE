@@ -17,6 +17,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 
 public class Texture {
+    
     private static final int BYTES_PER_PIXEL = 4;//3 for RGB, 4 for RGBA
     private int m_TextureId = -1;
 

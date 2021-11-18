@@ -7,6 +7,8 @@ import org.solar.engine.renderer.Shader;
 import org.solar.engine.renderer.Texture;
 import org.solar.engine.renderer.VertexArray;
 
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.glfw.GLFW.*;
 
 import org.joml.Vector3f;
@@ -138,6 +140,7 @@ public class testApp extends ApplicationTemplate {
     public void update() {
 
 		Renderer.setClearColor(new Vector3f(77f/255f, 200f/255f, 233f/255f));
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // we're not using the stencil buffer now
 
 		m_testShader.bind();
 		m_testShader.setUniform("u_texture_sampler", 0);
