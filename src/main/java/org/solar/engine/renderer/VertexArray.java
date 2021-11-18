@@ -69,7 +69,7 @@ public class VertexArray {
 
             int stride = 0;
             for(FloatArray arr: vData.arrays) {
-                glVertexAttribPointer(m_numberOfAttributes, arr.step, GL_FLOAT, false, vData.getSumStep() * Float.BYTES, stride * Float.BYTES);
+                glVertexAttribPointer(m_numberOfAttributes, arr.step, GL_FLOAT, false, vData.getSumStep() * Float.BYTES, (long) stride * Float.BYTES);
                 stride += arr.step;
                 m_numberOfAttributes++;
             }
@@ -90,7 +90,6 @@ public class VertexArray {
 
             m_initialised = true;
         }
-
     }
 
     public VertexArray(int[] indices, float[] ...floatArrays) {

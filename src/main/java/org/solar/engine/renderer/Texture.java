@@ -15,14 +15,15 @@ import java.awt.image.BufferedImage;
 
 public class Texture {
     private static final int BYTES_PER_PIXEL = 4;//3 for RGB, 4 for RGBA
-    private int m_TextureId = -1;
+    private int m_TextureId;
 
     public int getTextureId() {
         return m_TextureId;
     }
 
-    public Texture(String pathToFile) {
+    public Texture(String pathToFile){
         BufferedImage image = loadImage(pathToFile);
+        assert image != null;
         m_TextureId = loadTexture(image);
     }
 
@@ -33,7 +34,7 @@ public class Texture {
 
         ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * BYTES_PER_PIXEL); //4 for RGBA, 3 for RGB
 
-        for(int y = 0; y < image.getHeight(); y++){
+        for(int y = image.getHeight()-1; y > 0 ; y--){
             for(int x = 0; x < image.getWidth(); x++){
                 int pixel = pixels[y * image.getWidth() + x];
                 buffer.put((byte) ((pixel >> 16) & 0xFF));     // Red component
