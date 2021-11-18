@@ -66,10 +66,9 @@ public class testApp extends ApplicationTemplate {
 			m_testShader.unbind();
 		});
 
-		FloatArray vertexes = new FloatArray(3, vertices, verticesIndices);
 		int[] plainIndices = new int[verticesIndices.length];
 		for(int i = 0; i < verticesIndices.length; i++) plainIndices[i] = i;
-		m_testVertexArray = new VertexArray(plainIndices, new VertexData(vertexes,  new FloatArray(2, texels, texelsIndices)));
+		m_testVertexArray = new VertexArray(plainIndices, new VertexData(new FloatArray(3, vertices, verticesIndices),  new FloatArray(2, texels, texelsIndices)));
 		m_texture = new Texture("src/main/resources/" + textureFile);
 
 		Input.addKeyCallback(GLFW_KEY_SPACE, GLFW_PRESS, () -> LOG("it works now"));

@@ -15,11 +15,11 @@ import java.util.regex.Matcher;
 
 public class Utils {
 
-    public  final static String  ABS_PROJECT_PATH       = "src/main/resources/shaders/";
-    public  final static char    VERTEX_SHADER_IDX      = 0;
-    public  final static char    FRAGMENT_SHADER_IDX    = 1;
-    public  final static char    VERTICES_IDX           = 0;
-    public  final static char    TEXELS_IDX             = 1;
+    public  final static String ABS_PROJECT_PATH        = "src/main/resources/shaders/";
+    public  final static char   VERTEX_SHADER_IDX       = 0;
+    public  final static char   FRAGMENT_SHADER_IDX     = 1;
+    public  final static char   VERTICES_IDX            = 0;
+    public  final static char   TEXELS_IDX              = 1;
     private final static String VERTEX_SHADER_TOKEN     = "#vertexShader";
     private final static String FRAGMENT_SHADER_TOKEN   = "#fragmentShader";
     private final static String ANSI_RESET              = "\u001B[0m";
@@ -87,8 +87,7 @@ public class Utils {
             float[] verticesArray = new float[vertices.size()];
             for(Float verticePart: vertices) verticesArray[i++] = ( verticePart != null? verticePart: Float.NaN);
             return verticesArray;
-        }
-        throw new RuntimeException("No vertices found at input file!");
+        } else throw new RuntimeException("No vertices found at input file!");
     }
 
     public static int[] getIndices(String fileContent, int index ){
@@ -104,8 +103,7 @@ public class Utils {
             int[] indicesArray = new int[indices.size()];
             for(Integer indicePart: indices) indicesArray[i++] = ( indicePart != null? indicePart - 1 : 0);
             return indicesArray;
-        }
-        throw new RuntimeException("No indices found at input file!");
+        } else throw new RuntimeException("No indices found at input file!");
     }
 
     public static float[] getTexels(String fileContent ){
@@ -121,8 +119,7 @@ public class Utils {
             float[] texelArray = new float[texels.size()];
             for(Float texelPart: texels) texelArray[i++] = ( texelPart != null? texelPart: Float.NaN);
             return texelArray;
-        }
-        throw new RuntimeException("No indices found at input file!");
+        } else throw new RuntimeException("No texels found at input file!");
     }
 
     public static void updateDeltaTime() {
