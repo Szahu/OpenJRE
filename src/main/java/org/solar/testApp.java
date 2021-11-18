@@ -136,12 +136,13 @@ public class testApp extends ApplicationTemplate {
 			m_testShader.unbind();
 		}); 
 
-		m_testVertexArray = new VertexArray(indices, new VertexData(new FloatArray(3, positions),  new FloatArray(2, textCoords)));
+		//m_testVertexArray = new VertexArray(indices, new VertexData(new FloatArray(3, positions),  new FloatArray(2, textCoords)));
+		m_testVertexArray = ModelLoader.loadModel("assets/barn.obj");
 		
 		Input.addKeyCallback(GLFW_KEY_SPACE, GLFW_PRESS, () -> {Utils.LOG("works now");});
 		Input.addKeyCallback(GLFW_KEY_ESCAPE, GLFW_RELEASE, Window::close);
 
-		m_texture = new Texture("assets/block.png");
+		m_texture = new Texture("assets/testTexture.png", true);
 
 	}
 
@@ -150,14 +151,13 @@ public class testApp extends ApplicationTemplate {
 
 		Renderer.setClearColor(new Vector3f(77f/255f, 200f/255f, 233f/255f));
 
-		 m_testShader.bind();
+		m_testShader.bind();
 		m_testShader.setUniform("u_texture_sampler", 0);
         m_testShader.setUniform("u_viewMatrix", m_camera.getViewMatrix());
         m_testShader.setUniform("u_worldMatrix", m_testTransform.getTransformMatrix());
 		// Activate first texture unit
-		glActiveTexture(GL_TEXTURE0);
+		m_texture.bind();
 		// Bind the texture
-		glBindTexture(GL_TEXTURE_2D, m_texture.getTextureId());
         Renderer.render(m_testVertexArray, m_testShader);
 		m_testShader.unbind(); 
 

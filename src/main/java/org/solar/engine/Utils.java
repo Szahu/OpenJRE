@@ -22,6 +22,20 @@ public class Utils {
     private static long m_startDeltaTime = 0;
     private static float m_deltaTime  = 0;
 
+    public static String getWholeFileAsString(String path) {
+        try {
+        StringBuffer stringBuffer = new StringBuffer();
+        BufferedReader br = new BufferedReader( new FileReader( path ) );
+        br.lines().forEach(line -> stringBuffer.append(line).append("\n"));
+        br.close();
+        return stringBuffer.toString();
+        } catch (Exception e) {
+            Utils.LOG_ERROR(e.toString());
+            return e.toString();
+        }
+
+    }
+
     public static String getShaderStringFromFile(String shaderName) throws IOException {
         StringBuffer stringBuffer = new StringBuffer();
         try{
