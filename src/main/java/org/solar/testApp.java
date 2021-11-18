@@ -74,6 +74,7 @@ public class testApp extends ApplicationTemplate {
 		Input.addKeyCallback(GLFW_KEY_SPACE, GLFW_PRESS, () -> LOG("it works now"));
 		Input.addKeyCallback(GLFW_KEY_ESCAPE, GLFW_RELEASE, Window::close);
 
+
 	}
 
 	@Override
