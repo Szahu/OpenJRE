@@ -27,8 +27,6 @@ public class Window {
                 
         // Configure GLFW
 		glfwDefaultWindowHints();
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2); // optional, the current window hints are already the default
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
@@ -74,7 +72,7 @@ public class Window {
         glfwMakeContextCurrent(m_handle);
 
         // Enable v-sync
-		glfwSwapInterval(0);
+		glfwSwapInterval(1);
     }
 
     public static void terminate(){

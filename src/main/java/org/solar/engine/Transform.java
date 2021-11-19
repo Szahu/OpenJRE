@@ -33,9 +33,9 @@ public class Transform {
         //TODO implement local/gloabl rotation
 
         Matrix4f rotation = new Matrix4f();
-        rotation.rotate(m_rotation[0], 0, 1, 0);
-        rotation.rotate(m_rotation[1], 1, 0, 0);
-        rotation.rotate(m_rotation[2], 0, 0, 1);
+        rotation.rotate((float)Math.toRadians(m_rotation[0]), 0, 1, 0);
+        rotation.rotate((float)Math.toRadians(m_rotation[0]), 1, 0, 0);
+        rotation.rotate((float)Math.toRadians(m_rotation[0]), 0, 0, 1);
         
         m_transformMatrix = new Matrix4f().identity()
         .translate(new Vector3f(m_position))

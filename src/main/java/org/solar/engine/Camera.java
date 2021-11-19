@@ -10,7 +10,7 @@ public class Camera {
     private Matrix4f m_projectionMatrix;
     private Matrix4f m_transformMatrix;
 
-    private CameraController m_CameraController;
+    private CameraControllerTemplate m_CameraController;
 
     public Matrix4f getProjectionMatrix() {return m_projectionMatrix;}
     public Matrix4f getViewMatrix() {return m_transformMatrix.invert();}
@@ -35,9 +35,8 @@ public class Camera {
             recalculateProjection((float) newWidth / newHeight);
         });
         
-        m_CameraController = new CameraController((newMatrix) -> {
-            m_transformMatrix = newMatrix;
-        });
+        m_CameraController = new DebugCameraController();
+        m_CameraController.setTransformMatrixRefrence((Matrix4f newMat) -> {m_transformMatrix = newMat;});
     }
 
     public void update() {

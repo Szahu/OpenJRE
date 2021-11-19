@@ -3,6 +3,8 @@ package org.solar.engine.renderer;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
+import static org.lwjgl.glfw.GLFW.*;
+
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
 import org.solar.engine.Camera;
@@ -23,7 +25,6 @@ public class Renderer {
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS); 
         Utils.LOG_INFO("OpenGL version: " + glGetString(GL_VERSION));
-
         m_frameBuffer = new FrameBuffer();
     }   
 
