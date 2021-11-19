@@ -8,5 +8,6 @@ public abstract class CameraControllerTemplate {
 
     public abstract void setTransformMatrixRefrence(Consumer<Matrix4f> callback);
     public abstract void update();
+    public abstract boolean invertMatrix();
 
 }

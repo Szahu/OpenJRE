@@ -13,9 +13,9 @@ public class Camera {
     private CameraControllerTemplate m_CameraController;
 
     public Matrix4f getProjectionMatrix() {return m_projectionMatrix;}
-    public Matrix4f getViewMatrix() {return m_transformMatrix.invert();}
+    public Matrix4f getViewMatrix() {return m_transformMatrix;}
 
-    public Matrix4f getViewProjectionMatrix() {return m_projectionMatrix.mul(m_transformMatrix.invert());}
+    public Matrix4f getViewProjectionMatrix() {return m_projectionMatrix.mul(m_transformMatrix);}
 
     public void setTransformMatrix(Matrix4f newMatrix) {
         m_transformMatrix = newMatrix;
