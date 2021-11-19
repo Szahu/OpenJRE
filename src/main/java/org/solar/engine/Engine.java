@@ -1,8 +1,10 @@
 package org.solar.engine;
 
+import org.joml.Vector3f;
 import org.lwjgl.glfw.*;
 import org.solar.engine.renderer.Renderer;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import static org.lwjgl.glfw.Callbacks.*;
@@ -15,7 +17,7 @@ public class Engine {
 	private ImGuiLayer m_guiLayer;
 
 
-    public void initialize() {
+    public void initialize() throws IOException {
 
 		//Initialise Event static class
 		Event.initialise();
@@ -36,27 +38,34 @@ public class Engine {
 
 		//Initialising Input object, so we can use it as a singleton
 		Input.initialise(Window.getHandle());
-
+		
 		// Make the window visible
 		glfwShowWindow(Window.getHandle());
 
 		//Initialise imgui layer
 		m_guiLayer = new ImGuiLayer(Window.getHandle());
 		m_guiLayer.initImGui();
+
+		Input.addKeyCallback(GLFW_KEY_ESCAPE, GLFW_RELEASE, Window::close);
     }
 	
 	public void mainLoop(Runnable appUpdate){
 
 		while (!Window.getShouldClose()) {
 			// clear the framebuffer
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			Utils.updateDeltaTime();
 
 			Input.update();
 
 			m_guiLayer.startFrame(Utils.getDeltaTime());
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // we're not using the stencil buffer now
+
+			Renderer.getFrameBuffer().bind();
 			appUpdate.run();
+			Renderer.getFrameBuffer().unbind();
+			Renderer.renderToScreen();
+			
 			m_guiLayer.endFrame();
 
 			//END CODE HERER

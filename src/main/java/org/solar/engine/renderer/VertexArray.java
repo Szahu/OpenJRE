@@ -23,6 +23,45 @@ public class VertexArray {
 
     public int getNumberOfAttributes() { return m_numberOfAttributes; }
 
+    //public VertexArray() {}
+
+    /* public VertexArray(int[] indices, float[] ...floatArrays) {
+        initialise(indices, floatArrays);
+    } */
+
+    public VertexArray(int[] indices, VertexData vData) {
+        initialise(indices, vData);
+    }
+
+    public VertexArray(int[] indices, FloatArray ...floatArrays) {
+        initialise(indices, new VertexData(floatArrays));
+    }
+
+    public void bind()  {
+        glBindVertexArray(m_vertexArrayId);
+    }
+
+    public void unbind() {
+        glBindVertexArray(0);
+    }
+
+    public void cleanup() {
+
+        glDeleteBuffers(m_indexBufferId);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        for(int i = 0;i < m_floatBuffersIds.size();i++) {
+            // Delete the VBOs
+        glDeleteBuffers(m_floatBuffersIds.get(i));        
+        }
+
+        // Delete the VAO
+        glBindVertexArray(0);
+        glDeleteVertexArrays(m_vertexArrayId);
+    }
+
+
+
     public void initialise(int[] indices, float[] ...floatArrays) {
 
         if (!m_initialised) {
@@ -93,36 +132,5 @@ public class VertexArray {
 
             m_initialised = true;
         }
-    }
-
-    public VertexArray(int[] indices, float[] ...floatArrays) {
-        initialise(indices, floatArrays);
-    }
-
-    public VertexArray(int[] indices, VertexData vData) {
-        initialise(indices, vData);
-    }
-
-    public void bind()  {
-        glBindVertexArray(m_vertexArrayId);
-    }
-
-    public void unbind() {
-        glBindVertexArray(0);
-    }
-
-    public void cleanup() {
-
-        glDeleteBuffers(m_indexBufferId);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-        for (Integer m_floatBuffersId : m_floatBuffersIds) {
-            // Delete the VBOs
-            glDeleteBuffers(m_floatBuffersId);
-        }
-
-        // Delete the VAO
-        glBindVertexArray(0);
-        glDeleteVertexArrays(m_vertexArrayId);
     }
 }

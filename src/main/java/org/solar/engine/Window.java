@@ -44,7 +44,7 @@ public class Window {
             Event.activateWindowResizeEvent(width, height);
             m_width = width;
             m_height = height;
-            glViewport(0,0, width, height);
+            //glViewport(0,0, width, height);
         });
 
         //making sure the window will close upon closing
@@ -74,9 +74,7 @@ public class Window {
         glfwMakeContextCurrent(m_handle);
 
         // Enable v-sync
-		glfwSwapInterval(1);
-
-        Input.addKeyCallback(GLFW_KEY_ESCAPE, GLFW_RELEASE, Window::close);
+		glfwSwapInterval(0);
     }
 
     public static void terminate(){

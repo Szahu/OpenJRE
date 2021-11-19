@@ -6,7 +6,7 @@ import org.solar.engine.renderer.Renderer;
 import org.solar.engine.renderer.Shader;
 import org.solar.engine.renderer.Texture;
 import org.solar.engine.renderer.VertexArray;
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL20.*;
 import imgui.ImGui;
 import java.io.IOException;
 
@@ -68,29 +68,29 @@ public class testApp extends ApplicationTemplate {
             0.5f, -0.5f, 0.5f,};
         float[] textCoords = new float[]{
             0.0f, 0.0f,
-            0.0f, 0.5f,
-            0.5f, 0.5f,
-            0.5f, 0.0f,
-            0.0f, 0.0f,
-            0.5f, 0.0f,
-            0.0f, 0.5f,
-            0.5f, 0.5f,
-            // For text coords in top face
-            0.0f, 0.5f,
-            0.5f, 0.5f,
             0.0f, 1.0f,
-            0.5f, 1.0f,
+            1.0f, 1.0f,
+            1.0f, 0.0f,
+
+            1.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+            0.0f, 0.0f,
+            // For text coords in top face
+            1.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 1.0f,
+            0.0f, 0.0f,
             // For text coords in right face
             0.0f, 0.0f,
-            0.0f, 0.5f,
-            // For text coords in left face
-            0.5f, 0.0f,
-            0.5f, 0.5f,
-            // For text coords in bottom face
-            0.5f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 1.0f,
             1.0f, 0.0f,
-            0.5f, 0.5f,
-            1.0f, 0.5f,};
+            // For text coords in bottom face
+            1.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+            0.0f, 1.0f,};
         int[] indices = new int[]{
             // Front face
             0, 1, 3, 3, 1, 2,
@@ -107,6 +107,7 @@ public class testApp extends ApplicationTemplate {
 
 
 		m_camera = new Camera(Window.getWidth(), Window.getHeight());
+        Renderer.setCameraRefrence(m_camera);
 
 		m_testShader = new Shader("testTextureShader.glsl");
 		m_testShader.bind();
@@ -121,33 +122,32 @@ public class testApp extends ApplicationTemplate {
 			m_testShader.unbind();
 		});
 
-		m_testVertexArray = ModelLoader.loadModel("assets/barn.obj");
+		m_testVertexArray = ModelLoader.loadModel("assets/cube.obj");
 		
-		Input.addKeyCallback(GLFW_KEY_SPACE, GLFW_PRESS, () -> {Utils.LOG("works now");});
-		Input.addKeyCallback(GLFW_KEY_ESCAPE, GLFW_RELEASE, Window::close);
+		m_texture = new Texture("assets/block.png", true);
 
-		m_texture = new Texture("assets/testTexture.png", true);
+
 	}
 
 	@Override
 	public void update() {
 		ImGui.text("Hello world!");
 		Renderer.setClearColor(new Vector3f(77f/255f, 200f/255f, 233f/255f));
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // we're not using the stencil buffer now
 
 		m_testShader.bind();
 		m_testShader.setUniform("u_texture_sampler", 0);
-		this.m_testShader.setUniform("u_viewMatrix", m_camera.getViewMatrix());
-		this.m_testShader.setUniform("u_worldMatrix", m_testTransform.getTransformMatrix());
+
 		// Activate first texture unit
 		m_texture.bind();
 		// Bind the texture
+        Renderer.render(m_testVertexArray, m_testShader, m_testTransform);
 
-        Renderer.render(m_testVertexArray, m_testShader);
 		m_testShader.unbind(); 
 
         m_camera.update();
 			
-        ImGui.text("Hello world!");
+        ImGui.text("FPS: " +  (int)(10f/Utils.getDeltaTime()));
         m_testTransform.debugGui("test Transform");
     }
 
