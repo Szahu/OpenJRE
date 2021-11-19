@@ -17,7 +17,9 @@ public class Window {
     private static boolean m_shouldClose = false;
     private static int m_width = 1024;
     private static int m_height = 768;
- 
+    private static boolean m_enableVsync = true;
+
+    public static void setVsync(boolean newSetting) {m_enableVsync = newSetting;}
     public static int getWidth() {return m_width;}
     public static int getHeight() {return m_height;}
     public static long getHandle() {return m_handle;}

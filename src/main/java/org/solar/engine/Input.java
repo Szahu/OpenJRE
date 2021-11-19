@@ -40,6 +40,10 @@ public class Input {
         return glfwGetKey(m_windowHandle, keyCode) == 1;
     }
 
+    public static boolean isMouseButtonDown(int mouseButtonCode) {
+        return glfwGetMouseButton(m_windowHandle, mouseButtonCode) == 1;
+    }
+
     class actionData {
         public actionData(int key, int act) {
             keyCode = key;
