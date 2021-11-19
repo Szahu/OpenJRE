@@ -26,10 +26,10 @@ public class FrameBuffer {
     };
 
     private static final float[] virtualScreenTextureCoordinates = {
-        0.0f, 1.0f,
         0.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f
+        0.0f, 1.0f,
+        1.0f, 1.0f,
+        1.0f, 0.0f
     };
 
     private static final int[] virtualScreenIndices = {0,1,2,2,0,3};
