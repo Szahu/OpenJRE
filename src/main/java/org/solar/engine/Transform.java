@@ -2,7 +2,6 @@ package org.solar.engine;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-
 import imgui.ImGui;
 
 public class Transform {
@@ -36,7 +35,7 @@ public class Transform {
         rotation.rotate(m_rotation[0], 0, 1, 0);
         rotation.rotate(m_rotation[1], 1, 0, 0);
         rotation.rotate(m_rotation[2], 0, 0, 1);
-        
+
         m_transformMatrix = new Matrix4f().identity()
         .translate(new Vector3f(m_position))
         .mul(rotation)

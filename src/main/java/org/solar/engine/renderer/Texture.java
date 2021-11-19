@@ -19,13 +19,14 @@ import java.awt.image.BufferedImage;
 public class Texture {
     
     private static final int BYTES_PER_PIXEL = 4;//3 for RGB, 4 for RGBA
-    private int m_TextureId = -1;
+    private int m_TextureId;
 
     private boolean m_invertY = false;
 
     public int getTextureId() {
         return m_TextureId;
     }
+
 
     public Texture(String pathToFile, boolean ...invertY) {
         if(invertY.length > 0) {m_invertY = invertY[0];}

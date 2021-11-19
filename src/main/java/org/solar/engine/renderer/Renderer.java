@@ -8,6 +8,8 @@ import org.lwjgl.opengl.GL;
 import org.solar.engine.Camera;
 import org.solar.engine.Utils;
 
+import java.io.IOException;
+
 public class Renderer {
 
     private static Camera m_CameraRefrence;
@@ -18,7 +20,7 @@ public class Renderer {
 
     public static FrameBuffer getFrameBuffer() {return m_frameBuffer;}
 
-    public static void initialise() {
+    public static void initialise() throws IOException {
         GL.createCapabilities();
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS); 

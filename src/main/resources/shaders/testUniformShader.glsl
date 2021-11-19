@@ -14,7 +14,6 @@ out vec3 exColour;
 void main()
 {
     gl_Position =  u_projectionMatrix * u_viewMatrix * u_worldMatrix * vec4(position, 1.0);
-    exColour = inColour;
 }
 
 #fragmentShader
