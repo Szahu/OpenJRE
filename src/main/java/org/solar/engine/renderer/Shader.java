@@ -1,7 +1,6 @@
 package org.solar.engine.renderer;
 
 import static org.lwjgl.opengl.GL20.*;
-
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.charset.StandardCharsets;
@@ -10,7 +9,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import org.solar.engine.Utils;
@@ -28,29 +26,20 @@ public class Shader {
     public static final String uniformTransformMatrixToken = "u_worldMatrix"; 
 
     public Shader() {
-
         m_uniforms = new HashMap<>();
-
         m_programId = glCreateProgram();
-        
-        if (m_programId == 0) {
-            Utils.LOG_ERROR("System could not create the shader program");
-        }
+        if (m_programId == 0) Utils.LOG_ERROR("System could not create the shader program");
     }
 
     /**
      * Creates a shader program from a file which stores two shader, each one starting with a proper token (#vertexShader, #fragmentShader).
      * @param bothShadersFileName Name of the file (including suffix) in which both of our shaders are stored
      */
-    public Shader(String bothShadersFileName) {
+    public Shader(String bothShadersFileName) throws IOException {
+
         m_uniforms = new HashMap<>();
-
         m_programId = glCreateProgram();
-        
-        if (m_programId == 0) {
-            Utils.LOG_ERROR("System could not create the shader program");
-        }
-
+        if (m_programId == 0) Utils.LOG_ERROR("System could not create the shader program");
         load(bothShadersFileName);
     }
 
@@ -59,15 +48,11 @@ public class Shader {
      * @param vertexShaderName Name of the file (including suffix) containing the vertex shader (no token).
      * @param fragmentShaderName Name of the file (including suffix) containing the fragment shader (no token).
      */
-    public Shader(String vertexShaderName, String fragmentShaderName) {
+    public Shader(String vertexShaderName, String fragmentShaderName) throws IOException {
+
         m_uniforms = new HashMap<>();
-
         m_programId = glCreateProgram();
-        
-        if (m_programId == 0) {
-            Utils.LOG_ERROR("System could not create the shader program");
-        }
-
+        if (m_programId == 0) Utils.LOG_ERROR("System could not create the shader program");
         load(vertexShaderName, fragmentShaderName);
     }
 
@@ -76,8 +61,8 @@ public class Shader {
      * @param uniformName Name of the uniform to be set.
      * @param value Data to be sent to the gpu.
      */
-    public void setUniform(String uniformName, Matrix4f value) {
-        
+    public void setUniform(String uniformName, Matrix4f value) throws RuntimeException {
+
         // Dump the matrix into a float buffer
         if(m_uniforms.containsKey(uniformName)) {
             if (m_floatBuffer16==null)
@@ -89,7 +74,6 @@ public class Shader {
         } else {
             Utils.LOG_ERROR("Trying to set value of the uniform that does not exist: " + uniformName);
         }
-
     }
 
      /**
@@ -105,8 +89,8 @@ public class Shader {
         }
     }
 
-    private void generateUniforms(String shaderCode) throws Exception {
-        
+    private void generateUniforms(String shaderCode) throws RuntimeException {
+
         for(int index = shaderCode.indexOf("uniform");index >= 0; index = shaderCode.indexOf("uniform", index + 1)) {
 
             int nameBeginIndex = index;
@@ -127,12 +111,11 @@ public class Shader {
             int uniformLocation = glGetUniformLocation(m_programId, uniformName);
 
             if (uniformLocation < 0) {
-                throw new Exception("Could not find uniform (or it is not used): " + uniformName);
+                throw new RuntimeException("Could not find uniform (or it is not used): " + uniformName);
             }
 
-            m_uniforms.put(uniformName, uniformLocation); 
+            m_uniforms.put(uniformName, uniformLocation);
         }
-
     }
 
     /**
@@ -165,49 +148,41 @@ public class Shader {
             Utils.LOG_ERROR("Error while loading shaders from path: " + vertexShaderName + " , " + e.toString());
         }
 
-        try {
-
+        try{
             String shaderCode = Utils.getFileAsString(fragmentShaderName);
             createFragmentShader(shaderCode);
         } catch (Exception e) {
             Utils.LOG_ERROR("Error while loading shaders from path: " + fragmentShaderName + " , " + e.toString());
         }
-
-        try {
-            link();
-        } catch (Exception e) {
-            Utils.LOG_ERROR("Error while linking " + vertexShaderName + " and " + fragmentShaderName + " , " + e.toString());
-        }
+        link();
     }
 
-    public void createVertexShader(String shaderCode) throws Exception {
+    public void createVertexShader(String shaderCode) throws RuntimeException{
         vertexShaderId = createShader(shaderCode, GL_VERTEX_SHADER);
     }
 
-    public void createFragmentShader(String shaderCode) throws Exception {
+    public void createFragmentShader(String shaderCode) throws RuntimeException {
         fragmentShaderId = createShader(shaderCode, GL_FRAGMENT_SHADER);
     }
 
-    protected int createShader(String shaderCode, int shaderType) throws Exception {
-
+    protected int createShader(String shaderCode, int shaderType){
         int shaderId = glCreateShader(shaderType);
         if (shaderId == 0) {
-            throw new Exception("Error creating shader. Type: " + shaderType);
+            throw new RuntimeException("Error creating shader. Type: " + shaderType);
         }
         glShaderSource(shaderId, shaderCode);
         glCompileShader(shaderId);
         if (glGetShaderi(shaderId, GL_COMPILE_STATUS) == 0) {
-            throw new Exception("Error compiling Shader code: " + glGetShaderInfoLog(shaderId, 1024));
+            throw new RuntimeException("Error compiling Shader code: " + glGetShaderInfoLog(shaderId, 1024));
         }
         glAttachShader(m_programId, shaderId);
         return shaderId;
     }
 
-    public void link() throws Exception {
-
+    public void link() throws RuntimeException {
         glLinkProgram(m_programId);
         if (glGetProgrami(m_programId, GL_LINK_STATUS) == 0) {
-            throw new Exception("Error linking Shader code: " + glGetProgramInfoLog(m_programId, 1024));
+            throw new RuntimeException("Error linking Shader code: " + glGetProgramInfoLog(m_programId, 1024));
         }
         if (vertexShaderId != 0) {
             glDetachShader(m_programId, vertexShaderId);
@@ -221,13 +196,8 @@ public class Shader {
         }
     }
 
-    public void bind() {
-        glUseProgram(m_programId);
-    }
-
-    public void unbind() {
-        glUseProgram(0);
-    }
+    public void bind() { glUseProgram(m_programId); }
+    public void unbind() { glUseProgram(0); }
 
     public void cleanup() {
         unbind();

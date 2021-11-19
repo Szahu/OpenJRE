@@ -1,32 +1,26 @@
 package org.solar;
 
+import org.joml.Vector3f;
 import org.solar.engine.*;
-import org.solar.engine.renderer.FloatArray;
 import org.solar.engine.renderer.Renderer;
 import org.solar.engine.renderer.Shader;
 import org.solar.engine.renderer.Texture;
 import org.solar.engine.renderer.VertexArray;
-
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.glfw.GLFW.*;
-
-import org.joml.Vector3f;
-
+import static org.solar.engine.ModelLoader.loadModel;
 import imgui.ImGui;
-
+import java.io.IOException;
 
 public class testApp extends ApplicationTemplate {
-    
+
     private Camera m_camera;
     private Shader m_testShader;
     private Transform m_testTransform;
     private VertexArray m_testVertexArray;
-
 	private Texture m_texture;
 
     @Override
-    public void initialise() {
+    public void initialise() throws IOException {
         
 		float[] positions = new float[]{
             // V0
@@ -121,33 +115,35 @@ public class testApp extends ApplicationTemplate {
 		m_testShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
 		m_testShader.unbind();
 
-		m_testTransform = new Transform();
+		m_testTransform		= new Transform();
 
 		Event.addWindowResizeCallback((width, height)-> {
 			m_testShader.bind();
 			m_testShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
 			m_testShader.unbind();
-		}); 
+		});
 
-		//m_testVertexArray = new VertexArray(indices, new FloatArray(3, positions),  new FloatArray(2, textCoords));
-		m_testVertexArray = ModelLoader.loadModel("assets/cube.obj");
+		m_testVertexArray = loadModel("assets/cube.obj");
 		
 		m_texture = new Texture("assets/block.png", true);
 
+
 	}
 
-    @Override
-    public void update() {
-
+	@Override
+	public void update() {
+		ImGui.text("Hello world!");
 		Renderer.setClearColor(new Vector3f(77f/255f, 200f/255f, 233f/255f));
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // we're not using the stencil buffer now
 
 		m_testShader.bind();
 		m_testShader.setUniform("u_texture_sampler", 0);
+
 		// Activate first texture unit
 		m_texture.bind();
 		// Bind the texture
         Renderer.render(m_testVertexArray, m_testShader, m_testTransform);
+
 		m_testShader.unbind(); 
 
         m_camera.update();
@@ -159,6 +155,7 @@ public class testApp extends ApplicationTemplate {
     @Override
     public void terminate() {
         m_testVertexArray.cleanup();
+
 		m_testShader.cleanup();
-    }
+	}
 }

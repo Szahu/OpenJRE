@@ -11,6 +11,8 @@ import org.solar.engine.Event;
 import org.solar.engine.Utils;
 import org.solar.engine.Window;
 
+import java.io.IOException;
+
 public class FrameBuffer {
 
     private int m_frameBufferId = -1;
@@ -50,7 +52,7 @@ public class FrameBuffer {
         glActiveTexture(GL_TEXTURE0);
     }
 
-    public FrameBuffer() {
+    public FrameBuffer() throws IOException {
         load();
 
         m_shader = new Shader("frameBufferShader.glsl");

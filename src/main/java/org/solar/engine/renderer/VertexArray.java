@@ -1,21 +1,17 @@
 package org.solar.engine.renderer;
 
 import org.lwjgl.system.MemoryUtil;
-
-import static org.lwjgl.system.MemoryUtil.*;
-
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.system.MemoryUtil.*;
 
 public class VertexArray {
-    
-    private boolean m_initialised = false;
 
+    private boolean m_initialised = false;
     private int m_vertexArrayId;
     private int m_indexBufferId;
     private List<Integer> m_floatBuffersIds;
@@ -23,6 +19,7 @@ public class VertexArray {
 
     private int m_indexCount = 0;
     public int getIndexCount() {return m_indexCount;}
+
 
     public int getNumberOfAttributes() { return m_numberOfAttributes; }
 
@@ -63,10 +60,9 @@ public class VertexArray {
         glDeleteVertexArrays(m_vertexArrayId);
     }
 
-    
-    public void initialise(int[] indices, float[] ...floatArrays) {
 
-        m_floatBuffersIds = new ArrayList<>();
+
+    public void initialise(int[] indices, float[] ...floatArrays) {
 
         if (!m_initialised) {
             m_vertexArrayId = glGenVertexArrays();
@@ -97,7 +93,6 @@ public class VertexArray {
 
             m_initialised = true;
         }
-
     }
 
     public void initialise(int[] indices, VertexData vData) {
@@ -116,7 +111,7 @@ public class VertexArray {
 
             int stride = 0;
             for(FloatArray arr: vData.arrays) {
-                glVertexAttribPointer(m_numberOfAttributes, arr.step, GL_FLOAT, false, vData.getSumStep() * Float.BYTES, stride * Float.BYTES);
+                glVertexAttribPointer(m_numberOfAttributes, arr.step, GL_FLOAT, false, vData.getSumStep() * Float.BYTES, (long) stride * Float.BYTES);
                 stride += arr.step;
                 m_numberOfAttributes++;
             }
@@ -137,8 +132,5 @@ public class VertexArray {
 
             m_initialised = true;
         }
-
     }
-
-
 }

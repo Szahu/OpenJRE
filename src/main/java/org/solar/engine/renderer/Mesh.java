@@ -2,25 +2,20 @@ package org.solar.engine.renderer;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-
 import org.lwjgl.system.MemoryUtil;
 import org.solar.engine.Utils;
-
 import static org.lwjgl.system.MemoryUtil.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
 public class Mesh {
 
-    private float[] m_vertices;
-    private int[] m_indices;
-
-    private int m_vertexArrayId;
-    private int m_vertexBufferId;
-    private int m_indexBufferId;
-    private boolean m_initialised = false;
-
-    public int getVertexArrayId() {return m_vertexArrayId;}
+    private float[]     m_vertices;
+    private int[]       m_indices;
+    private int         m_vertexArrayId;
+    private int         m_vertexBufferId;
+    private int         m_indexBufferId;
+    private boolean     m_initialised       = false;
 
     private void glInit() {
         if (!m_initialised) {
@@ -53,6 +48,7 @@ public class Mesh {
         }
         
     }
+    public Mesh() { }
 
     public Mesh(float[] verticse, int[] indices) {
         m_vertices = verticse;
@@ -60,9 +56,6 @@ public class Mesh {
 
         glInit();
     }
-
-    //Empty constructor in case somebodies wants to lead in a certain point
-    public Mesh() { }
 
     public void load(float[] verticse, int[] indices) {
         m_vertices = verticse;
@@ -81,5 +74,6 @@ public class Mesh {
         glBindVertexArray(0);
         glDeleteVertexArrays(m_vertexArrayId);
     }
-    
+
+    public int getVertexArrayId() { return m_vertexArrayId; }
 }

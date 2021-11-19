@@ -2,7 +2,6 @@ package org.solar.engine;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-
 import imgui.ImGui;
 
 public class Transform {
