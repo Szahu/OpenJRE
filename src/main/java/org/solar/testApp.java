@@ -123,7 +123,8 @@ public class testApp extends ApplicationTemplate {
 			m_testShader.unbind();
 		});
 
-		m_testVertexArray = loadModel("assets/cube.obj");
+		//m_testVertexArray = new VertexArray(indices, new FloatArray(3, positions),  new FloatArray(2, textCoords));
+		m_testVertexArray = ModelLoader.loadModel("assets/barn.obj");
 		
 		m_texture = new Texture("assets/block.png", true);
 
