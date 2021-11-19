@@ -27,7 +27,7 @@ public class DebugCameraController extends CameraControllerTemplate {
     @Override
     public void update() {
         m_Transform.debugGui("Camera Controller");
-        Matrix4f trans = new Matrix4f().lookAt(m_Transform.getPosition(), new Vector3f(0,0,0), new Vector3f(0,1,0));
-        updateCameraTransformMatrix(trans);
+        //Matrix4f trans = new Matrix4f().lookAt(m_Transform.getPosition(), new Vector3f(0,0,0), new Vector3f(0,1,0));
+        updateCameraTransformMatrix(m_Transform.getTransformMatrix());
     }
 }
