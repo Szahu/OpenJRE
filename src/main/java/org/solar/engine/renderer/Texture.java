@@ -4,6 +4,7 @@ import org.lwjgl.BufferUtils;
 import org.solar.engine.Utils;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,32 +18,48 @@ public class Texture {
     private static final int BYTES_PER_PIXEL = 4;//3 for RGB, 4 for RGBA
     private int m_TextureId;
 
+    private boolean m_invertY = false;
+
     public int getTextureId() {
         return m_TextureId;
     }
 
-    public Texture(String pathToFile){
+
+    public Texture(String pathToFile, boolean ...invertY) {
+        if(invertY.length > 0) {m_invertY = invertY[0];}
         BufferedImage image = loadImage(pathToFile);
-        assert image != null;
-        m_TextureId = loadTexture(image);
+        m_TextureId = loadTexture(image, m_invertY);
     }
 
-    public static int loadTexture(BufferedImage image){
+    private static int loadTexture(BufferedImage image, boolean InvertYs){
 
         int[] pixels = new int[image.getWidth() * image.getHeight()];
         image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
 
         ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * BYTES_PER_PIXEL); //4 for RGBA, 3 for RGB
 
-        for(int y = image.getHeight()-1; y > 0 ; y--){
-            for(int x = 0; x < image.getWidth(); x++){
-                int pixel = pixels[y * image.getWidth() + x];
-                buffer.put((byte) ((pixel >> 16) & 0xFF));     // Red component
-                buffer.put((byte) ((pixel >> 8) & 0xFF));      // Green component
-                buffer.put((byte) (pixel & 0xFF));               // Blue component
-                buffer.put((byte) ((pixel >> 24) & 0xFF));    // Alpha component. Only for RGBA
+        if(InvertYs) {
+            for(int y = image.getHeight() - 1; y > 0; y--){
+                for(int x = 0; x < image.getWidth(); x++){
+                    int pixel = pixels[y * image.getWidth() + x];
+                    buffer.put((byte) ((pixel >> 16) & 0xFF));     // Red component
+                    buffer.put((byte) ((pixel >> 8) & 0xFF));      // Green component
+                    buffer.put((byte) (pixel & 0xFF));               // Blue component
+                    buffer.put((byte) ((pixel >> 24) & 0xFF));    // Alpha component. Only for RGBA
+                }
             }
+        } else {
+            for(int y = 0; y < image.getHeight(); y++){
+                for(int x = 0; x < image.getWidth(); x++){
+                    int pixel = pixels[y * image.getWidth() + x];
+                    buffer.put((byte) ((pixel >> 16) & 0xFF));     // Red component
+                    buffer.put((byte) ((pixel >> 8) & 0xFF));      // Green component
+                    buffer.put((byte) (pixel & 0xFF));               // Blue component
+                    buffer.put((byte) ((pixel >> 24) & 0xFF));    // Alpha component. Only for RGBA
+                }
+            } 
         }
+        
 
         buffer.flip(); //FOR THE LOVE OF GOD DO NOT FORGET THIS
 
@@ -64,13 +81,18 @@ public class Texture {
         return textureID;
     }
 
-       public static BufferedImage loadImage(String loc)
-       {
-            try {
-               return ImageIO.read(new FileInputStream(loc));
-            } catch (IOException e) {
-                Utils.LOG_ERROR(e.toString());
-            }
-           return null;
-       }
+    public static BufferedImage loadImage(String loc)
+    {
+        try {
+            return ImageIO.read(new FileInputStream(loc));
+        } catch (IOException e) {
+            Utils.LOG_ERROR(e.toString());
+        }
+        return null;
+    }
+
+    public void bind() {
+        glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, getTextureId());
+    }
 }

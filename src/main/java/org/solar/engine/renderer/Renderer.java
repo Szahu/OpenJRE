@@ -47,16 +47,16 @@ public class Renderer {
         
         shader.bind();
 
-        VertexArray.bind();
+        vao.bind();
 
-        for(int i = 0;i < VertexArray.getNumberOfAttributes(); i++) {
+        for(int i = 0;i < vao.getNumberOfAttributes(); i++) {
             glEnableVertexAttribArray(i);
         }
 
         glDrawElements(GL_TRIANGLES, vao.getIndexCount(), GL_UNSIGNED_INT, 0);
 
         // Restore state
-        VertexArray.unbind();
+        vao.unbind();
 
         shader.unbind();
     }

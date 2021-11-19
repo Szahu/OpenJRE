@@ -11,14 +11,17 @@ import static org.lwjgl.system.MemoryUtil.*;
 
 public class VertexArray {
 
-    private int             m_indexBufferId;
-    private boolean         m_initialised           = false;
-    private int             m_indexCount            = 0;
-    private List<Integer>   m_floatBuffersIds       = new ArrayList<>();
-    private static int      m_numberOfAttributes    = 0;
-    private static int      m_vertexArrayId;
+    private boolean m_initialised = false;
+    private int m_vertexArrayId;
+    private int m_indexBufferId;
+    private List<Integer> m_floatBuffersIds;
+    private int m_numberOfAttributes = 0;
 
-    public static int getNumberOfAttributes() { return m_numberOfAttributes; }
+    private int m_indexCount = 0;
+    public int getIndexCount() {return m_indexCount;}
+
+
+    public int getNumberOfAttributes() { return m_numberOfAttributes; }
 
     public void initialise(int[] indices, float[] ...floatArrays) {
 
@@ -100,6 +103,14 @@ public class VertexArray {
         initialise(indices, vData);
     }
 
+    public void bind()  {
+        glBindVertexArray(m_vertexArrayId);
+    }
+
+    public void unbind() {
+        glBindVertexArray(0);
+    }
+
     public void cleanup() {
 
         glDeleteBuffers(m_indexBufferId);
@@ -114,9 +125,4 @@ public class VertexArray {
         glBindVertexArray(0);
         glDeleteVertexArrays(m_vertexArrayId);
     }
-
-    public static void bind()           { glBindVertexArray(m_vertexArrayId); }
-    public static void unbind()         { glBindVertexArray(0); }
-    public         int getIndexCount()  { return m_indexCount; }
-
 }

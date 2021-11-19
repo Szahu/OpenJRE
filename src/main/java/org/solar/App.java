@@ -29,8 +29,7 @@ public class App {
 	}
 
 	public static void main(String[] args) throws IOException {
-		if( args.length != 0 ) new App( new testApp( args ) ).run();
-		else new App( new testApp() ).run();
+		new App( new testApp() ).run();
 	}
 
 }
