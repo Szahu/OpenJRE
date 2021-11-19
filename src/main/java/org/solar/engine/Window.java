@@ -44,7 +44,7 @@ public class Window {
             Event.activateWindowResizeEvent(width, height);
             m_width = width;
             m_height = height;
-            glViewport(0,0, width, height);
+            //glViewport(0,0, width, height);
         });
 
         //making sure the window will close upon closing

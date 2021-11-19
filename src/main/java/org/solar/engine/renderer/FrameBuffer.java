@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL30.*;
 
 
 import org.lwjgl.opengl.GL;
+import org.solar.engine.Event;
 import org.solar.engine.Utils;
 import org.solar.engine.Window;
 
@@ -50,6 +51,18 @@ public class FrameBuffer {
     }
 
     public FrameBuffer() {
+        load();
+
+        m_shader = new Shader("frameBufferShader.glsl");
+
+        Event.addWindowResizeCallback((widht, height) -> {
+            glViewport(0, 0, widht, height);
+            load();
+        });
+
+    }
+
+    private void load() {
         m_frameBufferId = glGenFramebuffersEXT();
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_frameBufferId);
 
@@ -70,9 +83,6 @@ public class FrameBuffer {
 		}
 
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-
-        m_shader = new Shader("frameBufferShader.glsl");
-
     }
 
     public void bind() {
