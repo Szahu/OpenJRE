@@ -7,6 +7,7 @@ import org.solar.engine.renderer.Shader;
 import org.solar.engine.renderer.Texture;
 import org.solar.engine.renderer.VertexArray;
 import static org.lwjgl.opengl.GL20.*;
+import static org.solar.engine.ModelLoader.loadModel;
 import imgui.ImGui;
 import java.io.IOException;
 
@@ -122,7 +123,7 @@ public class testApp extends ApplicationTemplate {
 			m_testShader.unbind();
 		});
 
-		m_testVertexArray = ModelLoader.loadModel("assets/cube.obj");
+		m_testVertexArray = loadModel("assets/cube.obj");
 		
 		m_texture = new Texture("assets/block.png", true);
 
