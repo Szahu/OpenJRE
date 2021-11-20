@@ -28,6 +28,10 @@ You will need:
 
 Once you clone the repository and use `mvn package` once, use `mvn exec:java` each time You want to compile and run the application. Of course You can use other tools, possibly integrated into Yours IDE of choice. 
 
+## Documentation 
+
+Documentation available [here](https://szahu.github.io/OpenJRE/index.html).
+
 ## Learning Sources 
 
 Here are some learning sources for OpenGL and lwjgl in general: 
