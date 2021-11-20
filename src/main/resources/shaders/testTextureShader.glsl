@@ -11,11 +11,14 @@ uniform mat4 u_viewMatrix;
 uniform mat4 u_worldMatrix;
 
 out vec2 psTexCoords;
+out vec3 psNormals;
+
 
 void main()
 {
     gl_Position =  u_projectionMatrix * u_viewMatrix * u_worldMatrix * vec4(position, 1.0);
     psTexCoords = inTexCoords;
+    psNormals = normal;
 }
 
 #fragmentShader
@@ -23,6 +26,7 @@ void main()
 #version 330
 
 in  vec2 psTexCoords;
+in vec3 psNormals;
 out vec4 fragColor;
 
 uniform sampler2D u_texture_sampler;

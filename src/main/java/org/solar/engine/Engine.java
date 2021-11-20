@@ -9,6 +9,7 @@ import java.util.Objects;
 
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
+import static org.solar.engine.Input.*;
 import static org.lwjgl.opengl.GL20.*;
 
 public class Engine {
@@ -36,17 +37,18 @@ public class Engine {
 		//Initialise all the render and OpenGL stuff
 		Renderer.initialise();
 
+		//Initialise imgui layer
+		m_guiLayer = new ImGuiLayer(Window.getHandle());
+		m_guiLayer.initImGui();
+
 		//Initialising Input object, so we can use it as a singleton
 		Input.initialise(Window.getHandle());
 		
 		// Make the window visible
 		glfwShowWindow(Window.getHandle());
 
-		//Initialise imgui layer
-		m_guiLayer = new ImGuiLayer(Window.getHandle());
-		m_guiLayer.initImGui();
+		Input.addKeyCallback(KEY_CODE_ESCAPE, KEY_RELEASE, Window::close);
 
-		Input.addKeyCallback(GLFW_KEY_ESCAPE, GLFW_RELEASE, Window::close);
     }
 	
 	public void mainLoop(Runnable appUpdate){

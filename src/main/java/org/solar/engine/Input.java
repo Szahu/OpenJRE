@@ -21,9 +21,13 @@ public class Input {
     private static Vector2i m_lastMousePos;
     private static Vector2i m_deltaMousePos;
 
+    private static float m_scrollInput = 0;
+
     public static Vector2i getMousePosDelta() {
         return m_deltaMousePos;
     }
+
+    public static float getScrollInput() {float res = m_scrollInput; m_scrollInput = 0; return res;}
 
     public static void initialise(long windowHandle){
         m_windowHandle = windowHandle;
@@ -33,6 +37,10 @@ public class Input {
         glfwSetCursorPosCallback(m_windowHandle, (window, xpos, ypos) -> {
             m_xpos = (int)xpos;
             m_ypos = (int)ypos;
+        });
+
+        glfwSetScrollCallback(m_windowHandle, (window, xoffset, yoffset) -> {
+            m_scrollInput = (float)yoffset;
         });
     }
 
@@ -88,7 +96,6 @@ public class Input {
 		}); 
     }
 
-    // TODO create own codes
     public static void addKeyCallback(int keyCode, int act, Runnable callback) {
         Input outer = new Input();
         actionData key = outer.new actionData(keyCode, act);
@@ -112,4 +119,47 @@ public class Input {
         m_deltaMousePos.mul(-1, 1);
         m_lastMousePos = mousePos; 
     }
+
+    public static final int KEY_RELEASE = GLFW_RELEASE;
+    public static final int KEY_PRESS = GLFW_PRESS;
+    public static final int KEY_REPEAT = GLFW_REPEAT;
+
+    public static final int MOUSE_BUTTON_LEFT = GLFW_MOUSE_BUTTON_LEFT;
+    public static final int MOUSE_BUTTON_RIGHT = GLFW_MOUSE_BUTTON_RIGHT;
+    public static final int MOUSE_BUTTON_MIDDLE = GLFW_MOUSE_BUTTON_MIDDLE;
+
+    public static final int KEY_CODE_Q = GLFW_KEY_Q;
+    public static final int KEY_CODE_W = GLFW_KEY_W;
+    public static final int KEY_CODE_E = GLFW_KEY_E;
+    public static final int KEY_CODE_R = GLFW_KEY_R;
+    public static final int KEY_CODE_T = GLFW_KEY_T;
+    public static final int KEY_CODE_Y = GLFW_KEY_Y;
+    public static final int KEY_CODE_U = GLFW_KEY_U;
+    public static final int KEY_CODE_I = GLFW_KEY_I;
+    public static final int KEY_CODE_O = GLFW_KEY_O;
+    public static final int KEY_CODE_P = GLFW_KEY_P;
+    public static final int KEY_CODE_A = GLFW_KEY_A;
+    public static final int KEY_CODE_S = GLFW_KEY_S;
+    public static final int KEY_CODE_D = GLFW_KEY_D;
+    public static final int KEY_CODE_F = GLFW_KEY_F;
+    public static final int KEY_CODE_G = GLFW_KEY_G;
+    public static final int KEY_CODE_H = GLFW_KEY_H;
+    public static final int KEY_CODE_J = GLFW_KEY_J;
+    public static final int KEY_CODE_K = GLFW_KEY_K;
+    public static final int KEY_CODE_L = GLFW_KEY_L;
+    public static final int KEY_CODE_Z = GLFW_KEY_Z;
+    public static final int KEY_CODE_X = GLFW_KEY_X;
+    public static final int KEY_CODE_C = GLFW_KEY_C;
+    public static final int KEY_CODE_V = GLFW_KEY_V;
+    public static final int KEY_CODE_B = GLFW_KEY_B;
+    public static final int KEY_CODE_N = GLFW_KEY_N;
+    public static final int KEY_CODE_M = GLFW_KEY_M;
+
+    public static final int KEY_CODE_ESCAPE = GLFW_KEY_ESCAPE;
+    public static final int KEY_CODE_ENTER = GLFW_KEY_ENTER;
+    public static final int KEY_CODE_LEFT_SHIFT = GLFW_KEY_LEFT_SHIFT;
+    public static final int KEY_CODE_RIGHT_SHIFT = GLFW_KEY_RIGHT_SHIFT;
+    public static final int KEY_CODE_LEFT_ALT = GLFW_KEY_LEFT_ALT;
+    public static final int KEY_CODE_RIGHT_ALT = GLFW_KEY_RIGHT_ALT;
+
 }
