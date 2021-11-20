@@ -30,7 +30,6 @@ public class DebugCameraController extends CameraControllerTemplate {
     public DebugCameraController() {
         m_Transform = new Transform();
         m_Transform.setPosition(new Vector3f(0,0,3));
-        Window.setVsync(false);
     }
 
     @Override

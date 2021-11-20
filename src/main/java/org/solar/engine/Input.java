@@ -10,6 +10,9 @@ import java.util.Objects;
 
 import org.joml.Vector2i;
 
+/**
+ * Handles all user input. 
+ */
 public class Input {
     private Input() {}
 
@@ -23,12 +26,24 @@ public class Input {
 
     private static float m_scrollInput = 0;
 
+    /**
+     * Returns change in mouse position since last frame. 
+     * @return 
+     */
     public static Vector2i getMousePosDelta() {
         return m_deltaMousePos;
     }
 
+    /**
+     * Returns scroll input from a mouse wheel.
+     * @return
+     */
     public static float getScrollInput() {float res = m_scrollInput; m_scrollInput = 0; return res;}
 
+    /**
+     * Initialises the input class, handled by the engine. The user shouldn't need to call this class. 
+     * @param windowHandle Current glfw window pointer.
+     */
     public static void initialise(long windowHandle){
         m_windowHandle = windowHandle;
         m_lastMousePos = new Vector2i(0,0);
@@ -44,10 +59,20 @@ public class Input {
         });
     }
 
+    /**
+     * Checks if a certain key is pressed.
+     * @param keyCode Key code of the key.
+     * @return
+     */
     public static boolean isKeyDown(int keyCode) {
         return glfwGetKey(m_windowHandle, keyCode) == 1;
     }
 
+    /**
+     * Checks if mouse button is pressed.
+     * @param mouseButtonCode Key code of the mouse button.
+     * @return
+     */
     public static boolean isMouseButtonDown(int mouseButtonCode) {
         return glfwGetMouseButton(m_windowHandle, mouseButtonCode) == 1;
     }
@@ -96,6 +121,12 @@ public class Input {
 		}); 
     }
 
+    /**
+     * Adds key callback that will be executed when a certain conditions are met.
+     * @param keyCode Key code of the key that must be pressed.
+     * @param act Action that must happen (KEY_PRESS/KEY_RELEASE/KEY_REPEAT).
+     * @param callback Callback that shall be executed.
+     */
     public static void addKeyCallback(int keyCode, int act, Runnable callback) {
         Input outer = new Input();
         actionData key = outer.new actionData(keyCode, act);
@@ -109,6 +140,10 @@ public class Input {
         udpateKeyCallback();
     }
 
+    /**
+     * Returns current mouse position in pixels.
+     * @return
+     */
     public static Vector2i getMousePosition() {
         return new Vector2i(m_xpos, m_ypos);
     }

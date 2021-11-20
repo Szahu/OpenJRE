@@ -1,7 +1,6 @@
 package org.solar.engine;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 import java.nio.IntBuffer;
@@ -11,20 +10,43 @@ import org.lwjgl.system.MemoryStack;
 
 import static org.lwjgl.system.MemoryStack.*;
 
-//This class is a singleton as there can't be more than one window at the time (maybe multiple windows one day)
+/**
+ * Handles all operation related to the application window.
+ * It is a static class.
+ */
 public class Window {
     private static long m_handle;
     private static boolean m_shouldClose = false;
     private static int m_width = 1024;
     private static int m_height = 768;
-    private static boolean m_enableVsync = true;
+    //private static boolean m_enableVsync = true;
 
-    public static void setVsync(boolean newSetting) {m_enableVsync = newSetting;}
+    //public static void setVsync(boolean newSetting) {m_enableVsync = newSetting;}
+    
+    /**
+     * Returns width of the screen in pixels.
+     * @return
+     */
     public static int getWidth() {return m_width;}
+    /**
+     * Returns Height of the screen in pixels.
+     * @return
+     */
     public static int getHeight() {return m_height;}
+    /**
+     * Return glfw window pointer to the window.
+     * @return
+     */
     public static long getHandle() {return m_handle;}
+    /**
+     * Return private shouldClose boolean.
+     * @return
+     */
     public static boolean getShouldClose() {return m_shouldClose;}
  
+    /**
+     * Initialises the window, is called by an Engine itself.
+     */
     public static void initialize(){
                 
         // Configure GLFW
@@ -77,11 +99,17 @@ public class Window {
 		glfwSwapInterval(1);
     }
 
+    /**
+     * Cleanup of the window class.
+     */
     public static void terminate(){
         //Cleanup
         glfwDestroyWindow(m_handle);
     }
 
+    /**
+     * Closes the window (breaks the main while loops).
+     */
     public static void close() {
         m_shouldClose = true;
     }

@@ -2,6 +2,9 @@ package org.solar.engine;
 
 import org.joml.Matrix4f;
 
+/**
+ * Handles rendering calculations.
+ */
 public class Camera {
     
     private static final float m_FOV = (float) Math.toRadians(60.0f);
@@ -12,21 +15,43 @@ public class Camera {
 
     private CameraControllerTemplate m_CameraController;
 
+    /**
+     * Returns current projectin matrix of the camera. 
+     * @return
+     */
     public Matrix4f getProjectionMatrix() {return m_projectionMatrix;}
+
+    /**
+     * Returns current view matrix of the camera. 
+     * @return
+     */
     public Matrix4f getViewMatrix() {return m_transformMatrix;}
 
+    /**
+     * Returns projectin matrix multiplied by view matrix of the camera. 
+     * @return
+     */
     public Matrix4f getViewProjectionMatrix() {return m_projectionMatrix.mul(m_transformMatrix);}
 
-    public void setTransformMatrix(Matrix4f newMatrix) {
+    /**
+     * Set's value of camera's view matrix.
+     * @param newMatrix New view matrix;
+     */
+    public void setViewMatrix(Matrix4f newMatrix) {
         m_transformMatrix = newMatrix;
     }
-    public Matrix4f getTramsformMatrix(){ return this.m_transformMatrix; }
 
     private void recalculateProjection(float aspectRatio) {
         m_projectionMatrix = new Matrix4f().perspective(m_FOV, aspectRatio, m_Z_NEAR, m_Z_FAR);
     }
 
-    public Camera(int width, int height) {
+    /**
+     * Initialises the camera class.
+     * @param width Width of the screen.
+     * @param height Height of the screen.
+     * @param cameraController Camera controller to be attached.
+     */
+    public Camera(int width, int height, CameraControllerTemplate cameraController) {
         
         float aspectRatio = (float) width / height;
         recalculateProjection(aspectRatio);
@@ -36,10 +61,13 @@ public class Camera {
             recalculateProjection((float) newWidth / newHeight);
         });
         
-        m_CameraController = new DebugCameraController();
+        m_CameraController = cameraController;
         m_CameraController.setTransformMatrixRefrence((Matrix4f newMat) -> {m_transformMatrix = newMat;});
     }
 
+    /**
+     * To be called every frame. Updates attached CameraController class
+     */
     public void update() {
         m_CameraController.update();
     }

@@ -107,7 +107,7 @@ public class testApp extends ApplicationTemplate {
             4, 6, 7, 5, 4, 7,};
 
 
-		m_camera = new Camera(Window.getWidth(), Window.getHeight());
+		m_camera = new Camera(Window.getWidth(), Window.getHeight(), new DebugCameraController());
         Renderer.setCameraRefrence(m_camera);
 
 		m_testShader = new Shader("testTextureShader.glsl");

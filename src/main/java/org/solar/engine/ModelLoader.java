@@ -10,14 +10,18 @@ import org.solar.engine.renderer.VertexArray;
 import org.solar.engine.renderer.VertexData;
 
 /**
- * To load models from .obj files.
+ * Handles loading simple .obj models.
  * Important! Tick Triangulate Faces when exporting
  */
 public class ModelLoader {
 
-    public static VertexArray loadModel(String objFileName) {;
-        String objFile = objFileName;
-		String inputObjContent = Utils.getFileAsString(objFileName);
+    /**
+     * Loads and .obj model from a given path.
+     * @param objFileName Path to the file.
+     * @return Returns a VertexArray class with vertices, texture coordinates and normals of the model.
+     */
+    public static VertexArray loadModel(String path) {
+		String inputObjContent = Utils.getFileAsString(path);
 		float[] vertices = getVertices( inputObjContent ); // non-indexed!
 		int[] verticesIndices = getIndices ( inputObjContent, VERTICES_IDX);
 		float[] texels = getTexels( inputObjContent ); // non-indexed!
@@ -35,9 +39,9 @@ public class ModelLoader {
     private final static String INDICES_PATTERN = "(f [0-9]+/([0-9]+)/[0-9]+ ([0-9]+)/[0-9]+/[0-9]+ ([0-9]+)/[0-9]+/[0-9]+\n)+";
     private final static String TEXELS_PATTERN = "(vt (-?[0-9]+\\.[0-9]+) (-?[0-9]+\\.[0-9]+)\n)+";
     private final static String NORMALS_PATTERN = "(vn (-?[0-9]+\\.[0-9]+) (-?[0-9]+\\.[0-9]+) (-?[0-9]+\\.[0-9]+)\n)+";
-    public final static char VERTICES_IDX = 0;
-    public final static char TEXELS_IDX = 1;
-    public final static char NORMALS_IDX = 2;
+    private final static char VERTICES_IDX = 0;
+    private final static char TEXELS_IDX = 1;
+    private final static char NORMALS_IDX = 2;
 
     private static float[] getVertices(String fileContent){
         Vector<Float> vertices = new Vector<>();

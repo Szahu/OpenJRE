@@ -6,6 +6,9 @@ import java.io.IOException;
 
 import org.joml.Vector3f;
 
+/**
+ * Utility class. 
+ */
 public class Utils {
 
     /**
@@ -30,17 +33,25 @@ public class Utils {
     private static long m_startDeltaTime = 0;
     private static float m_deltaTime  = 0;
 
+    /**
+     * Update calculations of the delta time.
+     */
     public static void updateDeltaTime() {
         long time = System.nanoTime();
         m_deltaTime = ((float)(time - m_startDeltaTime)) / 100000000f;
         m_startDeltaTime = time;
     }
-    private final static String ANSI_RESET              = "\u001B[0m";
-    private final static String ANSI_RED                = "\u001B[31m";
-    private final static String ANSI_GREEN              = "\u001B[32m";
-    private final static String ANSI_YELLOW             = "\u001B[33m";
-    private final static String ANSI_BLUE               = "\u001B[34m";
-    public static float     getDeltaTime ()                 { return m_deltaTime; }
+    /**
+     * Returns time between two frames.
+     * @return
+     */
+    public static float getDeltaTime() { return m_deltaTime; }
+
+    private final static String ANSI_RESET = "\u001B[0m";
+    private final static String ANSI_RED = "\u001B[31m";
+    private final static String ANSI_GREEN = "\u001B[32m";
+    private final static String ANSI_YELLOW = "\u001B[33m";
+    private final static String ANSI_BLUE = "\u001B[34m";
     public static void      LOG_SUCCESS  (Object o)         { System.out.println(ANSI_GREEN + o.toString() + ANSI_RESET); }
     public static void      LOG_ERROR    (Object o)         { System.out.println(ANSI_RED + o.toString() + ANSI_RESET); }
     public static void      LOG_WARNING  (Object o)         { System.out.println(ANSI_YELLOW + o.toString() + ANSI_RESET); }
