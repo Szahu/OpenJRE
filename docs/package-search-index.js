@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"org.solar"},{"l":"org.solar.engine"},{"l":"org.solar.engine.renderer"},{"l":"org.solar.mcunlimited"}];updateSearchResults();
