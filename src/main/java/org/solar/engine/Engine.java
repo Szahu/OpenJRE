@@ -1,6 +1,7 @@
 package org.solar.engine;
 
 import org.lwjgl.glfw.*;
+import org.solar.engine.renderer.RenderUtils;
 import org.solar.engine.renderer.Renderer;
 
 import java.io.IOException;
@@ -35,6 +36,7 @@ public class Engine {
 
 		//Initialise all the render and OpenGL stuff
 		Renderer.initialise();
+		RenderUtils.initialises();
 
 		//Initialise imgui layer
 		m_guiLayer = new ImGuiLayer(Window.getHandle());

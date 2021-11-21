@@ -2,6 +2,7 @@ package org.solar;
 
 import org.joml.Vector3f;
 import org.solar.engine.*;
+import org.solar.engine.renderer.RenderUtils;
 import org.solar.engine.renderer.Renderer;
 import org.solar.engine.renderer.Shader;
 import org.solar.engine.renderer.Texture;
@@ -45,6 +46,8 @@ public class testApp extends ApplicationTemplate {
 
 	@Override
 	public void update() {
+		RenderUtils.renderGrid(m_camera);
+
 		m_testShader.bind();
 		m_testShader.setUniform("u_texture_sampler", 0);
 

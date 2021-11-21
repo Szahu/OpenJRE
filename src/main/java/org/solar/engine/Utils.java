@@ -3,6 +3,7 @@ package org.solar.engine;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Vector;
 
 import org.joml.Vector3f;
 
@@ -46,6 +47,22 @@ public class Utils {
      * @return
      */
     public static float getDeltaTime() { return m_deltaTime; }
+
+    public static float[] floatVectorToArray(Vector<Float> vec) {
+        float[] res = new float[vec.size()];
+        for(int i = 0;i < vec.size();i++) {
+            res[i] = vec.elementAt(i);
+        }
+        return res;
+    }
+
+    public static int[] intVectorToArray(Vector<Integer> vec) {
+        int[] res = new int[vec.size()];
+        for(int i = 0;i < vec.size();i++) {
+            res[i] = vec.elementAt(i);
+        }
+        return res;
+    }
 
     private final static String ANSI_RESET = "\u001B[0m";
     private final static String ANSI_RED = "\u001B[31m";
