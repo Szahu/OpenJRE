@@ -1,6 +1,5 @@
 package org.solar.engine;
 
-import org.joml.Vector3f;
 import org.lwjgl.glfw.*;
 import org.solar.engine.renderer.Renderer;
 
@@ -61,12 +60,12 @@ public class Engine {
 			Input.update();
 
 			m_guiLayer.startFrame(Utils.getDeltaTime());
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // we're not using the stencil buffer now
+			//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // we're not using the stencil buffer now
 
-			Renderer.getFrameBuffer().bind();
-			appUpdate.run();
-			Renderer.getFrameBuffer().unbind();
-			Renderer.renderToScreen();
+			//Renderer.getFrameBuffer().bind();
+			//appUpdate.run();
+			//Renderer.getFrameBuffer().unbind();
+			Renderer.renderToScreen(appUpdate);
 			
 			m_guiLayer.endFrame();
 

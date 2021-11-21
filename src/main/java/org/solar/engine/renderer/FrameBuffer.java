@@ -5,7 +5,6 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
-
 import org.lwjgl.opengl.GL;
 import org.solar.engine.Event;
 import org.solar.engine.Utils;
@@ -17,30 +16,9 @@ public class FrameBuffer {
 
     private int m_frameBufferId = -1;
     private int m_textureId = -1;
-    private static Shader m_shader;
     private int m_depthStencilBufferId = -1;
 
-    private static final float[] virtalScreenVertices = {
-        -1.0f, -1.0f,
-        -1.0f,  1.0f,
-         1.0f,  1.0f,
-         1.0f, -1.0f
-    };
-
-    private static final float[] virtualScreenTextureCoordinates = {
-        0.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 0.0f
-    };
-
-    private static final int[] virtualScreenIndices = {0,1,2,2,0,3};
-
-    private static final VertexArray m_vertexarray = new VertexArray(virtualScreenIndices, new FloatArray(2, virtalScreenVertices), new FloatArray(2, virtualScreenTextureCoordinates));
-
-    public static VertexArray getVertexArray() {return m_vertexarray;}
-    public static Shader getShader() {return m_shader;}
-
+    public int getId() {return m_frameBufferId;}
 
     public void bindTexture() {
         glBindTexture(GL_TEXTURE_2D, m_textureId);
@@ -54,8 +32,6 @@ public class FrameBuffer {
 
     public FrameBuffer() throws IOException {
         load();
-
-        m_shader = new Shader("frameBufferShader.glsl");
 
         Event.addWindowResizeCallback((widht, height) -> {
             glViewport(0, 0, widht, height);

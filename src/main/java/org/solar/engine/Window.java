@@ -5,6 +5,7 @@ import static org.lwjgl.system.MemoryUtil.*;
 
 import java.nio.IntBuffer;
 
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryStack;
 
@@ -62,11 +63,22 @@ public class Window {
         Event.createEvent("windowResize");
 
         //resize callback
-        glfwSetFramebufferSizeCallback(m_handle, (window, width, height) -> {
+        glfwSetWindowSizeCallback(m_handle, (window, width, height) -> {
             Event.activateWindowResizeEvent(width, height);
             m_width = width;
             m_height = height;
             //glViewport(0,0, width, height);
+        });
+
+        glfwSetWindowMaximizeCallback(m_handle, (window, maximised) -> {
+            IntBuffer w = BufferUtils.createIntBuffer(1);
+            IntBuffer h = BufferUtils.createIntBuffer(1);
+            glfwGetWindowSize(window, w, h);
+            int width = w.get(0);
+            int height = h.get(0);
+            Event.activateWindowResizeEvent(width, height);
+            m_width = width;
+            m_height = height;
         });
 
         //making sure the window will close upon closing
