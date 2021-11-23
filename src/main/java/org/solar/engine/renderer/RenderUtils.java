@@ -1,7 +1,6 @@
 package org.solar.engine.renderer;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Vector;
 
 import org.joml.Vector3f;
@@ -15,7 +14,7 @@ public class RenderUtils {
 
     private static VertexArray m_workspaceGridArray;
     private static int m_worspaceGridSize = 20;
-    private static float m_worspaceGridElementSize = 20;
+    //private static float m_worspaceGridElementSize = 1;
     private static Shader m_gridShader;
     private static Transform m_gridTransform = new Transform();
 

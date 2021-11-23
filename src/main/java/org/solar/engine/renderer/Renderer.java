@@ -3,16 +3,19 @@ package org.solar.engine.renderer;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
-import static org.lwjgl.glfw.GLFW.*;
-
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
 import org.solar.engine.Camera;
+import org.solar.engine.Transform;
 import org.solar.engine.Utils;
 import org.solar.engine.Window;
 
 import java.io.IOException;
 
+/**
+ * Fully static class, responsible for drawing data.
+ * @author Stanislaw Solarewicz 
+ */
 public class Renderer {
 
     private static final float[] virtalScreenVertices = {
@@ -40,6 +43,10 @@ public class Renderer {
 
     private Renderer() {}
 
+    /**
+     * Returns main frame buffer of the application to which everything is rendered.
+     * @return <code>FrameBuffer<code> to which whole frame has been rendered.
+     */
     public static FrameBuffer getFrameBuffer() {return m_frameBuffer;}
 
     public static void initialise() throws IOException {
@@ -54,14 +61,30 @@ public class Renderer {
         m_clearColor = new Vector3f(0,0,0);
     }   
 
+    /**
+     * Sets camera refrence for updating uniform purposes.
+     * @param cam Camera to be refrenced.
+     */
     public static void setCameraRefrence(Camera cam) {m_CameraRefrence = cam;}
 
+    /**
+     * Clears color buffer and depth buffer.
+     */
     public static void clear() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
     }
 
+    /**
+     * Sets clear color of the background.
+     * @param newColor Color to be assigned. 
+     */
     public static void setClearColor(Vector3f newColor) {m_clearColor = newColor;}
 
+    /**
+     * Render according Vertex Array with a given shader.
+     * @param vao Vertex array to render.
+     * @param shader Shader to use.
+     */
     public static void render(VertexArray vao, Shader shader) {
         
         shader.bind();
@@ -82,7 +105,13 @@ public class Renderer {
         shader.unbind();
     }
 
-    public static void render(VertexArray vao, Shader shader, org.solar.engine.Transform transform) {
+    /**
+     * Render according Vertex Array with a given shader and transform.
+     * @param vao Vertex array to render.
+     * @param shader Shader to use.
+     * @param transform Transform to use.
+     */
+    public static void render(VertexArray vao, Shader shader, Transform transform) {
         
         shader.bind();
 
@@ -103,6 +132,10 @@ public class Renderer {
         shader.unbind();
     }
 
+    /**
+     * Main rendering loop. Handled by the engine.
+     * @param drawScene Application drawing loop callback.
+     */
     public static void renderToScreen(Runnable drawScene) {
         
         m_multiSampleFrameBuffer.bind();

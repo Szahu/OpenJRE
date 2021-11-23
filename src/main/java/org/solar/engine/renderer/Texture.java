@@ -1,7 +1,6 @@
 package org.solar.engine.renderer;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
 import org.solar.engine.Utils;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -16,6 +15,9 @@ import javax.imageio.ImageIO;
 
 import java.awt.image.BufferedImage;
 
+/**
+ * OpenGL Texture wrapper.
+ */
 public class Texture {
     
     private static final int BYTES_PER_PIXEL = 4;//3 for RGB, 4 for RGBA

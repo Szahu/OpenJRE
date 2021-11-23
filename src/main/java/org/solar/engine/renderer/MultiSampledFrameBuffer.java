@@ -2,17 +2,18 @@ package org.solar.engine.renderer;
 
 import java.io.IOException;
 
-import static org.lwjgl.opengl.EXTFramebufferObject.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL32.*;
 
-import org.lwjgl.opengl.GL;
 import org.solar.engine.Event;
 import org.solar.engine.Utils;
 import org.solar.engine.Window;
 
+/**
+ * Wrapper for an OpenGL frame buffer with a multisampled texture.
+ * @author Stanislaw Solarewicz
+ */
 public class MultiSampledFrameBuffer extends FrameBuffer {
     
     private int m_frameBufferId = -1;

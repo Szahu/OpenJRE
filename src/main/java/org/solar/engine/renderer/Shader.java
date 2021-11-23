@@ -136,7 +136,12 @@ public class Shader {
             Utils.LOG_ERROR("Error while loading shaders from path: " + bothShadersFileName + " , " + e.toString());
         }
     }
-    //Load and create shaders from two separate files
+
+    /**
+     * Cretes and loads a shader object from two differente files.
+     * @param vertexShaderName Name of the file containing vertex shader.
+     * @param fragmentShaderName Name of the file containing fragment shader.
+     */
     public void load(String vertexShaderName, String fragmentShaderName) {
 
         try {
@@ -157,11 +162,11 @@ public class Shader {
         link();
     }
 
-    public void createVertexShader(String shaderCode) throws RuntimeException{
+    private void createVertexShader(String shaderCode) throws RuntimeException{
         vertexShaderId = createShader(shaderCode, GL_VERTEX_SHADER);
     }
 
-    public void createFragmentShader(String shaderCode) throws RuntimeException {
+    private void createFragmentShader(String shaderCode) throws RuntimeException {
         fragmentShaderId = createShader(shaderCode, GL_FRAGMENT_SHADER);
     }
 
@@ -179,7 +184,7 @@ public class Shader {
         return shaderId;
     }
 
-    public void link() throws RuntimeException {
+    private void link() throws RuntimeException {
         glLinkProgram(m_programId);
         if (glGetProgrami(m_programId, GL_LINK_STATUS) == 0) {
             throw new RuntimeException("Error linking Shader code: " + glGetProgramInfoLog(m_programId, 1024));
@@ -196,9 +201,18 @@ public class Shader {
         }
     }
 
+    /**
+     * Binds the shader.
+     */
     public void bind() { glUseProgram(m_programId); }
+    /**
+     * Unbinds the shader.
+     */
     public void unbind() { glUseProgram(0); }
 
+    /**
+     * Deletes the shader.
+     */
     public void cleanup() {
         unbind();
         if (m_programId != 0) {
@@ -206,9 +220,9 @@ public class Shader {
         }
     }
     
-    public final static String SHADERS_FOLDER_PATH = "src/main/resources/shaders/";
-    public final static int VERTEX_SHADER_IDX = 0;
-    public final static int FRAGMENT_SHADER_IDX = 1;
+    private final static String SHADERS_FOLDER_PATH = "src/main/resources/shaders/";
+    private final static int VERTEX_SHADER_IDX = 0;
+    private final static int FRAGMENT_SHADER_IDX = 1;
     private final static String VERTEX_SHADER_TOKEN = "#vertexShader";
     private final static String FRAGMENT_SHADER_TOKEN = "#fragmentShader";
 

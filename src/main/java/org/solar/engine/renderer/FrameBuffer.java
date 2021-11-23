@@ -5,31 +5,47 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
-import org.lwjgl.opengl.GL;
 import org.solar.engine.Event;
 import org.solar.engine.Utils;
 import org.solar.engine.Window;
 
 import java.io.IOException;
 
+/**
+ * An OpenGL frame buffer wrapper class. 
+ * @author Stanislaw Solarewicz 
+ */
 public class FrameBuffer {
 
     private int m_frameBufferId = -1;
     private int m_textureId = -1;
     private int m_depthStencilBufferId = -1;
 
+    /**
+     * Returns the od the frame buffer.
+     * @return Id of the frame buffer.
+     */
     public int getId() {return m_frameBufferId;}
 
+    /**
+     * Binds the texture of the frame buffer and sets active texture to 0.
+     */
     public void bindTexture() {
         glBindTexture(GL_TEXTURE_2D, m_textureId);
         glActiveTexture(GL_TEXTURE0);
     }
 
-    public void unBindTexture() {
+    /**
+     * Unbinds the texture of the frame buffer.
+     */
+    public void unbindTexture() {
         glBindTexture(GL_TEXTURE_2D, 0);
-        glActiveTexture(GL_TEXTURE0);
     }
 
+    /**
+     * Creates the frame buffer. 
+     * @throws IOException
+     */
     public FrameBuffer() throws IOException {
         load();
 
@@ -41,8 +57,8 @@ public class FrameBuffer {
     }
 
     private void load() {
-        m_frameBufferId = glGenFramebuffersEXT();
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_frameBufferId);
+        m_frameBufferId = glGenFramebuffers();
+        glBindFramebuffer(GL_FRAMEBUFFER, m_frameBufferId);
 
         m_depthStencilBufferId = glGenRenderbuffers();
         glBindRenderbuffer(GL_RENDERBUFFER, m_depthStencilBufferId);
@@ -54,23 +70,32 @@ public class FrameBuffer {
 	    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, Window.getWidth(), Window.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, (java.nio.ByteBuffer)null);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, m_textureId, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_textureId, 0);
 
-        if(glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) != GL_FRAMEBUFFER_COMPLETE_EXT){
+        if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
 			Utils.LOG_ERROR("ERROR couldn't create a frameBuffer");
 		}
 
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
+    /**
+     * Binds the frame buffer.
+     */
     public void bind() {
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_frameBufferId);
+        glBindFramebuffer(GL_FRAMEBUFFER, m_frameBufferId);
     }
 
+    /**
+     * Unbinds the frame buffer. 
+     */
     public void unbind() {
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     } 
 
+    /**
+     * Delets the frame buffer. 
+     */
     public void cleanup() {
         glDeleteBuffers(m_frameBufferId);
     }
