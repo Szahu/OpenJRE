@@ -25,13 +25,17 @@ void main()
 
 #version 330
 
-in  vec2 psTexCoords;
+in vec2 psTexCoords;
 in vec3 psNormals;
 out vec4 fragColor;
 
-uniform sampler2D u_texture_sampler;
+struct testStruct {
+    vec3 color;
+};
+
+uniform testStruct u_test;
 
 void main()
 {
-    fragColor = texture(u_texture_sampler, psTexCoords);
+    fragColor = vec4(u_test.color, 1.0);
 }

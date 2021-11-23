@@ -6,10 +6,13 @@ import java.nio.FloatBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.Key;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.solar.engine.Utils;
 
@@ -76,6 +79,14 @@ public class Shader {
         }
     }
 
+    public void setUniform(String uniformName, Vector3f value) throws RuntimeException {
+        if(m_uniforms.containsKey(uniformName)) {
+            glUniform3f(m_uniforms.get(uniformName), value.x, value.y, value.z);
+        } else {
+            Utils.LOG_ERROR("Trying to set value of the uniform that does not exist: " + uniformName);
+        }
+    }
+
      /**
      * Sets a value of a uniform in a shader.
      * @param uniformName Name of the uniform to be set.
@@ -91,31 +102,77 @@ public class Shader {
 
     private void generateUniforms(String shaderCode) throws RuntimeException {
 
+        class StruckData {
+            String name;
+            List<String> fieldNames;
+            List<String> fieldTypes;
+        }
+
+        List<StruckData> structData = new ArrayList<>();
+
+        for(int index = shaderCode.indexOf("struct");index >= 0; index = shaderCode.indexOf("struct", index + 1)) {
+            
+            int nameBeginIndex = index + 7;
+            int nameEndIndex = nameBeginIndex;
+
+            while(shaderCode.charAt(nameEndIndex) != '{' && nameEndIndex - index < 50) {
+                if(nameEndIndex - index == 49) {continue;}
+                nameEndIndex++;
+            }
+            nameEndIndex--;
+
+            //if(shaderCode.charAt(nameEndIndex + 3) != '{' || shaderCode.charAt(nameEndIndex + 2) != '{' || shaderCode.charAt(nameEndIndex + 1) != '{') {continue;}
+
+            String structName = shaderCode.substring(nameBeginIndex, nameEndIndex);
+            
+            //String typeName = shaderCode.substring(typeStartIndex + 1, nameBeginIndex - 1);
+        }
+
         for(int index = shaderCode.indexOf("uniform");index >= 0; index = shaderCode.indexOf("uniform", index + 1)) {
 
             int nameBeginIndex = index;
             int numOfSpaces = 0;
+            int typeStartIndex = -1;
+
             while (numOfSpaces != 2) {
                 if(shaderCode.charAt(nameBeginIndex) == ' ') {
                     numOfSpaces++;
+                    if(numOfSpaces == 1) {
+                        typeStartIndex = nameBeginIndex;
+                    }
                 }
                 nameBeginIndex++;
             }
+
             int nameEndIndex = nameBeginIndex;
             while(shaderCode.charAt(nameEndIndex) != ';') {
                 nameEndIndex++;
             }
 
             String uniformName = shaderCode.substring(nameBeginIndex, nameEndIndex);
+            String typeName = shaderCode.substring(typeStartIndex + 1, nameBeginIndex - 1);
 
-            int uniformLocation = glGetUniformLocation(m_programId, uniformName);
+            int uniformLocation = -1;
+            if(typeName.equals("testStruct")) {
+                uniformLocation = glGetUniformLocation(m_programId, "u_test.color");
+                if (uniformLocation < 0) {
+                    throw new RuntimeException("Could not find uniform (or it is not used): " + uniformName);
+                }
+                m_uniforms.put("u_struct.color", uniformLocation);
 
-            if (uniformLocation < 0) {
-                throw new RuntimeException("Could not find uniform (or it is not used): " + uniformName);
+            } else {
+                uniformLocation = glGetUniformLocation(m_programId, uniformName);
+                if (uniformLocation < 0) {
+                    throw new RuntimeException("Could not find uniform (or it is not used): " + uniformName);
+                }
+                m_uniforms.put(uniformName, uniformLocation);
             }
 
-            m_uniforms.put(uniformName, uniformLocation);
+     
+
         }
+
+        //m_uniforms.keySet().forEach((key) -> {Utils.LOG(key);});
     }
 
     /**
