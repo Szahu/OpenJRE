@@ -69,4 +69,13 @@ public class testApp extends ApplicationTemplate {
 
 		m_testShader.cleanup();
 	}
+
+	public void run() throws IOException {
+		super.run();
+	}
+
+	public static void main(String[] args) throws IOException {
+		ApplicationTemplate app = new testApp();
+		app.run();
+	}
 }

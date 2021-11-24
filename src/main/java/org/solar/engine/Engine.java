@@ -1,5 +1,6 @@
 package org.solar.engine;
 
+import org.lwjgl.Version;
 import org.lwjgl.glfw.*;
 import org.solar.engine.renderer.RenderUtils;
 import org.solar.engine.renderer.Renderer;
@@ -10,7 +11,6 @@ import java.util.Objects;
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.solar.engine.Input.*;
-import static org.lwjgl.opengl.GL20.*;
 
 public class Engine {
 
@@ -19,6 +19,8 @@ public class Engine {
 
 
     public void initialize() throws IOException {
+
+		Utils.LOG_SUCCESS("Hello LWJGL " + Version.getVersion() + "!");
 
 		//Initialise Event static class
 		Event.initialise();
