@@ -49,8 +49,7 @@ public class testApp extends ApplicationTemplate {
 		RenderUtils.renderGrid(m_camera);
 
 		m_testShader.bind();
-		//m_testShader.setUniform("u_texture_sampler", 0);
-		m_testShader.setUniform("u_struct.color", new Vector3f(0,0,1));
+		m_testShader.setUniform("u_texture_sampler", 0);
 
 		m_texture.bind();
 
