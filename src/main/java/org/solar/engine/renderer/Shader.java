@@ -6,10 +6,13 @@ import java.nio.FloatBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.Key;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.solar.engine.Utils;
 
@@ -76,6 +79,14 @@ public class Shader {
         }
     }
 
+    public void setUniform(String uniformName, Vector3f value) throws RuntimeException {
+        if(m_uniforms.containsKey(uniformName)) {
+            glUniform3f(m_uniforms.get(uniformName), value.x, value.y, value.z);
+        } else {
+            Utils.LOG_ERROR("Trying to set value of the uniform that does not exist: " + uniformName);
+        }
+    }
+
      /**
      * Sets a value of a uniform in a shader.
      * @param uniformName Name of the uniform to be set.
@@ -91,31 +102,113 @@ public class Shader {
 
     private void generateUniforms(String shaderCode) throws RuntimeException {
 
+        class StructData {
+            public StructData(String name,  List<String> fieldNames) {
+                this.name = name;
+                this.fieldNames = fieldNames;
+            }
+            String name;
+            List<String> fieldNames;
+        }
+
+        List<StructData> structs = new ArrayList<>();
+
+        final int searchLimit = 50;
+
+        //for each struct in the shader
+        for(int index = shaderCode.indexOf("struct ");index >= 0; index = shaderCode.indexOf("struct ", index + 1)) {
+            
+            int nameBeginIndex = index + 7;
+            int nameEndIndex = nameBeginIndex;
+
+            while(shaderCode.charAt(nameEndIndex) != '{' && nameEndIndex - index < searchLimit) {
+                if(nameEndIndex - index == searchLimit - 1) {continue;}
+                nameEndIndex++;
+            }
+            if(shaderCode.charAt(nameEndIndex - 1) == ' ') {nameEndIndex--;}
+
+            int structContentBeginIndex = nameEndIndex + 1;
+            int structContentEndIndex = structContentBeginIndex;
+
+            while(shaderCode.charAt(structContentEndIndex - 1) != '}') {structContentEndIndex++;}
+
+            String structName = shaderCode.substring(nameBeginIndex, nameEndIndex);
+            String structContent = shaderCode.substring(structContentBeginIndex, structContentEndIndex);
+            List<String> structFields = new ArrayList<>();
+
+
+            for(int i = structContent.indexOf(";");i >= 0; i = structContent.indexOf(";", i + 1)) {
+                int fieldNameBegin = i;
+
+                while(structContent.charAt(fieldNameBegin - 1) != ' ') {fieldNameBegin--;}
+
+                String fieldName = structContent.substring(fieldNameBegin, i);
+                structFields.add(fieldName);
+            }
+            
+            structs.add(new StructData(structName, structFields));
+
+        }
+
         for(int index = shaderCode.indexOf("uniform");index >= 0; index = shaderCode.indexOf("uniform", index + 1)) {
 
             int nameBeginIndex = index;
             int numOfSpaces = 0;
+            int typeStartIndex = -1;
+
             while (numOfSpaces != 2) {
                 if(shaderCode.charAt(nameBeginIndex) == ' ') {
                     numOfSpaces++;
+                    if(numOfSpaces == 1) {
+                        typeStartIndex = nameBeginIndex;
+                    }
                 }
                 nameBeginIndex++;
             }
+
             int nameEndIndex = nameBeginIndex;
             while(shaderCode.charAt(nameEndIndex) != ';') {
                 nameEndIndex++;
             }
 
             String uniformName = shaderCode.substring(nameBeginIndex, nameEndIndex);
+            String typeName = shaderCode.substring(typeStartIndex + 1, nameBeginIndex - 1);
 
-            int uniformLocation = glGetUniformLocation(m_programId, uniformName);
+            int uniformLocation = -1;
 
-            if (uniformLocation < 0) {
-                throw new RuntimeException("Could not find uniform (or it is not used): " + uniformName);
+            boolean isStruct = false;
+            StructData uniformStructData = null;
+
+            for(StructData data : structs) {
+                if(typeName.equals(data.name)) {
+                    isStruct = true;
+                    uniformStructData = data;
+                }
             }
 
-            m_uniforms.put(uniformName, uniformLocation);
+            if(isStruct) {
+
+                for(String fieldName : uniformStructData.fieldNames) {
+                    uniformLocation = glGetUniformLocation(m_programId, uniformName + "." + fieldName);
+                    if (uniformLocation < 0) {
+                        throw new RuntimeException("Could not find uniform (or it is not used): " + uniformName);
+                    }
+                    m_uniforms.put("u_struct.color", uniformLocation);
+                }    
+
+            } else {
+                uniformLocation = glGetUniformLocation(m_programId, uniformName);
+                if (uniformLocation < 0) {
+                    throw new RuntimeException("Could not find uniform (or it is not used): " + uniformName);
+                }
+                m_uniforms.put(uniformName, uniformLocation);
+            }
+
+     
+
         }
+
+        //m_uniforms.keySet().forEach((key) -> {Utils.LOG(key);});
     }
 
     /**

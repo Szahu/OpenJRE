@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.joml.Vector2f;
 import org.joml.Vector2i;
 
 /**
@@ -18,11 +19,11 @@ public class Input {
 
     private static long m_windowHandle;
 
-    private static int m_xpos = 0;
-    private static int m_ypos = 0;
+    private static float m_xpos = 0;
+    private static float m_ypos = 0;
 
-    private static Vector2i m_lastMousePos;
-    private static Vector2i m_deltaMousePos;
+    private static Vector2f m_lastMousePos;
+    private static Vector2f m_deltaMousePos;
 
     private static float m_scrollInput = 0;
 
@@ -30,7 +31,7 @@ public class Input {
      * Returns change in mouse position since last frame. 
      * @return 
      */
-    public static Vector2i getMousePosDelta() {
+    public static Vector2f getMousePosDelta() {
         return m_deltaMousePos;
     }
 
@@ -46,12 +47,12 @@ public class Input {
      */
     public static void initialise(long windowHandle){
         m_windowHandle = windowHandle;
-        m_lastMousePos = new Vector2i(0,0);
-        m_deltaMousePos = new Vector2i(0,0);
+        m_lastMousePos = new Vector2f(0,0);
+        m_deltaMousePos = new Vector2f(0,0);
 
         glfwSetCursorPosCallback(m_windowHandle, (window, xpos, ypos) -> {
-            m_xpos = (int)xpos;
-            m_ypos = (int)ypos;
+            m_xpos = (float)xpos;
+            m_ypos = (float)ypos;
         });
 
         glfwSetScrollCallback(m_windowHandle, (window, xoffset, yoffset) -> {
@@ -144,12 +145,12 @@ public class Input {
      * Returns current mouse position in pixels.
      * @return
      */
-    public static Vector2i getMousePosition() {
-        return new Vector2i(m_xpos, m_ypos);
+    public static Vector2f getMousePosition() {
+        return new Vector2f(m_xpos, m_ypos);
     }
 
     public static void update() {
-        Vector2i mousePos = getMousePosition();
+        Vector2f mousePos = getMousePosition();
         m_deltaMousePos = m_lastMousePos.sub(mousePos);
         m_deltaMousePos.mul(-1, 1);
         m_lastMousePos = mousePos; 
