@@ -65,7 +65,7 @@ public class Renderer {
      * Sets camera refrence for updating uniform purposes.
      * @param cam Camera to be refrenced.
      */
-    public static void setCameraRefrence(Camera cam) {m_CameraRefrence = cam;}
+    public static void setActiveCamera(Camera cam) {m_CameraRefrence = cam;}
 
     /**
      * Clears color buffer and depth buffer.

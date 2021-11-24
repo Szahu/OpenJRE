@@ -19,7 +19,7 @@ import java.awt.image.BufferedImage;
  * OpenGL Texture wrapper.
  */
 public class Texture {
-    
+
     private static final int BYTES_PER_PIXEL = 4;//3 for RGB, 4 for RGBA
     private int m_TextureId;
 

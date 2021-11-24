@@ -22,7 +22,7 @@ public class testApp extends ApplicationTemplate {
     public void initialise() throws IOException {
 
 		m_camera = new Camera(Window.getWidth(), Window.getHeight(), new DebugCameraController());
-        Renderer.setCameraRefrence(m_camera);
+        Renderer.setActiveCamera(m_camera);
 
 		m_testShader = new Shader("testTextureShader.glsl");
 		m_testShader.bind();
