@@ -50,7 +50,7 @@ public class testApp extends ApplicationTemplate {
 
 		m_testShader.bind();
 		//m_testShader.setUniform("u_texture_sampler", 0);
-		m_testShader.setUniform("u_struct.color", new Vector3f(1,0,0));
+		m_testShader.setUniform("u_struct.color", new Vector3f(0,0,1));
 
 		m_texture.bind();
 

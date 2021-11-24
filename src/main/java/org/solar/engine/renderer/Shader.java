@@ -102,30 +102,52 @@ public class Shader {
 
     private void generateUniforms(String shaderCode) throws RuntimeException {
 
-        class StruckData {
+        class StructData {
+            public StructData(String name,  List<String> fieldNames) {
+                this.name = name;
+                this.fieldNames = fieldNames;
+            }
             String name;
             List<String> fieldNames;
-            List<String> fieldTypes;
         }
 
-        List<StruckData> structData = new ArrayList<>();
+        List<StructData> structs = new ArrayList<>();
 
-        for(int index = shaderCode.indexOf("struct");index >= 0; index = shaderCode.indexOf("struct", index + 1)) {
+        final int searchLimit = 50;
+
+        //for each struct in the shader
+        for(int index = shaderCode.indexOf("struct ");index >= 0; index = shaderCode.indexOf("struct ", index + 1)) {
             
             int nameBeginIndex = index + 7;
             int nameEndIndex = nameBeginIndex;
 
-            while(shaderCode.charAt(nameEndIndex) != '{' && nameEndIndex - index < 50) {
-                if(nameEndIndex - index == 49) {continue;}
+            while(shaderCode.charAt(nameEndIndex) != '{' && nameEndIndex - index < searchLimit) {
+                if(nameEndIndex - index == searchLimit - 1) {continue;}
                 nameEndIndex++;
             }
-            nameEndIndex--;
+            if(shaderCode.charAt(nameEndIndex - 1) == ' ') {nameEndIndex--;}
 
-            //if(shaderCode.charAt(nameEndIndex + 3) != '{' || shaderCode.charAt(nameEndIndex + 2) != '{' || shaderCode.charAt(nameEndIndex + 1) != '{') {continue;}
+            int structContentBeginIndex = nameEndIndex + 1;
+            int structContentEndIndex = structContentBeginIndex;
+
+            while(shaderCode.charAt(structContentEndIndex - 1) != '}') {structContentEndIndex++;}
 
             String structName = shaderCode.substring(nameBeginIndex, nameEndIndex);
+            String structContent = shaderCode.substring(structContentBeginIndex, structContentEndIndex);
+            List<String> structFields = new ArrayList<>();
+
+
+            for(int i = structContent.indexOf(";");i >= 0; i = structContent.indexOf(";", i + 1)) {
+                int fieldNameBegin = i;
+
+                while(structContent.charAt(fieldNameBegin - 1) != ' ') {fieldNameBegin--;}
+
+                String fieldName = structContent.substring(fieldNameBegin, i);
+                structFields.add(fieldName);
+            }
             
-            //String typeName = shaderCode.substring(typeStartIndex + 1, nameBeginIndex - 1);
+            structs.add(new StructData(structName, structFields));
+
         }
 
         for(int index = shaderCode.indexOf("uniform");index >= 0; index = shaderCode.indexOf("uniform", index + 1)) {
@@ -153,12 +175,26 @@ public class Shader {
             String typeName = shaderCode.substring(typeStartIndex + 1, nameBeginIndex - 1);
 
             int uniformLocation = -1;
-            if(typeName.equals("testStruct")) {
-                uniformLocation = glGetUniformLocation(m_programId, "u_test.color");
-                if (uniformLocation < 0) {
-                    throw new RuntimeException("Could not find uniform (or it is not used): " + uniformName);
+
+            boolean isStruct = false;
+            StructData uniformStructData = null;
+
+            for(StructData data : structs) {
+                if(typeName.equals(data.name)) {
+                    isStruct = true;
+                    uniformStructData = data;
                 }
-                m_uniforms.put("u_struct.color", uniformLocation);
+            }
+
+            if(isStruct) {
+
+                for(String fieldName : uniformStructData.fieldNames) {
+                    uniformLocation = glGetUniformLocation(m_programId, uniformName + "." + fieldName);
+                    if (uniformLocation < 0) {
+                        throw new RuntimeException("Could not find uniform (or it is not used): " + uniformName);
+                    }
+                    m_uniforms.put("u_struct.color", uniformLocation);
+                }    
 
             } else {
                 uniformLocation = glGetUniformLocation(m_programId, uniformName);
