@@ -10,7 +10,6 @@ import java.util.Objects;
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.solar.engine.Input.*;
-import static org.lwjgl.opengl.GL20.*;
 
 public class Engine {
 
