@@ -33,6 +33,8 @@ public class Camera {
      */
     public Matrix4f getViewProjectionMatrix() {return m_projectionMatrix.mul(m_transformMatrix);}
 
+    public CameraControllerTemplate getCameraController() {return m_CameraController;}
+
     /**
      * Set's value of camera's view matrix.
      * @param newMatrix New view matrix;

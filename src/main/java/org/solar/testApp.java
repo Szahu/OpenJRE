@@ -17,6 +17,7 @@ public class testApp extends ApplicationTemplate {
     private Transform m_testTransform;
     private VertexArray m_testVertexArray;
 	private Texture m_texture;
+	private Transform m_lightTransform;
 
     @Override
     public void initialise() throws IOException {
@@ -24,7 +25,7 @@ public class testApp extends ApplicationTemplate {
 		m_camera = new Camera(Window.getWidth(), Window.getHeight(), new DebugCameraController());
         Renderer.setActiveCamera(m_camera);
 
-		m_testShader = new Shader("testTextureShader.glsl");
+		m_testShader = new Shader("lightShader.glsl");
 		m_testShader.bind();
 		m_testShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
 		m_testShader.unbind();
@@ -37,11 +38,13 @@ public class testApp extends ApplicationTemplate {
 			m_testShader.unbind();
 		});
 
-		m_testVertexArray = ModelLoader.loadModel("assets/barn.obj");
+		m_testVertexArray = ModelLoader.loadModel("assets/cube.obj");
 		
 		m_texture = new Texture("assets/block.png", true);
 
 		Renderer.setClearColor(new Vector3f(77f/255f, 200f/255f, 233f/255f));
+		m_lightTransform = new Transform();
+		m_lightTransform.setPosition(new Vector3f(0,3,0));
 	}
 
 	@Override
@@ -50,6 +53,9 @@ public class testApp extends ApplicationTemplate {
 
 		m_testShader.bind();
 		m_testShader.setUniform("u_texture_sampler", 0);
+		m_testShader.setUniform("u_cameraPosition", m_camera.getCameraController().getTransform().getPosition());
+		m_testShader.setUniform("u_lightPosition", m_lightTransform.getPosition());
+
 
 		m_texture.bind();
 
@@ -60,7 +66,7 @@ public class testApp extends ApplicationTemplate {
         m_camera.update();
 			
         ImGui.text("FPS: " +  (int)(10f/Utils.getDeltaTime()));
-        m_testTransform.debugGui("test Transform");
+		m_lightTransform.debugGui("light");
     }
 
     @Override

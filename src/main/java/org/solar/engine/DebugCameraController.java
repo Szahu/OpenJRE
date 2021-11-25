@@ -33,6 +33,12 @@ public class DebugCameraController extends CameraControllerTemplate {
     }
 
     @Override
+    public Transform getTransform() {
+        return m_Transform;
+    }
+
+
+    @Override
     public void setTransformMatrixRefrence(Consumer<Matrix4f> callback) {
         m_setTransformMatrixCallback = callback;
     }   
