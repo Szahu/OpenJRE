@@ -31,6 +31,11 @@
         <scope>import</scope>
         <type>pom</type>
       </dependency>
+      <dependency>
+        <groupId>org.lwjgl</groupId>
+        <artifactId>lwjgl-assimp</artifactId>
+        <version>${lwjgl.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -43,7 +48,14 @@
           </os>
       </activation>
     
-      <dependencies>
+  <dependencies>
+      <dependency>
+          <groupId>org.lwjgl</groupId>
+          <artifactId>lwjgl-assimp</artifactId>
+          <version>${lwjgl.version}</version>
+          <classifier>natives-windows</classifier>
+          <scope>runtime</scope>
+      </dependency>
         <dependency>
       <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl</artifactId>
@@ -91,6 +103,13 @@
       </activation>
     
       <dependencies>
+      <dependency>
+          <groupId>org.lwjgl</groupId>
+          <artifactId>lwjgl-assimp</artifactId>
+          <version>${lwjgl.version}</version>
+          <classifier>natives-linux</classifier>
+          <scope>runtime</scope>
+      </dependency>
         <dependency>
       <groupId>org.lwjgl</groupId>
       <artifactId>lwjgl</artifactId>
