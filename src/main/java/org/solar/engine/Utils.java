@@ -3,6 +3,7 @@ package org.solar.engine;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 import java.util.Vector;
 
 import org.joml.Vector3f;
@@ -33,6 +34,24 @@ public class Utils {
 
     private static long m_startDeltaTime = 0;
     private static float m_deltaTime  = 0;
+
+    public static float[] floatListToArray(List<Float> list) {
+        int i = 0;
+        float[] res = new float[list.size()];
+        for (Float f : list) {
+            res[i++] = (f != null ? f : Float.NaN); // Or whatever default you want.
+        }
+        return res;
+    }
+
+    public static int[] intListToArray(List<Integer> list) {
+        int i = 0;
+        int[] res = new int[list.size()];
+        for (Integer f : list) {
+            res[i++] = (f != null ? f : 0); // Or whatever default you want.
+        }
+        return res;
+    }
 
     /**
      * Update calculations of the delta time.

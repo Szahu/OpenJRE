@@ -1,12 +1,10 @@
 package org.solar.engine;
 
-import java.io.IOException;
-
 public abstract class ApplicationTemplate {
-    public abstract void initialise() throws IOException;
+    public abstract void initialise() throws Exception;
     public abstract void update();
     public abstract void terminate();
-    public void run() throws IOException {
+    public void run() throws Exception {
 		Engine m_engine = new Engine();
 		m_engine.initialize();
 		this.initialise();

@@ -20,7 +20,7 @@ public class testApp extends ApplicationTemplate {
 	private Transform m_lightTransform;
 
     @Override
-    public void initialise() throws IOException {
+    public void initialise() throws IOException, Exception {
 
 		m_camera = new Camera(Window.getWidth(), Window.getHeight(), new DebugCameraController());
         Renderer.setActiveCamera(m_camera);
@@ -30,17 +30,19 @@ public class testApp extends ApplicationTemplate {
 		m_testShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
 		m_testShader.unbind();
 
-		m_testTransform	= new Transform();
-
 		Event.addWindowResizeCallback((width, height)-> {
 			m_testShader.bind();
 			m_testShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
 			m_testShader.unbind();
 		});
 
-		m_testVertexArray = ModelLoader.loadModel("assets/cube.obj");
 		
-		m_texture = new Texture("assets/block.png", true);
+		m_testTransform	= new Transform();
+		m_testTransform.setScale(new Vector3f(0.1f, 0.1f, 0.1f));
+
+		m_testVertexArray = ModelLoader.loadModel("assets/rock.fbx");
+		
+		m_texture = new Texture("assets/rock.png", false);
 
 		Renderer.setClearColor(new Vector3f(77f/255f, 200f/255f, 233f/255f));
 		m_lightTransform = new Transform();
@@ -76,11 +78,11 @@ public class testApp extends ApplicationTemplate {
 		m_testShader.cleanup();
 	}
 
-	public void run() throws IOException {
+	public void run() throws Exception {
 		super.run();
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 		ApplicationTemplate app = new testApp();
 		app.run();
 	}

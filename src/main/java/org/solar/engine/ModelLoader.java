@@ -1,113 +1,92 @@
 package org.solar.engine;
 
-import java.util.Arrays;
-import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
+import org.lwjgl.PointerBuffer;
+import org.lwjgl.assimp.AIFace;
+import org.lwjgl.assimp.AIMesh;
+import org.lwjgl.assimp.AIScene;
+import org.lwjgl.assimp.AIVector3D;
+import static org.lwjgl.assimp.Assimp.*;
 import org.solar.engine.renderer.FloatArray;
 import org.solar.engine.renderer.VertexArray;
-import org.solar.engine.renderer.VertexData;
 
-/**
- * Handles loading simple .obj models.
- * Important! Tick Triangulate Faces when exporting
- */
+
 public class ModelLoader {
 
-    /**
-     * Loads and .obj model from a given path.
-     * @param objFileName Path to the file.
-     * @return Returns a VertexArray class with vertices, texture coordinates and normals of the model.
-     */
-    public static VertexArray loadModel(String path) {
-		String inputObjContent = Utils.getFileAsString(path);
-		float[] vertices = getVertices( inputObjContent ); // non-indexed!
-		int[] verticesIndices = getIndices ( inputObjContent, VERTICES_IDX);
-		float[] texels = getTexels( inputObjContent ); // non-indexed!
-		int[] texelsIndices	= getIndices( inputObjContent, TEXELS_IDX );
-        float[] normals = getNormals( inputObjContent );
-        int[] normalsIndices = getIndices( inputObjContent, NORMALS_IDX);
-
-		int[] plainIndices = new int[verticesIndices.length];
-		for(int i = 0; i < verticesIndices.length; i++) plainIndices[i] = i;
-		VertexArray result = new VertexArray(plainIndices, new VertexData(new FloatArray(3, vertices, verticesIndices),  new FloatArray(2, texels, texelsIndices), new FloatArray(3, normals, normalsIndices)));
-        return result;
-    }
-
-    private final static String VERTICES_PATTERN = "(v (-?[0-9]+\\.[0-9]+) (-?[0-9]+\\.[0-9]+) (-?[0-9]+\\.[0-9]+)\n)+";
-    private final static String INDICES_PATTERN = "(f [0-9]+/([0-9]+)/[0-9]+ ([0-9]+)/[0-9]+/[0-9]+ ([0-9]+)/[0-9]+/[0-9]+\n)+";
-    private final static String TEXELS_PATTERN = "(vt (-?[0-9]+\\.[0-9]+) (-?[0-9]+\\.[0-9]+)\n)+";
-    private final static String NORMALS_PATTERN = "(vn (-?[0-9]+\\.[0-9]+) (-?[0-9]+\\.[0-9]+) (-?[0-9]+\\.[0-9]+)\n)+";
-    private final static char VERTICES_IDX = 0;
-    private final static char TEXELS_IDX = 1;
-    private final static char NORMALS_IDX = 2;
-
-    private static float[] getVertices(String fileContent){
-        Vector<Float> vertices = new Vector<>();
-        Pattern pattern = Pattern.compile(VERTICES_PATTERN);
-        Matcher matcher = pattern.matcher(fileContent);
-        if(matcher.find()){
-            Arrays.stream(matcher.group().split("\n")).forEach( verticeAsString ->
-                Arrays.stream(verticeAsString.replaceAll("^v ", "").split(" ")).forEach(verticePart ->
-                    vertices.add(Float.parseFloat(verticePart))));
-            int i = 0;
-            float[] verticesArray = new float[vertices.size()];
-            for(Float verticePart: vertices) verticesArray[i++] = ( verticePart != null? verticePart: Float.NaN);
-            return verticesArray;
+    //TODO add size normalization, add materials
+    public static VertexArray loadModel(String path) throws Exception {
+        AIScene aiScene = aiImportFile(path, aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices | aiProcess_Triangulate
+        | aiProcess_FixInfacingNormals | aiProcess_PreTransformVertices);
+        if (aiScene == null) {
+            throw new Exception("Error loading model");
         }
-        throw new RuntimeException("No vertices found at input file!");
+
+        PointerBuffer aiMeshes = aiScene.mMeshes();
+        AIMesh aiMesh = AIMesh.create(aiMeshes.get(0));
+        VertexArray mesh = processMesh(aiMesh);
+        return mesh;
     }
 
-    private static float[] getNormals(String fileContent){
-        Vector<Float> normals = new Vector<>();
-        Pattern pattern = Pattern.compile(NORMALS_PATTERN);
-        Matcher matcher = pattern.matcher(fileContent);
-        if(matcher.find()){
-            Arrays.stream(matcher.group().split("\n")).forEach( verticeAsString ->
-                Arrays.stream(verticeAsString.replaceAll("^vn ", "").split(" ")).forEach(verticePart ->
-                    normals.add(Float.parseFloat(verticePart))));
-            int i = 0;
-            float[] normalsArray = new float[normals.size()];
-            for(Float normal: normals) normalsArray[i++] = ( normal != null? normal: Float.NaN);
-            return normalsArray;
+    private static VertexArray processMesh(AIMesh aiMesh) {
+        List<Float> vertices = new ArrayList<>();
+        List<Float> textures = new ArrayList<>();
+        List<Float> normals = new ArrayList<>();
+        List<Integer> indices = new ArrayList<>();
+    
+        processVertices(aiMesh, vertices);
+        processNormals(aiMesh, normals);
+        processTextCoords(aiMesh, textures);
+        processIndices(aiMesh, indices);
+    
+        return new VertexArray(
+            Utils.intListToArray(indices), 
+            new FloatArray(3, Utils.floatListToArray(vertices)), 
+            new FloatArray(2, Utils.floatListToArray(textures)), 
+            new FloatArray(3, Utils.floatListToArray(normals)));
+    }
+
+    private static void processVertices(AIMesh aiMesh, List<Float> vertices) {
+        AIVector3D.Buffer aiVertices = aiMesh.mVertices();
+        while (aiVertices.remaining() > 0) {
+            AIVector3D aiVertex = aiVertices.get();
+            vertices.add(aiVertex.x());
+            vertices.add(aiVertex.y());
+            vertices.add(aiVertex.z());
         }
-        throw new RuntimeException("No normals found at input file!");
     }
 
-    private static float[] getTexels(String fileContent ){
-        Vector<Float> texels = new Vector<>();
-        Pattern pattern = Pattern.compile(TEXELS_PATTERN);
-        Matcher matcher = pattern.matcher(fileContent);
-        if(matcher.find()){
-            Arrays.stream(matcher.group().split("\n")).forEach( texelsAsString ->
-                    Arrays.stream( texelsAsString.replaceAll("^vt ", "").split(" ")).forEach(texelPart ->
-                            texels.add(Float.parseFloat( texelPart ))
-                    ));
-            int i = 0;
-            float[] texelArray = new float[texels.size()];
-            for(Float texel: texels) texelArray[i++] = ( texel != null? texel: Float.NaN);
-            return texelArray;
+    private static void processNormals(AIMesh aiMesh, List<Float> normals) {
+        AIVector3D.Buffer aiNormals = aiMesh.mNormals();
+        while (aiNormals != null && aiNormals.remaining() > 0) {
+            AIVector3D aiNormal = aiNormals.get();
+            normals.add(aiNormal.x());
+            normals.add(aiNormal.y());
+            normals.add(aiNormal.z());
         }
-        throw new RuntimeException("No texels found at input file!");
     }
 
-    private static int[] getIndices(String fileContent, int selectorIdx ){
-        Vector<Integer> indices = new Vector<>();
-        Pattern pattern = Pattern.compile(INDICES_PATTERN);
-        Matcher matcher = pattern.matcher(fileContent);
-        if(matcher.find()){
-            Arrays.stream(matcher.group().split("\n")).forEach( indiceAsString ->
-                Arrays.stream( indiceAsString.replaceAll("^f ", "").split(" ")).forEach(indicePart ->
-                     indices.add(Integer.parseInt( indicePart.split("/")[selectorIdx] ))
-            ));
-            int i = 0;
-            int[] indicesArray = new int[indices.size()];
-            for(Integer index: indices) indicesArray[i++] = ( index != null? index - 1 : 0);
-            return indicesArray;
+    private static void processTextCoords(AIMesh aiMesh, List<Float> textures) {
+        AIVector3D.Buffer textCoords = aiMesh.mTextureCoords(0);
+        int numTextCoords = textCoords != null ? textCoords.remaining() : 0;
+        for (int i = 0; i < numTextCoords; i++) {
+            AIVector3D textCoord = textCoords.get();
+            textures.add(textCoord.x());
+            textures.add(1 - textCoord.y());
         }
-        throw new RuntimeException("No indices found at input file!");
     }
 
+    private static void processIndices(AIMesh aiMesh, List<Integer> indices) {
+        int numFaces = aiMesh.mNumFaces();
+        AIFace.Buffer aiFaces = aiMesh.mFaces();
+        for (int i = 0; i < numFaces; i++) {
+            AIFace aiFace = aiFaces.get(i);
+            IntBuffer buffer = aiFace.mIndices();
+            while (buffer.remaining() > 0) {
+                indices.add(buffer.get());
+            }
+        }
+    }
 
 }
