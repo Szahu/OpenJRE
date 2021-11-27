@@ -28,9 +28,14 @@ You will need:
 
 Once you clone the repository and use `mvn package` once, use `mvn exec:java` each time You want to compile and run the application. Of course You can use other tools, possibly integrated into Yours IDE of choice. 
 
+## Screenshots 
+
+# Lighting demo
+![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
+
 ## Documentation 
 
-Documentation available [here](https://szahu.github.io/OpenJRE/index.html).
+Documentation available [here](https://giphy.com/gifs/3KmYu1JNiIO4UBGzaE).
 
 ## Learning Sources 
 
