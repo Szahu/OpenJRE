@@ -5,7 +5,6 @@ import org.lwjgl.glfw.*;
 import org.solar.engine.renderer.RenderUtils;
 import org.solar.engine.renderer.Renderer;
 
-import java.io.IOException;
 import java.util.Objects;
 
 import static org.lwjgl.glfw.Callbacks.*;
@@ -18,7 +17,7 @@ public class Engine {
 	private ImGuiLayer m_guiLayer;
 
 
-    public void initialize() throws IOException {
+    public void initialize() throws Exception {
 
 		Utils.LOG_SUCCESS("Hello LWJGL " + Version.getVersion() + "!");
 

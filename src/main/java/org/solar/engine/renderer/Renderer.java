@@ -49,7 +49,7 @@ public class Renderer {
      */
     public static FrameBuffer getFrameBuffer() {return m_frameBuffer;}
 
-    public static void initialise() throws IOException {
+    public static void initialise() throws Exception {
         GL.createCapabilities();
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS); 

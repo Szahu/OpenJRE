@@ -46,7 +46,7 @@ public class testApp extends ApplicationTemplate {
 		m_texture = new Texture("assets/rock.png", false);
 		m_normal_texture = new Texture("assets/rock_normal.png", false);
 
-		Renderer.setClearColor(new Vector3f(77f/255f, 200f/255f, 233f/255f));
+		Renderer.setClearColor(new Vector3f(41f/255f, 41f/255f, 41f/255f));
 		m_lightTransform = new Transform();
 		m_lightTransform.setPosition(new Vector3f(0,3,0));
 	}

@@ -18,7 +18,7 @@ public class ModelLoader {
     //TODO add size normalization, add materials
     public static VertexArray loadModel(String path) throws Exception {
         AIScene aiScene = aiImportFile(path, aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices | aiProcess_Triangulate
-        | aiProcess_FixInfacingNormals | aiProcess_PreTransformVertices);
+        | aiProcess_FixInfacingNormals | aiProcess_PreTransformVertices  | aiProcess_CalcTangentSpace);
         if (aiScene == null) {
             throw new Exception("Error loading model");
         }
@@ -33,18 +33,21 @@ public class ModelLoader {
         List<Float> vertices = new ArrayList<>();
         List<Float> textures = new ArrayList<>();
         List<Float> normals = new ArrayList<>();
+        List<Float> tangents = new ArrayList<>();
         List<Integer> indices = new ArrayList<>();
     
         processVertices(aiMesh, vertices);
         processNormals(aiMesh, normals);
         processTextCoords(aiMesh, textures);
+        processTangents(aiMesh, tangents);
         processIndices(aiMesh, indices);
     
         return new VertexArray(
             Utils.intListToArray(indices), 
             new FloatArray(3, Utils.floatListToArray(vertices)), 
             new FloatArray(2, Utils.floatListToArray(textures)), 
-            new FloatArray(3, Utils.floatListToArray(normals)));
+            new FloatArray(3, Utils.floatListToArray(normals)),
+            new FloatArray(3, Utils.floatListToArray(tangents)));
     }
 
     private static void processVertices(AIMesh aiMesh, List<Float> vertices) {
@@ -74,6 +77,16 @@ public class ModelLoader {
             AIVector3D textCoord = textCoords.get();
             textures.add(textCoord.x());
             textures.add(1 - textCoord.y());
+        }
+    }
+
+    private static void processTangents(AIMesh aiMesh, List<Float> tangents) {
+        AIVector3D.Buffer aiTangents = aiMesh.mTangents();
+        while (aiTangents != null && aiTangents.remaining() > 0) {
+            AIVector3D aiTangent = aiTangents.get();
+            tangents.add(aiTangent.x());
+            tangents.add(aiTangent.y());
+            tangents.add(aiTangent.z());
         }
     }
 

@@ -37,7 +37,7 @@ public class Shader {
      * Creates a shader program from a file which stores two shader, each one starting with a proper token (#vertexShader, #fragmentShader).
      * @param bothShadersFileName Name of the file (including suffix) in which both of our shaders are stored
      */
-    public Shader(String bothShadersFileName) throws IOException {
+    public Shader(String bothShadersFileName) throws Exception {
 
         m_uniforms = new HashMap<>();
         m_programId = glCreateProgram();
@@ -215,9 +215,9 @@ public class Shader {
      * and fragment shader needs to begin with #fragmentShader
      * @param bothShadersFileName Name of the file containing shader code. 
      */
-    private void load(String bothShadersFileName) {
+    private void load(String bothShadersFileName) throws Exception {
         
-        try {
+        /* try {
             String[] shadersContent = multipleShadersFromFile(bothShadersFileName);
             createVertexShader(shadersContent[0]);
             createFragmentShader(shadersContent[1]);
@@ -226,7 +226,14 @@ public class Shader {
             generateUniforms(shadersContent[1]);
         } catch (Exception e) {
             Utils.LOG_ERROR("Error while loading shaders from path: " + bothShadersFileName + " , " + e.toString());
-        }
+        } */
+        String[] shadersContent = multipleShadersFromFile(bothShadersFileName);
+        createVertexShader(shadersContent[0]);
+        createFragmentShader(shadersContent[1]);
+        link();
+        generateUniforms(shadersContent[0]);
+        generateUniforms(shadersContent[1]);
+
     }
 
     /**

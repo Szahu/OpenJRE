@@ -18,7 +18,7 @@ public class RenderUtils {
     private static Shader m_gridShader;
     private static Transform m_gridTransform = new Transform();
 
-    public static void initialises() throws IOException {
+    public static void initialises() throws Exception {
 
         Vector<Float> gridVertices = new Vector<>();
         Vector<Integer> indices = new Vector<>();
