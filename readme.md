@@ -31,6 +31,7 @@ Once you clone the repository and use `mvn package` once, use `mvn exec:java` ea
 ## Screenshots 
 
 **Lighting demo:**
+<br />
 ![Alt Text](https://media.giphy.com/media/3KmYu1JNiIO4UBGzaE/giphy.gif)
 
 ## Documentation 
