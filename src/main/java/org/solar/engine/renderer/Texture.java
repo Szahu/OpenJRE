@@ -104,8 +104,13 @@ public class Texture {
         return null;
     }
 
-    public void bind() {
-        glActiveTexture(GL_TEXTURE0);
+    public void bind(int samplerSlot) {
+        glActiveTexture(GL_TEXTURE0 + samplerSlot);
 		glBindTexture(GL_TEXTURE_2D, getTextureId());
+    }
+
+    public void unbind() {
+        glActiveTexture(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
     }
 }

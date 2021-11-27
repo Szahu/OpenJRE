@@ -31,8 +31,8 @@ public class FrameBuffer {
      * Binds the texture of the frame buffer and sets active texture to 0.
      */
     public void bindTexture() {
-        glBindTexture(GL_TEXTURE_2D, m_textureId);
         glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_textureId);
     }
 
     /**

@@ -83,16 +83,18 @@ public class Utils {
         return res;
     }
 
+    public static float[] vec3fToArray (Vector3f vec) { return new float[] {vec.get(0), vec.get(1), vec.get(2)}; }
+
+
     private final static String ANSI_RESET = "\u001B[0m";
     private final static String ANSI_RED = "\u001B[31m";
     private final static String ANSI_GREEN = "\u001B[32m";
     private final static String ANSI_YELLOW = "\u001B[33m";
     private final static String ANSI_BLUE = "\u001B[34m";
-    public static void      LOG_SUCCESS  (Object o)         { System.out.println(ANSI_GREEN + o.toString() + ANSI_RESET); }
-    public static void      LOG_ERROR    (Object o)         { System.out.println(ANSI_RED + o.toString() + ANSI_RESET); }
-    public static void      LOG_WARNING  (Object o)         { System.out.println(ANSI_YELLOW + o.toString() + ANSI_RESET); }
-    public static void      LOG_INFO     (Object o)         { System.out.println(ANSI_BLUE + o.toString() + ANSI_RESET); }
-    public static void      LOG          (Object o)         { System.out.println( o.toString() ); }
-    public static void      LOG          (Vector3f vec)         { System.out.println(vec.x + " " + vec.y + " " + vec.z); }
-    public static float[]   vec3fToArray (Vector3f vec)     { return new float[] {vec.get(0), vec.get(1), vec.get(2)}; }
+    public static void LOG_SUCCESS (Object o) { System.out.println(ANSI_GREEN + o.toString() + ANSI_RESET); }
+    public static void LOG_ERROR (Object o) { System.out.println(ANSI_RED + o.toString() + ANSI_RESET); }
+    public static void LOG_WARNING (Object o) { System.out.println(ANSI_YELLOW + o.toString() + ANSI_RESET); }
+    public static void LOG_INFO (Object o) { System.out.println(ANSI_BLUE + o.toString() + ANSI_RESET); }
+    public static void LOG (Object o) { System.out.println( o.toString() ); }
+    public static void LOG (Vector3f vec) { System.out.println(vec.x + " " + vec.y + " " + vec.z); }
 }

@@ -17,6 +17,7 @@ public class testApp extends ApplicationTemplate {
     private Transform m_testTransform;
     private VertexArray m_testVertexArray;
 	private Texture m_texture;
+	private Texture m_normal_texture;
 	private Transform m_lightTransform;
 
     @Override
@@ -25,7 +26,7 @@ public class testApp extends ApplicationTemplate {
 		m_camera = new Camera(Window.getWidth(), Window.getHeight(), new DebugCameraController());
         Renderer.setActiveCamera(m_camera);
 
-		m_testShader = new Shader("lightShader.glsl");
+		m_testShader = new Shader("lightNormal.glsl");
 		m_testShader.bind();
 		m_testShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
 		m_testShader.unbind();
@@ -43,6 +44,7 @@ public class testApp extends ApplicationTemplate {
 		m_testVertexArray = ModelLoader.loadModel("assets/rock.fbx");
 		
 		m_texture = new Texture("assets/rock.png", false);
+		m_normal_texture = new Texture("assets/rock_normal.png", false);
 
 		Renderer.setClearColor(new Vector3f(77f/255f, 200f/255f, 233f/255f));
 		m_lightTransform = new Transform();
@@ -55,13 +57,18 @@ public class testApp extends ApplicationTemplate {
 
 		m_testShader.bind();
 		m_testShader.setUniform("u_texture_sampler", 0);
+		m_testShader.setUniform("u_normal_texture_sampler", 1);
 		m_testShader.setUniform("u_cameraPosition", m_camera.getCameraController().getTransform().getPosition());
 		m_testShader.setUniform("u_lightPosition", m_lightTransform.getPosition());
 
 
-		m_texture.bind();
+		m_texture.bind(0);
+		m_normal_texture.bind(1);
 
         Renderer.render(m_testVertexArray, m_testShader, m_testTransform);
+
+		m_texture.unbind();
+		m_normal_texture.unbind();
 
 		m_testShader.unbind(); 
 
