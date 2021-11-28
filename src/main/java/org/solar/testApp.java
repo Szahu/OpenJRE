@@ -1,5 +1,6 @@
 package org.solar;
 
+import org.joml.Math;
 import org.joml.Vector3f;
 import org.solar.engine.*;
 import org.solar.engine.renderer.RenderUtils;
@@ -26,7 +27,7 @@ public class testApp extends ApplicationTemplate {
 		m_camera = new Camera(Window.getWidth(), Window.getHeight(), new DebugCameraController());
         Renderer.setActiveCamera(m_camera);
 
-		m_testShader = new Shader("lightNormal.glsl");
+		m_testShader = new Shader("blinn.glsl");
 		m_testShader.bind();
 		m_testShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
 		m_testShader.unbind();
@@ -51,6 +52,11 @@ public class testApp extends ApplicationTemplate {
 		m_lightTransform.setPosition(new Vector3f(0,3,0));
 	}
 
+
+	float[] lightSpeed = {0.01f};
+
+	float angle = 0;
+
 	@Override
 	public void update() {
 		RenderUtils.renderGrid(m_camera);
@@ -65,6 +71,9 @@ public class testApp extends ApplicationTemplate {
 		m_texture.bind(0);
 		m_normal_texture.bind(1);
 
+		angle += lightSpeed[0];
+		m_lightTransform.setPosition(new Vector3f((float)Math.sin(angle) * 10f, 3f, 10f * (float)Math.cos(angle)));
+
         Renderer.render(m_testVertexArray, m_testShader, m_testTransform);
 
 		m_texture.unbind();
@@ -75,7 +84,9 @@ public class testApp extends ApplicationTemplate {
         m_camera.update();
 			
         ImGui.text("FPS: " +  (int)(10f/Utils.getDeltaTime()));
-		m_lightTransform.debugGui("light");
+		ImGui.dragFloat("speed", lightSpeed, 0.0001f);
+		m_testTransform.debugGui("rock");
+		//m_lightTransform.debugGui("light");
     }
 
     @Override

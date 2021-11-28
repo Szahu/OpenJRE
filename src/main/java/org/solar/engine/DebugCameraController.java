@@ -13,7 +13,7 @@ public class DebugCameraController extends CameraControllerTemplate {
     private float m_distanceFromCenter = 10.0f;
     private float m_inputSensitivity = 1.0f;
     private Vector3f m_cameraDirection = new Vector3f(0,0,0);
-    private float m_moveSensitivity = 0.07f;
+    private float m_moveSensitivity = 0.02f;
     private Vector3f m_positionOffset = new Vector3f(0,0,0);
 
 
