@@ -22,19 +22,32 @@ public class Texture {
 
     private static final int BYTES_PER_PIXEL = 4;//3 for RGB, 4 for RGBA
     private int m_TextureId;
-
-    private boolean m_invertY = false;
+    private TextureType m_type;
 
     public int getTextureId() {
         return m_TextureId;
     }
 
-
-    public Texture(String pathToFile, boolean ...invertY) {
-        if(invertY.length > 0) {m_invertY = invertY[0];}
-        BufferedImage image = loadImage(pathToFile);
-        m_TextureId = loadTexture(image, m_invertY);
+    public enum TextureType {
+        Albedo, Normal
     }
+
+    public Texture(String pathToFile, TextureType texType) {
+        load(pathToFile, false);
+        m_type = texType;
+    }
+
+    public Texture(String pathToFile, boolean invertY) {
+        load(pathToFile, invertY);
+    }
+
+    private void load(String pathToFile, boolean invertY) {
+        BufferedImage image = loadImage(pathToFile);
+        m_TextureId = loadTexture(image, invertY);
+    }
+
+    public TextureType getType() {return m_type;}
+
 
     private static int loadTexture(BufferedImage image, boolean InvertYs){
 

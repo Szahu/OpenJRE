@@ -74,7 +74,7 @@ void main()
     vec3 diffuse = diff * lightColor;
 
     //specular light
-    float shininess = 1.0;
+    float shininess = 8.0;
     float specularStrength = 0.5;
     vec3 viewDir = normalize(fs_in.TangentViewPos - fs_in.TangentFragPos);
     vec3 halfwayDir = normalize(lightDir + viewDir);

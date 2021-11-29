@@ -5,7 +5,9 @@ import java.util.function.Consumer;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import static org.solar.engine.Input.*;
-public class DebugCameraController extends CameraControllerTemplate {
+
+public class DebugCameraController implements CameraControllerTemplate {
+
     private Transform m_Transform;
     private Vector3f m_lookAtPoint = new Vector3f(0,0,0);
     private float m_yawAngle = 0.0f;

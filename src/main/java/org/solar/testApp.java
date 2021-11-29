@@ -3,11 +3,15 @@ package org.solar;
 import org.joml.Math;
 import org.joml.Vector3f;
 import org.solar.engine.*;
+import org.solar.engine.renderer.RenderData;
 import org.solar.engine.renderer.RenderUtils;
+import org.solar.engine.renderer.RenderableEntity;
 import org.solar.engine.renderer.Renderer;
 import org.solar.engine.renderer.Shader;
 import org.solar.engine.renderer.Texture;
 import org.solar.engine.renderer.VertexArray;
+import org.solar.engine.renderer.Texture.TextureType;
+
 import imgui.ImGui;
 import java.io.IOException;
 
@@ -17,9 +21,10 @@ public class testApp extends ApplicationTemplate {
     private Shader m_testShader;
     private Transform m_testTransform;
     private VertexArray m_testVertexArray;
-	private Texture m_texture;
-	private Texture m_normal_texture;
 	private Transform m_lightTransform;
+
+	private Material m_rockMaterial;
+	private RenderableEntity m_testRenderableEntity;
 
     @Override
     public void initialise() throws IOException, Exception {
@@ -43,13 +48,17 @@ public class testApp extends ApplicationTemplate {
 		m_testTransform.setScale(new Vector3f(0.1f, 0.1f, 0.1f));
 
 		m_testVertexArray = ModelLoader.loadModel("assets/rock.fbx");
-		
-		m_texture = new Texture("assets/rock.png", false);
-		m_normal_texture = new Texture("assets/rock_normal.png", false);
+
+		m_rockMaterial = new Material();
+		m_rockMaterial.setTexture(TextureType.Albedo, new Texture("assets/rock.png", Texture.TextureType.Albedo));
+		m_rockMaterial.setTexture(TextureType.Normal, new Texture("assets/rock_normal.png", Texture.TextureType.Normal));
 
 		Renderer.setClearColor(new Vector3f(41f/255f, 41f/255f, 41f/255f));
 		m_lightTransform = new Transform();
 		m_lightTransform.setPosition(new Vector3f(0,3,0));
+
+		m_testRenderableEntity = new RenderableEntity(new RenderData(m_testVertexArray, m_testShader, m_rockMaterial));
+		m_testRenderableEntity.getTransform().setScale(new Vector3f(0.1f, 0.1f, 0.1f));
 	}
 
 
@@ -62,22 +71,12 @@ public class testApp extends ApplicationTemplate {
 		RenderUtils.renderGrid(m_camera);
 
 		m_testShader.bind();
-		m_testShader.setUniform("u_texture_sampler", 0);
-		m_testShader.setUniform("u_normal_texture_sampler", 1);
-		m_testShader.setUniform("u_cameraPosition", m_camera.getCameraController().getTransform().getPosition());
+		m_testRenderableEntity.getRenderData().forEach(data -> {
+			data.getShader().setUniform("u_cameraPosition", m_camera.getCameraController().getTransform().getPosition());
+		});
 		m_testShader.setUniform("u_lightPosition", m_lightTransform.getPosition());
 
-
-		m_texture.bind(0);
-		m_normal_texture.bind(1);
-
-		angle += lightSpeed[0];
-		m_lightTransform.setPosition(new Vector3f((float)Math.sin(angle) * 10f, 3f, 10f * (float)Math.cos(angle)));
-
-        Renderer.render(m_testVertexArray, m_testShader, m_testTransform);
-
-		m_texture.unbind();
-		m_normal_texture.unbind();
+		Renderer.render(m_testRenderableEntity);
 
 		m_testShader.unbind(); 
 
@@ -85,7 +84,9 @@ public class testApp extends ApplicationTemplate {
 			
         ImGui.text("FPS: " +  (int)(10f/Utils.getDeltaTime()));
 		ImGui.dragFloat("speed", lightSpeed, 0.0001f);
-		m_testTransform.debugGui("rock");
+		m_testRenderableEntity.getTransform().debugGui("trans");
+		angle += lightSpeed[0];
+		m_lightTransform.setPosition(new Vector3f((float)Math.sin(angle) * 10f, 3f, 10f * (float)Math.cos(angle)));
 		//m_lightTransform.debugGui("light");
     }
 

@@ -9,8 +9,7 @@ import org.solar.engine.Camera;
 import org.solar.engine.Transform;
 import org.solar.engine.Utils;
 import org.solar.engine.Window;
-
-import java.io.IOException;
+import org.solar.engine.renderer.Texture.TextureType;
 
 /**
  * Fully static class, responsible for drawing data.
@@ -80,16 +79,7 @@ public class Renderer {
      */
     public static void setClearColor(Vector3f newColor) {m_clearColor = newColor;}
 
-    /**
-     * Render according Vertex Array with a given shader.
-     * @param vao Vertex array to render.
-     * @param shader Shader to use.
-     */
-    public static void render(VertexArray vao, Shader shader) {
-        
-        shader.bind();
-
-        shader.setUniform("u_viewMatrix", m_CameraRefrence.getViewMatrix());
+    private static void drawVertexArray(VertexArray vao) {
 
         vao.bind();
 
@@ -101,6 +91,42 @@ public class Renderer {
 
         // Restore state
         vao.unbind();
+
+    }
+
+    public static void render(RenderableEntity entity) {
+
+        for(RenderData data : entity.getRenderData()) {
+            data.getShader().bind();
+
+            data.getShader().setUniform("u_texture_sampler", 0);
+            data.getShader().setUniform("u_normal_texture_sampler", 1);
+
+            data.getMaterial().getTexture(TextureType.Albedo).bind(0);
+            data.getMaterial().getTexture(TextureType.Normal).bind(1);
+
+            data.getShader().setUniform(Shader.uniformViewMatrixToken, m_CameraRefrence.getViewMatrix());
+            data.getShader().setUniform(Shader.uniformTransformMatrixToken, entity.getTransform().getTransformMatrix());
+
+            drawVertexArray(data.getVertexArray());
+
+            data.getShader().unbind();
+        }
+
+    }
+
+    /**
+     * Render according Vertex Array with a given shader.
+     * @param vao Vertex array to render.
+     * @param shader Shader to use.
+     */
+    public static void render(VertexArray vao, Shader shader) {
+        
+        shader.bind();
+
+        shader.setUniform("u_viewMatrix", m_CameraRefrence.getViewMatrix());
+
+        drawVertexArray(vao);
 
         shader.unbind();
     }
@@ -118,16 +144,7 @@ public class Renderer {
         shader.setUniform(Shader.uniformViewMatrixToken, m_CameraRefrence.getViewMatrix());
         shader.setUniform(Shader.uniformTransformMatrixToken, transform.getTransformMatrix());
 
-        vao.bind();
-
-        for(int i = 0;i < vao.getNumberOfAttributes(); i++) {
-            glEnableVertexAttribArray(i);
-        }
-
-        glDrawElements(GL_TRIANGLES, vao.getIndexCount(), GL_UNSIGNED_INT, 0);
-
-        // Restore state
-        vao.unbind();
+        drawVertexArray(vao);
 
         shader.unbind();
     }
