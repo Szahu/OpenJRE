@@ -6,7 +6,7 @@ public class Consts {
         0.5f, 0.0f, 0.0f, //0
         1.0f, 0.0f, 0.5f, //1
         0.5f, 0.0f, 1.0f, //2
-        0.0f, 0.0f, 0.5f, //3
+        0.0f, 0.0f, 0.5f, //3 
 
         0.5f, 1.0f, 0.0f, //4
         1.0f, 1.0f, 0.5f, //5
@@ -16,7 +16,7 @@ public class Consts {
         0.0f, 0.5f, 0.0f, //8
         1.0f, 0.5f, 0.0f, //9
         1.0f, 0.5f, 1.0f, //10
-        0.0f, 0.5f, 1.0f, //11
+        0.0f, 0.5f, 1.0f  //11
     };
 
     public static final int[] EDGE_TABLE = new int[]{
@@ -54,7 +54,7 @@ public class Consts {
         0x70c, 0x605, 0x50f, 0x406, 0x30a, 0x203, 0x109, 0x0};
 
     public static final int[][] TRIANGULATE_TABLE = new int[][]
-    {{-1},
+    {{},
     {0, 8, 3},
     {0, 1, 9},
     {1, 8, 3, 9, 8, 1},
@@ -309,5 +309,5 @@ public class Consts {
     {1, 3, 8, 9, 1, 8},
     {0, 9, 1},
     {0, 3, 8},
-    {-1}};
+    {}};
 }

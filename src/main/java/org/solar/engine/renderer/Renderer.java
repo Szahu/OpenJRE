@@ -39,13 +39,20 @@ public class Renderer {
     private static FrameBuffer m_frameBuffer;
     private static Vector3f m_clearColor;
     private static Shader m_screenShader;
-
+    private static boolean m_drawLines = false;
 
     private Renderer() {}
 
-    public static void toggleLines(boolean mode) {
-        glPolygonMode( GL_FRONT_AND_BACK, !mode ? GL_FILL : GL_LINE);
+    public static void setDrawLines(boolean mode) {
+        m_drawLines = mode;
+        glPolygonMode( GL_FRONT_AND_BACK, !m_drawLines ? GL_FILL : GL_LINE);
     }
+
+    public static void toogleDrawLines() {
+        setDrawLines(!m_drawLines);
+    }
+
+    public static boolean getDrawLines() {return m_drawLines;}
 
     /**
      * Returns main frame buffer of the application to which everything is rendered.

@@ -1,6 +1,7 @@
 package org.solar.appllication.terrain;
 
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.system.CallbackI.J;
 import org.solar.engine.Utils;
 import org.solar.engine.renderer.FloatArray;
@@ -24,6 +25,44 @@ public class Terrain {
     private VertexArray m_vertexArray;
     public VertexArray getVertexArray() {return m_vertexArray;}
 
+
+    private boolean compare(Vector4f p1, Vector4f p2) {
+        if (p1.x > p2.x)
+            return true;
+        else if (p1.x < p2.x)
+            return false;
+
+        if (p1.y > p2.y)
+            return true;
+        else if (p1.y < p2.y)
+            return false;
+
+        if (p1.z > p2.z)
+            return true;
+        else if (p1.z < p2.z)
+            return false;
+
+        return false;
+    }
+
+    Vector3f LinearInterp(Vector4f p1, Vector4f p2, float value)
+    {
+        if (compare(p1, p2))
+        {
+            Vector4f temp;
+            temp = p1;
+            p1 = p2;
+            p2 = temp;    
+        }
+
+        Vector4f p;
+        if((p1.w - p2.w) > 0.00001)
+            p = p1.add(p2.sub(p1)).div((p2.w - p1.w)*(value - p1.w));
+        else 
+            p = p1;
+        return p;
+    }
+
     public void createMesh(double[][][] grid, double isolevel) {
         List<Float> glVertices = new ArrayList<>();
         List<Integer> glIndices = new ArrayList<>();
@@ -44,15 +83,15 @@ public class Terrain {
                         grid[k+1][j+1][i+1],
                         grid[k+1][j+1][i],
                     });
-                    Utils.LOG(Arrays.toString(cell.levels));
 
                     int[] indices = polygonise(cell, isolevel);
-                    Utils.LOG(Arrays.toString(indices));
 
                     for(int x = 0;x < indices.length;x++) {
+
                         glVertices.add(CUBE_EDGE_VERTICES[3 * indices[x]] + i);
                         glVertices.add(CUBE_EDGE_VERTICES[3 * indices[x]+1] + j);
                         glVertices.add(CUBE_EDGE_VERTICES[3 * indices[x]+2] + k);
+                        
                     }
     
                 }
