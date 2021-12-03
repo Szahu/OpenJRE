@@ -97,4 +97,5 @@ public class Utils {
     public static void LOG_INFO (Object o) { System.out.println(ANSI_BLUE + o.toString() + ANSI_RESET); }
     public static void LOG (Object o) { System.out.println( o.toString() ); }
     public static void LOG (Vector3f vec) { System.out.println(vec.x + " " + vec.y + " " + vec.z); }
+
 }

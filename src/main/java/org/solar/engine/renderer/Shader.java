@@ -2,6 +2,7 @@ package org.solar.engine.renderer;
 
 import static org.lwjgl.opengl.GL20.*;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.FloatBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -13,6 +14,7 @@ import java.util.Map;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
+import org.solar.engine.PointLight;
 import org.solar.engine.Utils;
 
 public class Shader {
@@ -33,11 +35,20 @@ public class Shader {
         if (m_programId == 0) Utils.LOG_ERROR("System could not create the shader program");
     }
 
+    public static Map<String, Shader> shadersInUse;
+
     /**
      * Creates a shader program from a file which stores two shader, each one starting with a proper token (#vertexShader, #fragmentShader).
      * @param bothShadersFileName Name of the file (including suffix) in which both of our shaders are stored
      */
     public Shader(String bothShadersFileName) throws Exception {
+        if(shadersInUse == null) {
+            shadersInUse = new HashMap<>();
+        }
+
+        if(!shadersInUse.containsKey(bothShadersFileName)) {
+            shadersInUse.put(bothShadersFileName, this);
+        }
 
         m_uniforms = new HashMap<>();
         m_programId = glCreateProgram();
@@ -84,6 +95,21 @@ public class Shader {
         } else {
             Utils.LOG_ERROR("Trying to set value of the uniform that does not exist: " + uniformName);
         }
+    }
+
+    public void setUniform(String uniformName, float value) throws RuntimeException {
+        if(m_uniforms.containsKey(uniformName)) {
+            glUniform1f(m_uniforms.get(uniformName), value);
+        } else {
+            Utils.LOG_ERROR("Trying to set value of the uniform that does not exist: " + uniformName);
+        }
+    }
+
+    public void setUniform(String uniformName, PointLight light) throws RuntimeException {
+        setUniform(uniformName + ".position", light.position);
+        setUniform(uniformName + ".color", light.color);
+        setUniform(uniformName + ".specularStrength", light.specularStrength);
+        setUniform(uniformName + ".ambientStrength", light.ambientStrength);
     }
 
      /**
@@ -190,15 +216,15 @@ public class Shader {
                 for(String fieldName : uniformStructData.fieldNames) {
                     uniformLocation = glGetUniformLocation(m_programId, uniformName + "." + fieldName);
                     if (uniformLocation < 0) {
-                        throw new RuntimeException("Could not find uniform (or it is not used): " + uniformName);
+                        Utils.LOG_ERROR("Could not find uniform (or it is not used): " + uniformName + "." + fieldName);
                     }
-                    m_uniforms.put("u_struct.color", uniformLocation);
+                    m_uniforms.put(uniformName + "." + fieldName, uniformLocation);
                 }    
 
             } else {
                 uniformLocation = glGetUniformLocation(m_programId, uniformName);
                 if (uniformLocation < 0) {
-                    throw new RuntimeException("Could not find uniform (or it is not used): " + uniformName);
+                    Utils.LOG_ERROR("Could not find uniform (or it is not used): " + uniformName);
                 }
                 m_uniforms.put(uniformName, uniformLocation);
             }

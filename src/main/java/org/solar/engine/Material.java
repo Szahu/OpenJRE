@@ -10,19 +10,29 @@ public class Material {
         shininess
     }
 
-    private Texture m_albedoTexture;
+    private Texture m_diffuseTexture;
     private Texture m_normalTexture;
     private HashMap<Property, Float> properties;
 
-    public Material() {
+    public Material(Texture ...textures) {
         properties = new HashMap<>();
         properties.put(Property.shininess, 1.0f);
+        for(Texture tex : textures) {
+            switch(tex.getType()) {
+                case Diffuse:
+                    m_diffuseTexture = tex;
+                    break;
+                case Normal:
+                    m_normalTexture = tex;
+                    break;
+            }
+        }
     }
 
     public void setTexture(Texture.TextureType type, Texture texture) {
         switch(type) {
-            case Albedo:
-            m_albedoTexture = texture;
+            case Diffuse:
+            m_diffuseTexture = texture;
                 break;
             case Normal:
             m_normalTexture = texture;
@@ -36,13 +46,13 @@ public class Material {
 
     public Texture getTexture(Texture.TextureType type) {
         switch(type) {
-            case Albedo:
-                return m_albedoTexture;
+            case Diffuse:
+                return m_diffuseTexture;
             case Normal:
                 return m_normalTexture;
             default:
                 Utils.LOG_ERROR("No such texture type as: " + type.toString());
-                return m_albedoTexture;            
+                return m_diffuseTexture;            
         }
     }
 

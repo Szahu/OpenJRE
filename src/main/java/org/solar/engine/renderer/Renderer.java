@@ -40,7 +40,12 @@ public class Renderer {
     private static Vector3f m_clearColor;
     private static Shader m_screenShader;
 
+
     private Renderer() {}
+
+    public static void toggleLines(boolean mode) {
+        glPolygonMode( GL_FRONT_AND_BACK, !mode ? GL_FILL : GL_LINE);
+    }
 
     /**
      * Returns main frame buffer of the application to which everything is rendered.
@@ -102,7 +107,7 @@ public class Renderer {
             data.getShader().setUniform("u_texture_sampler", 0);
             data.getShader().setUniform("u_normal_texture_sampler", 1);
 
-            data.getMaterial().getTexture(TextureType.Albedo).bind(0);
+            data.getMaterial().getTexture(TextureType.Diffuse).bind(0);
             data.getMaterial().getTexture(TextureType.Normal).bind(1);
 
             data.getShader().setUniform(Shader.uniformViewMatrixToken, m_CameraRefrence.getViewMatrix());

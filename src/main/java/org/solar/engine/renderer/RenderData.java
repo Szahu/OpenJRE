@@ -11,6 +11,21 @@ public class RenderData {
     public Shader getShader() {return m_shader;}
     public Material getMaterial() {return m_material;}
 
+    public void setShader(Shader shader) {m_shader = shader;}
+    public void setMaterial(Material mat) {m_material = mat;}
+
+    public RenderData(VertexArray vao) throws Exception {
+        m_vertexArray = vao;
+        m_material = new Material();
+        m_shader = Shader.shadersInUse.get("blinn.glsl");
+    }
+
+    public RenderData(VertexArray vao, Material mat) throws Exception {
+        m_vertexArray = vao;
+        m_material = mat;
+        m_shader = Shader.shadersInUse.get("blinn.glsl");
+    }
+
     public RenderData(VertexArray vao, Shader shader, Material material) {
         m_vertexArray = vao;
         m_shader = shader;

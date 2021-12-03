@@ -3,20 +3,31 @@ package org.solar.engine;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.joml.Vector4f;
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIFace;
+import org.lwjgl.assimp.AIMaterial;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIScene;
+import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.AIVector3D;
+import org.lwjgl.assimp.Assimp;
+
 import static org.lwjgl.assimp.Assimp.*;
 import org.solar.engine.renderer.FloatArray;
+import org.solar.engine.renderer.RenderData;
+import org.solar.engine.renderer.RenderableEntity;
+import org.solar.engine.renderer.Texture;
 import org.solar.engine.renderer.VertexArray;
+import org.solar.engine.renderer.Texture.TextureType;
 
 
 public class ModelLoader {
 
     //TODO add size normalization, add materials
-    public static VertexArray loadModel(String path) throws Exception {
+    public static RenderableEntity loadModel(String path) throws Exception {
         AIScene aiScene = aiImportFile(path, aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices | aiProcess_Triangulate
         | aiProcess_FixInfacingNormals | aiProcess_PreTransformVertices  | aiProcess_CalcTangentSpace);
         if (aiScene == null) {
@@ -24,10 +35,22 @@ public class ModelLoader {
         }
 
         PointerBuffer aiMeshes = aiScene.mMeshes();
-        AIMesh aiMesh = AIMesh.create(aiMeshes.get(0));
-        VertexArray mesh = processMesh(aiMesh);
-        return mesh;
+        int numMeshes = aiScene.mNumMeshes();
+        RenderData[] meshes = new RenderData[numMeshes];
+        for(int i =0;i < numMeshes;i++) {
+            AIMesh aiMesh = AIMesh.create(aiMeshes.get(i));
+            VertexArray mesh = processMesh(aiMesh);
+
+            Texture diffuseTex = new Texture(path.split("\\.")[0] + "_diffuse.png", TextureType.Diffuse);
+            Texture normalTexture = new Texture(path.split("\\.")[0] + "_normal.png", TextureType.Normal);
+
+            Material mat = new Material(diffuseTex, normalTexture);
+            meshes[i] = new RenderData(mesh, mat);
+        }
+        
+        return new RenderableEntity(meshes);
     }
+
 
     private static VertexArray processMesh(AIMesh aiMesh) {
         List<Float> vertices = new ArrayList<>();
