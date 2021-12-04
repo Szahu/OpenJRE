@@ -10,12 +10,10 @@ import org.solar.engine.renderer.Renderer;
 import org.solar.engine.renderer.Shader;
 
 import imgui.ImGui;
-import imgui.type.ImFloat;
 import imgui.type.ImInt;
 
 import java.io.IOException;
 
-import javax.print.DocFlavor.READER;
 
 public class testApp extends ApplicationTemplate {
 
@@ -25,10 +23,29 @@ public class testApp extends ApplicationTemplate {
 	private Transform m_transform;
 	private Transform m_lightTransform;
 	private OpenSimplexNoise m_noise;
-	private PointLight m_testLight;
 	private boolean m_drawLines = false;
 
-	private int gridSize = 10;
+	private int gridSize = 20;
+	private double isoLevel = 0.0;
+
+	private double factor = 0.1f;
+
+	private Vector3f noiseOffse = new Vector3f();
+
+	private void regenerate() {
+		int size = gridSize;
+		double[][][] grid = new double[size][size][size];
+
+		for(int x = 0;x < size;x++){
+			for(int y = 0;y < size;y++){
+				for(int z = 0;z < size;z++){
+					grid[x][y][z] = m_noise.noise3_Classic(factor*x, factor*y, factor*z - noiseOffse.x) * 2;
+				}
+			}
+		}
+
+		m_terrain.createMesh(grid, isoLevel);
+	}
 
     @Override
     public void initialise() throws IOException, Exception {
@@ -49,21 +66,12 @@ public class testApp extends ApplicationTemplate {
 
 		Renderer.setClearColor(new Vector3f(41f/255f, 41f/255f, 41f/255f));
 
-		m_testLight = new PointLight();
 		m_terrain = new Terrain();
 		m_noise = new OpenSimplexNoise(276587923645987l);
 		m_lightTransform = new Transform();
+		m_lightTransform.setPosition(new Vector3f(0, gridSize + 1, 0));
 
-		int size = gridSize;
-		double[][][] grid = new double[size][size][size];
-
-		for(int x = 0;x < size;x++){
-			for(int y = 0;y < size;y++){
-				for(int z = 0;z < size;z++){
-					grid[x][y][z] = m_noise.noise3_Classic(x, y, z);
-				}
-			}
-		}
+		regenerate();
 
 		/* double[][][] grid = new double[][][]{
 			{
@@ -76,9 +84,8 @@ public class testApp extends ApplicationTemplate {
 			}, 
 		}; */
 
-		m_terrain.createMesh(grid, 0.0);
 		m_transform = new Transform();
-		m_transform.setPosition(new Vector3f(-size/2f, 0, -size/2f));
+		m_transform.setPosition(new Vector3f(-gridSize/2f, 0, -gridSize/2f));
 
 		Input.addKeyCallback(Input.KEY_CODE_A, Input.KEY_RELEASE, () -> {
 			m_drawLines = !m_drawLines;
@@ -88,6 +95,7 @@ public class testApp extends ApplicationTemplate {
 	ImInt seed = new ImInt();
 	float[] level = new float[]{0};	
 	float old_level = level[0];
+	float[] xoffset = new float[]{0};
 
 	@Override
 	public void update() {
@@ -108,32 +116,18 @@ public class testApp extends ApplicationTemplate {
 		ImGui.inputInt("seed", seed);
 		if(ImGui.button("regenerate!")) {
 			m_noise = new OpenSimplexNoise((long)seed.get());
-			int size = gridSize;
-			double[][][] grid = new double[size][size][size];
-
-			for(int x = 0;x < size;x++){
-				for(int y = 0;y < size;y++){
-					for(int z = 0;z < size;z++){
-						grid[x][y][z] = m_noise.noise3_Classic(x, y, z);
-					}
-				}
-			}
-			m_terrain.createMesh(grid, 0.5);
+			regenerate();
 		}
 		ImGui.sliderFloat("iso level", level, -2, 2);
 		if(level[0] != old_level) {
 			old_level = level[0];
-			int size = gridSize;
-			double[][][] grid = new double[size][size][size];
-
-			for(int x = 0;x < size;x++){
-				for(int y = 0;y < size;y++){
-					for(int z = 0;z < size;z++){
-						grid[x][y][z] = m_noise.noise3_Classic(x, y, z);
-					}
-				}
-			}
-			m_terrain.createMesh(grid, level[0]);
+			isoLevel = level[0];
+			regenerate();
+		}
+		ImGui.dragFloat("offset", xoffset, 0.001f);
+		if(noiseOffse.x != xoffset[0]) {
+			noiseOffse.x = xoffset[0];
+			regenerate();
 		}
         ImGui.text("FPS: " +  (int)(10f/Utils.getDeltaTime()));
 		m_lightTransform.debugGui("light");

@@ -111,7 +111,9 @@ public class Terrain {
             p3.sub(p1, V);
 
             Vector3f normal = new Vector3f();
-            U.cross(V, normal);
+            V.cross(U, normal);
+            V.normalize();
+            
             glNormals.add(normal.x);
             glNormals.add(normal.y);
             glNormals.add(normal.z);
