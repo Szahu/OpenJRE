@@ -4,6 +4,7 @@
 
 layout (location =0) in vec3 position;
 
+
 uniform mat4 u_projectionMatrix;
 uniform mat4 u_viewMatrix;
 uniform mat4 u_worldMatrix;

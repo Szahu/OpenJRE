@@ -23,9 +23,12 @@ public class testApp extends ApplicationTemplate {
     private Shader m_testShader;
 	private Terrain m_terrain;
 	private Transform m_transform;
+	private Transform m_lightTransform;
 	private OpenSimplexNoise m_noise;
 	private PointLight m_testLight;
 	private boolean m_drawLines = false;
+
+	private int gridSize = 10;
 
     @Override
     public void initialise() throws IOException, Exception {
@@ -33,7 +36,7 @@ public class testApp extends ApplicationTemplate {
 		m_camera = new Camera(Window.getWidth(), Window.getHeight(), new DebugCameraController());
         Renderer.setActiveCamera(m_camera);
 
-		m_testShader = new Shader("terrain.glsl");
+		m_testShader = new Shader("terrainLight.glsl");
 		m_testShader.bind();
 		m_testShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
 		m_testShader.unbind();
@@ -49,9 +52,9 @@ public class testApp extends ApplicationTemplate {
 		m_testLight = new PointLight();
 		m_terrain = new Terrain();
 		m_noise = new OpenSimplexNoise(276587923645987l);
+		m_lightTransform = new Transform();
 
-
-		int size = 100;
+		int size = gridSize;
 		double[][][] grid = new double[size][size][size];
 
 		for(int x = 0;x < size;x++){
@@ -93,6 +96,7 @@ public class testApp extends ApplicationTemplate {
 
 		m_testShader.bind();
 		m_testShader.setUniform(Shader.uniformTransformMatrixToken, m_transform.getTransformMatrix());
+		m_testShader.setUniform("u_lightPosition", m_lightTransform.getPosition());
 
 		Renderer.setDrawLines(m_drawLines);
 		Renderer.render(m_terrain.getVertexArray(), m_testShader);
@@ -104,7 +108,7 @@ public class testApp extends ApplicationTemplate {
 		ImGui.inputInt("seed", seed);
 		if(ImGui.button("regenerate!")) {
 			m_noise = new OpenSimplexNoise((long)seed.get());
-			int size = 100;
+			int size = gridSize;
 			double[][][] grid = new double[size][size][size];
 
 			for(int x = 0;x < size;x++){
@@ -119,7 +123,7 @@ public class testApp extends ApplicationTemplate {
 		ImGui.sliderFloat("iso level", level, -2, 2);
 		if(level[0] != old_level) {
 			old_level = level[0];
-			int size = 100;
+			int size = gridSize;
 			double[][][] grid = new double[size][size][size];
 
 			for(int x = 0;x < size;x++){
@@ -132,7 +136,8 @@ public class testApp extends ApplicationTemplate {
 			m_terrain.createMesh(grid, level[0]);
 		}
         ImGui.text("FPS: " +  (int)(10f/Utils.getDeltaTime()));
-		m_testLight.debugGui("light");
+		m_lightTransform.debugGui("light");
+		
     }
 
     @Override

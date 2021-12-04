@@ -97,27 +97,39 @@ public class Terrain {
         for(int x = 0;x < glVertices.size()/3;x++) {
             glIndices.add(x);
         }
-        m_vertexArray = new VertexArray(Utils.intListToArray(glIndices), new FloatArray(3, Utils.floatListToArray(glVertices)));
+
+        List<Float> glNormals = new ArrayList<>();
+
+        for(i = 0;i < glVertices.size();i+=9) {
+            Vector3f p1 = new Vector3f(glVertices.get(i), glVertices.get(i+1),glVertices.get(i+2));
+            Vector3f p2 = new Vector3f(glVertices.get(i+3), glVertices.get(i+4),glVertices.get(i+5));
+            Vector3f p3 = new Vector3f(glVertices.get(i+6), glVertices.get(i+7),glVertices.get(i+8));
+
+            Vector3f U = new Vector3f();
+            Vector3f V = new Vector3f();
+            p2.sub(p1, U);
+            p3.sub(p1, V);
+
+            Vector3f normal = new Vector3f();
+            U.cross(V, normal);
+            glNormals.add(normal.x);
+            glNormals.add(normal.y);
+            glNormals.add(normal.z);
+
+            glNormals.add(normal.x);
+            glNormals.add(normal.y);
+            glNormals.add(normal.z);
+
+            glNormals.add(normal.x);
+            glNormals.add(normal.y);
+            glNormals.add(normal.z);
+        }
+
+        m_vertexArray = new VertexArray(Utils.intListToArray(glIndices), new FloatArray(3, Utils.floatListToArray(glVertices)), new FloatArray(3, Utils.floatListToArray(glNormals)));
     }
 
     private Vector3f calcMiddle(Vector3f vec1, Vector3f vec2) {
-        float x1 = vec1.x;
-        float y1 = vec1.y;
-        float z1 = vec1.z;
-
-        float x2 = vec2.x;
-        float y2 = vec2.y;
-        float z2 = vec2.z;
-
-        x1 += x2;
-        y1 += y2;
-        z1 += z2;
-
-        x1 *= 0.5f;
-        y1 *= 0.5f;
-        z1 *= 0.5f;
-
-        return new Vector3f(x1, y1, z1);
+        return new Vector3f(vec1.add(vec2)).mul(0.5f);
     }
 
     public void polygonise(GridCell grid, double isolevel, List<Float> glVertices) {
