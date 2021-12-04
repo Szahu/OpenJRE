@@ -310,4 +310,34 @@ public class Consts {
     {0, 9, 1},
     {0, 3, 8},
     {}};
+
+    static public final int cornerIndexAFromEdge[] = new int[]{
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        0,
+        1,
+        2,
+        3
+    };
+    
+    static public final int cornerIndexBFromEdge[] = new int[]{
+        1,
+        2,
+        3,
+        0,
+        5,
+        6,
+        7,
+        4,
+        4,
+        5,
+        6,
+        7
+    };
 }

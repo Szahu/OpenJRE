@@ -51,7 +51,7 @@ public class testApp extends ApplicationTemplate {
 		m_noise = new OpenSimplexNoise(276587923645987l);
 
 
-		int size = 10;
+		int size = 100;
 		double[][][] grid = new double[size][size][size];
 
 		for(int x = 0;x < size;x++){
@@ -62,7 +62,18 @@ public class testApp extends ApplicationTemplate {
 			}
 		}
 
-		m_terrain.createMesh(grid, 0.5);
+		/* double[][][] grid = new double[][][]{
+			{
+				{-1,1},
+				{1,1},
+			}, 
+			{
+				{1,1},
+				{1,1},
+			}, 
+		}; */
+
+		m_terrain.createMesh(grid, 0.0);
 		m_transform = new Transform();
 		m_transform.setPosition(new Vector3f(-size/2f, 0, -size/2f));
 
@@ -93,7 +104,7 @@ public class testApp extends ApplicationTemplate {
 		ImGui.inputInt("seed", seed);
 		if(ImGui.button("regenerate!")) {
 			m_noise = new OpenSimplexNoise((long)seed.get());
-			int size = 10;
+			int size = 100;
 			double[][][] grid = new double[size][size][size];
 
 			for(int x = 0;x < size;x++){
@@ -108,7 +119,7 @@ public class testApp extends ApplicationTemplate {
 		ImGui.sliderFloat("iso level", level, -2, 2);
 		if(level[0] != old_level) {
 			old_level = level[0];
-			int size = 10;
+			int size = 100;
 			double[][][] grid = new double[size][size][size];
 
 			for(int x = 0;x < size;x++){
