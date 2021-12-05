@@ -34,6 +34,10 @@ Once you clone the repository and use `mvn package` once, use `mvn exec:java` ea
 <br />
 ![Alt Text](https://media.giphy.com/media/3KmYu1JNiIO4UBGzaE/giphy.gif)
 
+**Marching cubes with perlin noise**
+<br />
+![Alt Text](https://giphy.com/gifs/Xzwta1q4kAx9CsYY57)
+
 ## Documentation 
 
 Documentation available [here](https://giphy.com/gifs/3KmYu1JNiIO4UBGzaE).
