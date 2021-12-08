@@ -4,6 +4,7 @@ public abstract class ApplicationTemplate {
     public abstract void initialise() throws Exception;
     public abstract void update();
     public abstract void terminate();
+	
     public void run() throws Exception {
 		Engine m_engine = new Engine();
 		m_engine.initialize();
