@@ -1,6 +1,7 @@
 package org.solar.engine;
 
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import imgui.ImGui;
 
@@ -84,15 +85,12 @@ public class Transform {
      */
     public void recalculateMatrix() {
         //TODO implement local/gloabl rotation
-
-        Matrix4f rotation = new Matrix4f();
-        rotation.rotate((float)Math.toRadians(m_rotation[0]), 0, 1, 0);
-        rotation.rotate((float)Math.toRadians(m_rotation[1]), 1, 0, 0);
-        rotation.rotate((float)Math.toRadians(m_rotation[2]), 0, 0, 1);
-        
+            
         m_transformMatrix = new Matrix4f().identity()
         .translate(new Vector3f(m_position))
-        .mul(rotation)
+        .rotate((float)Math.toRadians(m_rotation[0]), new Vector3f(1, 0, 0))
+        .rotate((float)Math.toRadians(m_rotation[1]), new Vector3f(0, 1, 0))
+        .rotate((float)Math.toRadians(m_rotation[2]), new Vector3f(0, 0, 1))
         .scale(new Vector3f(m_scale)); 
 
     }

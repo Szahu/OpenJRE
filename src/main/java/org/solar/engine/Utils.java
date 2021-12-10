@@ -3,9 +3,12 @@ package org.solar.engine;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 /**
@@ -85,6 +88,11 @@ public class Utils {
 
     public static float[] vec3fToArray (Vector3f vec) { return new float[] {vec.get(0), vec.get(1), vec.get(2)}; }
 
+    public static float[] concat(float[] first, float[] second) {
+        float[] result = Arrays.copyOf(first, first.length + second.length);
+        System.arraycopy(second, 0, result, first.length, second.length);
+        return result;
+    }
 
     private final static String ANSI_RESET = "\u001B[0m";
     private final static String ANSI_RED = "\u001B[31m";
@@ -97,5 +105,6 @@ public class Utils {
     public static void LOG_INFO (Object o) { System.out.println(ANSI_BLUE + o.toString() + ANSI_RESET); }
     public static void LOG (Object o) { System.out.println( o.toString() ); }
     public static void LOG (Vector3f vec) { System.out.println(vec.x + " " + vec.y + " " + vec.z); }
+    public static void LOG (Vector2f vec) { System.out.println(vec.x + " " + vec.y); }
 
 }

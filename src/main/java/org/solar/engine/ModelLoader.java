@@ -26,7 +26,7 @@ import org.solar.engine.renderer.Texture.TextureType;
 
 public class ModelLoader {
 
-    //TODO add size normalization, add materials
+   /*  //TODO add size normalization, add materials
     public static RenderableEntity loadModel(String path) throws Exception {
         AIScene aiScene = aiImportFile(path, aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices | aiProcess_Triangulate
         | aiProcess_FixInfacingNormals | aiProcess_PreTransformVertices  | aiProcess_CalcTangentSpace);
@@ -49,6 +49,24 @@ public class ModelLoader {
         }
         
         return new RenderableEntity(meshes);
+    } */
+
+     //TODO add size normalization, add materials
+     public static VertexArray loadModel(String path) throws Exception {
+        AIScene aiScene = aiImportFile(path, aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices | aiProcess_Triangulate
+        | aiProcess_FixInfacingNormals | aiProcess_PreTransformVertices  | aiProcess_CalcTangentSpace);
+        if (aiScene == null) {
+            throw new Exception("Error loading model");
+        }
+
+        PointerBuffer aiMeshes = aiScene.mMeshes();
+        int numMeshes = aiScene.mNumMeshes();
+        AIMesh aiMesh = AIMesh.create(aiMeshes.get(0));
+        List<Integer> indices = new ArrayList<>();
+        VertexArray mesh = processMesh(aiMesh);
+        processIndices(aiMesh, indices);
+
+        return mesh;
     }
 
 

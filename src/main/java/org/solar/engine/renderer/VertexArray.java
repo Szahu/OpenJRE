@@ -60,7 +60,13 @@ public class VertexArray {
         glDeleteVertexArrays(m_vertexArrayId);
     }
 
-
+    public void updateData(float[] data, int offset) {
+        glBindVertexArray(m_vertexArrayId);
+        FloatBuffer verticesBuffer = MemoryUtil.memAllocFloat(data.length);
+        verticesBuffer.put(data).flip();
+        glBufferSubData(GL_ARRAY_BUFFER, offset, data);
+        glBindVertexArray(0);
+    }
 
     public void initialise(int[] indices, float[] ...floatArrays) {
 

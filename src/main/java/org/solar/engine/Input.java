@@ -156,6 +156,10 @@ public class Input {
         m_lastMousePos = mousePos; 
     }
 
+    public static void setCursorMode(int mode) {
+        glfwSetInputMode(Window.getHandle(), GLFW_CURSOR, mode);
+    }
+
     public static final int KEY_RELEASE = GLFW_RELEASE;
     public static final int KEY_PRESS = GLFW_PRESS;
     public static final int KEY_REPEAT = GLFW_REPEAT;
@@ -192,10 +196,14 @@ public class Input {
     public static final int KEY_CODE_M = GLFW_KEY_M;
 
     public static final int KEY_CODE_ESCAPE = GLFW_KEY_ESCAPE;
+    public static final int KEY_CODE_SPACE = GLFW_KEY_SPACE;
     public static final int KEY_CODE_ENTER = GLFW_KEY_ENTER;
     public static final int KEY_CODE_LEFT_SHIFT = GLFW_KEY_LEFT_SHIFT;
     public static final int KEY_CODE_RIGHT_SHIFT = GLFW_KEY_RIGHT_SHIFT;
     public static final int KEY_CODE_LEFT_ALT = GLFW_KEY_LEFT_ALT;
     public static final int KEY_CODE_RIGHT_ALT = GLFW_KEY_RIGHT_ALT;
 
+    public static final int CURSOR_MODE_DISABLED = GLFW_CURSOR_DISABLED;
+    public static final int CURSOR_MODE_HIDDEN = GLFW_CURSOR_HIDDEN;
+    public static final int CURSOR_MODE_NORMAL = GLFW_CURSOR_NORMAL;
 }
