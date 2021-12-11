@@ -45,6 +45,10 @@ public class Window {
      */
     public static boolean getShouldClose() {return m_shouldClose;}
  
+    public static void setVSync(boolean setting) {
+        glfwSwapInterval(setting ? 1 : 0);
+    }
+
     /**
      * Initialises the window, is called by an Engine itself.
      */

@@ -5,6 +5,8 @@ import imgui.gl3.ImGuiImplGl3;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+import java.util.function.Consumer;
+
 public class ImGuiLayer {
 
     private long glfwWindow;
@@ -18,6 +20,17 @@ public class ImGuiLayer {
     public ImGuiLayer(long glfwWindow) {
         this.glfwWindow = glfwWindow;
     }
+
+    class eventData {
+        public int button;
+        public int action;
+        public eventData(int action, int key) {
+            this.action = action;
+            this.button = key;
+        }
+    }
+
+    public static Consumer<eventData> mouseCallback;
 
     // Initialize Dear ImGui.
     public void initImGui() {
@@ -95,7 +108,7 @@ public class ImGuiLayer {
             }
         });
 
-        glfwSetMouseButtonCallback(glfwWindow, (w, button, action, mods) -> {
+        /* glfwSetMouseButtonCallback(glfwWindow, (w, button, action, mods) -> {
             final boolean[] mouseDown = new boolean[5];
 
             mouseDown[0] = button == GLFW_MOUSE_BUTTON_1 && action != GLFW_RELEASE;
@@ -109,7 +122,23 @@ public class ImGuiLayer {
             if (!io.getWantCaptureMouse() && mouseDown[1]) {
                 ImGui.setWindowFocus(null);
             }
-        });
+        }); */
+
+        mouseCallback = (data) -> {
+            final boolean[] mouseDown = new boolean[5];
+
+            mouseDown[0] = data.button == GLFW_MOUSE_BUTTON_1 && data.action != GLFW_RELEASE;
+            mouseDown[1] = data.button == GLFW_MOUSE_BUTTON_2 && data.action != GLFW_RELEASE;
+            mouseDown[2] = data.button == GLFW_MOUSE_BUTTON_3 && data.action != GLFW_RELEASE;
+            mouseDown[3] = data.button == GLFW_MOUSE_BUTTON_4 && data.action != GLFW_RELEASE;
+            mouseDown[4] = data.button == GLFW_MOUSE_BUTTON_5 && data.action != GLFW_RELEASE;
+
+            io.setMouseDown(mouseDown);
+
+            if (!io.getWantCaptureMouse() && mouseDown[1]) {
+                ImGui.setWindowFocus(null);
+            }
+        };
 
         glfwSetScrollCallback(glfwWindow, (w, xOffset, yOffset) -> {
             io.setMouseWheelH(io.getMouseWheelH() + (float) xOffset);

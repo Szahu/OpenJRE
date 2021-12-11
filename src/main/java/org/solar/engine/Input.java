@@ -107,6 +107,7 @@ public class Input {
     }
 
     private static Map<actionData, List<Runnable>> m_keyCallbacks = new HashMap<actionData, List<Runnable>>();
+    private static Map<actionData, List<Runnable>> m_mouseCallbacks = new HashMap<actionData, List<Runnable>>();
 
     private static void udpateKeyCallback() {
         glfwSetKeyCallback(Window.getHandle(), (window, key, scancode, action, mods) -> {
@@ -119,6 +120,22 @@ public class Input {
                 List<Runnable> cbs = m_keyCallbacks.get(actionKey);
                 for(Runnable cb: cbs) {cb.run();} 
             }
+		}); 
+    }
+
+    private static void udpateMouseCallback() {
+        glfwSetMouseButtonCallback(Window.getHandle(), (window, button, action, mods) -> {
+            Input outer = new Input();
+			Input.actionData actionKey = outer.new actionData(button, action); 
+
+            //actionKey.print();
+
+            if(m_mouseCallbacks.containsKey(actionKey)) {
+                List<Runnable> cbs = m_mouseCallbacks.get(actionKey);
+                for(Runnable cb: cbs) {cb.run();} 
+            }
+
+            ImGuiLayer.mouseCallback.accept(new ImGuiLayer(Window.getHandle()). new eventData(action, button));
 		}); 
     }
 
@@ -141,6 +158,19 @@ public class Input {
         udpateKeyCallback();
     }
 
+    public static void addMouseCallback(int keyCode, int act, Runnable callback) {
+        Input outer = new Input();
+        actionData key = outer.new actionData(keyCode, act);
+        if(m_mouseCallbacks.containsKey(key)) {
+            m_mouseCallbacks.get(outer.new actionData(keyCode, act)).add(callback);
+        } else {
+            List<Runnable> newList = new ArrayList<>();
+            newList.add(callback);
+            m_mouseCallbacks.put(key, newList);
+        }
+        udpateMouseCallback();
+    }
+
     /**
      * Returns current mouse position in pixels.
      * @return
@@ -160,9 +190,9 @@ public class Input {
         glfwSetInputMode(Window.getHandle(), GLFW_CURSOR, mode);
     }
 
-    public static final int KEY_RELEASE = GLFW_RELEASE;
-    public static final int KEY_PRESS = GLFW_PRESS;
-    public static final int KEY_REPEAT = GLFW_REPEAT;
+    public static final int ACTION_RELEASE = GLFW_RELEASE;
+    public static final int ACTION_PRESS = GLFW_PRESS;
+    public static final int ACTION_REPEAT = GLFW_REPEAT;
 
     public static final int MOUSE_BUTTON_LEFT = GLFW_MOUSE_BUTTON_LEFT;
     public static final int MOUSE_BUTTON_RIGHT = GLFW_MOUSE_BUTTON_RIGHT;

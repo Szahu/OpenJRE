@@ -49,7 +49,7 @@ public class Engine {
 		// Make the window visible
 		glfwShowWindow(Window.getHandle());
 
-		Input.addKeyCallback(KEY_CODE_ESCAPE, KEY_RELEASE, Window::close);
+		Input.addKeyCallback(KEY_CODE_ESCAPE, ACTION_RELEASE, Window::close);
 
     }
 	

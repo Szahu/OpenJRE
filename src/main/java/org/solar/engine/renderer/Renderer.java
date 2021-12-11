@@ -91,7 +91,7 @@ public class Renderer {
      */
     public static void setClearColor(Vector3f newColor) {m_clearColor = newColor;}
 
-    private static void drawVertexArray(VertexArray vao) {
+    public static void drawVertexArray(VertexArray vao) {
 
         vao.bind();
 
@@ -102,7 +102,7 @@ public class Renderer {
         glDrawElements(GL_TRIANGLES, vao.getIndexCount(), GL_UNSIGNED_INT, 0);
 
         // Restore state
-        vao.unbind();
+        //vao.unbind();
 
     }
 

@@ -8,6 +8,7 @@ import org.joml.Vector3f;
 import org.joml.Vector3i;
 import org.solar.engine.Utils;
 import org.solar.engine.renderer.FloatArray;
+import org.solar.engine.renderer.VertexArray;
 import org.solar.engine.renderer.VertexData;
 
 import static org.solar.appllication.terrain.Consts.*;
@@ -18,6 +19,7 @@ public class Chunk {
     private double isolevel;
 
     public static final int CHUNK_SIZE = 20;
+    public static final int CHUNK_HEIGHT = 20;
 
     public Chunk(Vector3f inOffset, Function<Vector3f, double[][][]> generator, double isolevel) {
         this.offset = inOffset;
@@ -30,6 +32,15 @@ public class Chunk {
         return new VertexData(new FloatArray(3, vertices), new FloatArray(3, calculateNormals(vertices)));
     } */
 
+    public VertexArray generate() {
+        float[] vertices = calculateVertices();
+        float[] normals = calculateNormals(vertices);
+        int[] indices = new int[vertices.length/3];
+        for(int i = 0;i < indices.length;i++) {
+            indices[i] = i;
+        }
+        return new VertexArray(indices, new FloatArray(3, vertices), new FloatArray(3, normals));
+    }
 
     private Vector3f interpolateVerts(double isoLevel, Vector3f v1, Vector3f v2, double val1, double val2) {
         float t = (float)((isoLevel - val1) / (val2 - val1)) ;
@@ -127,4 +138,39 @@ public class Chunk {
             triangles.add(new Triangle(new Vector3f(p1t).add(this.offset), new Vector3f(p2t).add(this.offset), new Vector3f(p3t).add(this.offset)));
         }
     }
+
+    private float[] calculateNormals(float[] glVertices) {
+
+        List<Float> glNormals = new ArrayList<>();
+
+        for(int i = 0;i < glVertices.length;i+=9) {
+            Vector3f p1 = new Vector3f(glVertices[i], glVertices[i+1],glVertices[i+2]);
+            Vector3f p2 = new Vector3f(glVertices[i+3], glVertices[i+4],glVertices[i+5]);
+            Vector3f p3 = new Vector3f(glVertices[i+6], glVertices[i+7],glVertices[i+8]);
+
+            Vector3f U = new Vector3f();
+            Vector3f V = new Vector3f();
+            p2.sub(p1, U);
+            p3.sub(p1, V);
+
+            Vector3f normal = new Vector3f();
+            V.cross(U, normal);
+            normal.normalize();
+            
+            glNormals.add(normal.x);
+            glNormals.add(normal.y);
+            glNormals.add(normal.z);
+
+            glNormals.add(normal.x);
+            glNormals.add(normal.y);
+            glNormals.add(normal.z);
+
+            glNormals.add(normal.x);
+            glNormals.add(normal.y);
+            glNormals.add(normal.z);
+        }
+
+        return Utils.floatListToArray(glNormals);
+    }
 }
+

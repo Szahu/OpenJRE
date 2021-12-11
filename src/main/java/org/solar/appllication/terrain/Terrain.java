@@ -1,87 +1,69 @@
 package org.solar.appllication.terrain;
 
+import org.joml.Math;
+import org.joml.Vector2f;
+import org.joml.Vector2i;
 import org.joml.Vector3f;
-import org.joml.Vector3i;
-import org.joml.Vector4f;
-import org.lwjgl.system.CallbackI.J;
-import org.lwjgl.system.CallbackI.Z;
+
 import org.solar.engine.Utils;
 import org.solar.engine.renderer.FloatArray;
 import org.solar.engine.renderer.VertexArray;
 
-import static org.solar.engine.Utils.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
-
-import static org.solar.appllication.terrain.Consts.*;
-
 
 public class Terrain {
 
-    private VertexArray m_vertexArray;
-    public VertexArray getVertexArray() {return m_vertexArray;}
+    //public VertexArray getVertexArray() {return m_vertexArray;}
+    private Map<Vector2i, VertexArray> chunksVertexArrays = new HashMap<>();
+    private double isolevel = 0.0;
+    private Function<Vector3f, double[][][]> generator;
+    private OpenSimplexNoise m_noise;
+    private OpenSimplexNoise m_noise2;
 
-  
-    public void createMesh(double isolevel, Function<Vector3f, double[][][]> generator, Vector3f offset) {
-        List<Integer> glIndices = new ArrayList<>();
+    public Terrain() {
 
-        /* Chunk testChunk1 = new Chunk(new Vector3f(-Chunk.CHUNK_SIZE, 0, -Chunk.CHUNK_SIZE), generator, isolevel);
-        float[] vertices1 = testChunk1.calculateVertices();
-        Chunk testChunk2 = new Chunk(new Vector3f(0, 0, -Chunk.CHUNK_SIZE), generator, isolevel);
-        float[] vertices2 = testChunk2.calculateVertices();
+        m_noise = new OpenSimplexNoise(123);
+        m_noise2 = new OpenSimplexNoise(456);
+    	double frequency = 0.01f;
+    	double frequency2= 0.4f;
 
-        Chunk testChunk3 = new Chunk(new Vector3f(-Chunk.CHUNK_SIZE, 0, 0), generator, isolevel);
-        float[] vertices3 = testChunk3.calculateVertices();
-        Chunk testChunk4 = new Chunk(new Vector3f(0, 0, 0), generator, isolevel);
-        float[] vertices4 = testChunk4.calculateVertices();
-
-        float[] res = concat(concat(concat(vertices1, vertices2), vertices3), vertices4); */
-        Chunk testChunk = new Chunk(offset.mul(Chunk.CHUNK_SIZE), generator, isolevel);
-        float[] res = testChunk.calculateVertices();
-        for(int x = 0;x < res.length / 3;x++) {
-            glIndices.add(x);
-        }
-
-        m_vertexArray = new VertexArray(Utils.intListToArray(glIndices), new FloatArray(3, res), new FloatArray(3, calculateNormals(res)));
+        generator = (offset) -> {
+			double[][][] res = new double[Chunk.CHUNK_SIZE+1][Chunk.CHUNK_HEIGHT+1][Chunk.CHUNK_SIZE+1];
+			for(int x = 0;x <= Chunk.CHUNK_SIZE;x++){
+				for(int y = 0;y <= Chunk.CHUNK_HEIGHT;y++){
+					for(int z = 0;z <= Chunk.CHUNK_SIZE;z++){
+						
+						float density = -y - offset.y;
+						Vector2f location = new Vector2f(x + offset.z + 1, z + offset.x + 1);
+						density += Math.clamp((m_noise.noise2(frequency * location.x, frequency *  location.y) + 1) * 6, 0, 1);
+                        //density += Math.clamp((m_noise2.noise2(frequency2 * location.x, frequency2 *  location.y) + 1) * 0.1, 0, 1);
+						res[x][y][z] = density;
+	
+					}	
+				}
+			}
+			return res;
+		};
     }
-    
 
-    private float[] calculateNormals(float[] glVertices) {
+    public void generateNewChunk(Vector2i offset) {
+        Chunk chunk = new Chunk(new Vector3f(offset.x * Chunk.CHUNK_SIZE, 0, offset.y * Chunk.CHUNK_SIZE), generator, isolevel);
+        chunksVertexArrays.put(offset, chunk.generate());
+    }
 
-        List<Float> glNormals = new ArrayList<>();
+    public Map<Vector2i, VertexArray> getVertexArrays() {
+        return chunksVertexArrays;
+    }
 
-        for(int i = 0;i < glVertices.length;i+=9) {
-            Vector3f p1 = new Vector3f(glVertices[i], glVertices[i+1],glVertices[i+2]);
-            Vector3f p2 = new Vector3f(glVertices[i+3], glVertices[i+4],glVertices[i+5]);
-            Vector3f p3 = new Vector3f(glVertices[i+6], glVertices[i+7],glVertices[i+8]);
-
-            Vector3f U = new Vector3f();
-            Vector3f V = new Vector3f();
-            p2.sub(p1, U);
-            p3.sub(p1, V);
-
-            Vector3f normal = new Vector3f();
-            V.cross(U, normal);
-            normal.normalize();
-            
-            glNormals.add(normal.x);
-            glNormals.add(normal.y);
-            glNormals.add(normal.z);
-
-            glNormals.add(normal.x);
-            glNormals.add(normal.y);
-            glNormals.add(normal.z);
-
-            glNormals.add(normal.x);
-            glNormals.add(normal.y);
-            glNormals.add(normal.z);
+    public void addNewChunk(Vector2i offset) {
+        if(!chunksVertexArrays.containsKey(offset)) {
+            generateNewChunk(offset);
         }
-
-        return Utils.floatListToArray(glNormals);
     }
     
 

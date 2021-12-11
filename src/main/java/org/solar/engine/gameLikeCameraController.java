@@ -13,7 +13,7 @@ public class gameLikeCameraController implements CameraControllerTemplate {
     private Vector2f m_angles = new Vector2f();
     private Vector3f m_position = new Vector3f();
 
-    private float m_moveSpeed = 1.0f;
+    private float m_moveSpeed = 10.0f;
 
     private Consumer<Matrix4f> m_setTransformMatrixCallback;
     private void updateCameraTransformMatrix(Matrix4f mat) {
@@ -21,11 +21,11 @@ public class gameLikeCameraController implements CameraControllerTemplate {
     }
 
     public gameLikeCameraController() {
-        Input.addKeyCallback(Input.MOUSE_BUTTON_RIGHT, Input.KEY_PRESS, () -> {
+        Input.addMouseCallback(Input.MOUSE_BUTTON_RIGHT, Input.ACTION_PRESS, () -> {
             Input.setCursorMode(Input.CURSOR_MODE_DISABLED);
         });
 
-        Input.addKeyCallback(Input.MOUSE_BUTTON_RIGHT, Input.KEY_RELEASE, () -> {
+        Input.addMouseCallback(Input.MOUSE_BUTTON_RIGHT, Input.ACTION_RELEASE, () -> {
             Input.setCursorMode(Input.CURSOR_MODE_NORMAL);
         });
     }
@@ -39,22 +39,22 @@ public class gameLikeCameraController implements CameraControllerTemplate {
 
         Vector3f offset = new Vector3f();
         if(Input.isKeyDown(Input.KEY_CODE_A)) {
-            offset.x += m_moveSpeed;
+            offset.x += m_moveSpeed * Utils.getDeltaTime();
         }
         if(Input.isKeyDown(Input.KEY_CODE_S)) {
-            offset.z += m_moveSpeed;
+            offset.z += m_moveSpeed * Utils.getDeltaTime();
         }
         if(Input.isKeyDown(Input.KEY_CODE_D)) {
-            offset.x -= m_moveSpeed;
+            offset.x -= m_moveSpeed * Utils.getDeltaTime();
         }
         if(Input.isKeyDown(Input.KEY_CODE_W)) {
-            offset.z -= m_moveSpeed;
+            offset.z -= m_moveSpeed * Utils.getDeltaTime();
         }
-        if(Input.isKeyDown(Input.KEY_CODE_LEFT_ALT)) {
-            offset.y -= m_moveSpeed;
+        if(Input.isKeyDown(Input.KEY_CODE_LEFT_SHIFT)) {
+            offset.y -= m_moveSpeed * Utils.getDeltaTime();
         }
         if(Input.isKeyDown(Input.KEY_CODE_SPACE)) {
-            offset.y += m_moveSpeed;
+            offset.y += m_moveSpeed * Utils.getDeltaTime();
         }
 
         offset.mul(-1);
