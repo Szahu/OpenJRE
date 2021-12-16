@@ -4,6 +4,7 @@ import org.joml.Math;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
+import org.joml.Vector4i;
 import org.solar.appllication.terrain.Chunk;
 import org.solar.appllication.terrain.OpenSimplexNoise;
 import org.solar.appllication.terrain.Terrain;
@@ -20,6 +21,7 @@ import imgui.ImGui;
 import imgui.type.ImInt;
 
 import java.io.IOException;
+import java.security.KeyStore.Entry;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
@@ -38,6 +40,7 @@ public class testApp extends ApplicationTemplate {
 
 	private InstancedVertexArray testCube;
 	private Shader instanceShader;
+	private int amountInstances = 0;
 
     @Override
     public void initialise() throws IOException, Exception {
@@ -50,11 +53,7 @@ public class testApp extends ApplicationTemplate {
 		m_testShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
 		m_testShader.unbind();
 
-		Event.addWindowResizeCallback((width, height)-> {
-			m_testShader.bind();
-			m_testShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
-			m_testShader.unbind();
-		});
+		
 
 		gridLocation.x = (int)(m_camera.getCameraController().getTransform().getPosition().x / (Chunk.CHUNK_SIZE * Chunk.CELL_SIZE));
 		gridLocation.y = (int)(m_camera.getCameraController().getTransform().getPosition().z / (Chunk.CHUNK_SIZE * Chunk.CELL_SIZE));
@@ -70,18 +69,30 @@ public class testApp extends ApplicationTemplate {
 		});
 
 
-		m_terrain.addNewChunk(new Vector2i(0,0));
 
 		//m_terrain.multiThreadedLoading();
 
 		//m_terrain.initAllChunksInQueue();
 
-		float[] offsets = new float[100];
-		for(int i = 0;i < 97;i+=3) {
-			offsets[i] = (float)i/3 * 3;
-			offsets[i+1] = 0;
-			offsets[i+2] = 0;
+		m_terrain.syncLoading(new Vector4i(-3,-3,3,3));
+
+		//m_terrain.initAllChunksInQueue();
+
+		float offsets[] = new float[(Chunk.CHUNK_SIZE + 1) * (Chunk.CHUNK_SIZE + 1) *  m_terrain.getChunks().size() * 3];
+		int index = 0;
+		for(Map.Entry<Vector2i, Chunk> chunkEntry : m_terrain.getChunks().entrySet()) {
+			Map<Vector2f, Float> hmap = chunkEntry.getValue().getHeightMap();
+		
+			for(Map.Entry<Vector2f, Float> entry : hmap.entrySet()) {
+				offsets[index] = entry.getKey().x;
+				index++;
+				offsets[index] = entry.getValue();
+				index++;
+				offsets[index] = entry.getKey().y;
+				index++;
+			}
 		}
+		amountInstances = offsets.length/3;
 
 		VertexData testCubeData = ModelLoader.loadModel("assets/cube.obj");
 		testCube = new InstancedVertexArray(Arrays.copyOf(testCubeData.indices, testCubeData.indices.length),
@@ -92,7 +103,17 @@ public class testApp extends ApplicationTemplate {
 		instanceShader = new Shader("instanced.glsl");
 		instanceShader.bind();
 		instanceShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
-		instanceShader.unbind(); 
+		instanceShader.unbind();
+		
+		Event.addWindowResizeCallback((width, height)-> {
+			m_testShader.bind();
+			m_testShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
+			m_testShader.unbind();
+
+			instanceShader.bind();
+			instanceShader.setUniform("u_projectionMatrix", m_camera.getProjectionMatrix());
+			instanceShader.unbind();
+		});
 	}
 
 	float[] lightVec = new float[]{-3,1,0};
@@ -118,11 +139,13 @@ public class testApp extends ApplicationTemplate {
 		instanceShader.setUniform("u_lightDirection", new Vector3f(lightVec[0], lightVec[1], lightVec[2]));
 		instanceShader.unbind();
 
-		Renderer.renderInstanced(testCube, instanceShader, 10);
+		Renderer.renderInstanced(testCube, instanceShader, amountInstances);
 		instanceShader.unbind();
 
 		Renderer.setDrawLines(false);
 
+
+		//ON GRID UPDATE
 		Vector2i newGridLoc= new Vector2i();
 		newGridLoc.x = (int)Math.floor(-m_camera.getCameraController().getTransform().getPosition().x / (Chunk.CHUNK_SIZE * Chunk.CELL_SIZE));
 		newGridLoc.y = (int)Math.floor(-m_camera.getCameraController().getTransform().getPosition().z / (Chunk.CHUNK_SIZE * Chunk.CELL_SIZE)); 

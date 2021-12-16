@@ -25,7 +25,7 @@ public class Terrain {
     private Map<Vector2i, Chunk> toCreateVao = new HashMap<>();
     private List<Vector2i> queueKeys = new ArrayList<>();
     private double isolevel = 0.0;
-    private Function<Vector3f, double[][][]> generator;
+    private Function<Vector3f, ChunkData> generator;
     private OpenSimplexNoise m_noise;
     private OpenSimplexNoise m_noise2;
     private OpenSimplexNoise m_noise3;
@@ -36,29 +36,36 @@ public class Terrain {
         public ChunkLoader(Vector4i scope) {
             this.scope = scope;
         }
-        public boolean done = false;
 
         @Override
         public void run() {
-            for (int i = scope.x;i != scope.z;i++) {
-                for (int j = scope.y;j != scope.w;j++) {
-                    addNewChunk(new Vector2i(i,j));
-                }
-            }
-            done = true;
+            scopedLoading(scope);
         } 
 
     }
+
+    private void scopedLoading(Vector4i scope) {
+        for (int i = scope.x;i != scope.z;i++) {
+            for (int j = scope.y;j != scope.w;j++) {
+                addNewChunk(new Vector2i(i,j));
+            }
+        }
+    }
     
-    public void multiThreadedLoading() {
-        Thread t1 = new ChunkLoader(new Vector4i(-3,-3, 3,3));
+    public void syncLoading(Vector4i scope) {
+        scopedLoading(scope);
+        initAllChunksInQueue();
+    }
+
+    public void multiThreadedLoading(Vector4i scope) {
+        Thread t1 = new ChunkLoader(scope);
 
         t1.start();  
     }
 
     public Terrain() {
 
-        m_noise = new OpenSimplexNoise(123);
+        m_noise = new OpenSimplexNoise(123123);
         m_noise2 = new OpenSimplexNoise(456);
         m_noise3 = new OpenSimplexNoise(789);
     	double frequency = 0.0009f;
@@ -67,6 +74,7 @@ public class Terrain {
 
         generator = (offset) -> {
 			double[][][] res = new double[Chunk.CHUNK_SIZE+1][Chunk.CHUNK_HEIGHT+1][Chunk.CHUNK_SIZE+1];
+            float[][] heightMap = new float[Chunk.CHUNK_SIZE+1][Chunk.CHUNK_SIZE+1];
 			for(int x = 0;x <= Chunk.CHUNK_SIZE;x++){
 				for(int y = 0;y <= Chunk.CHUNK_HEIGHT;y++){
 					for(int z = 0;z <= Chunk.CHUNK_SIZE;z++){
@@ -74,15 +82,18 @@ public class Terrain {
                         Vector3f location = new Vector3f((x + 1) * Chunk.CELL_SIZE + offset.z, y * Chunk.CELL_SIZE, (z + 1) * Chunk.CELL_SIZE + offset.x);
 
                         float density = -y - offset.y;
-                        density += Math.clamp((m_noise.noise2(frequency * location.x, frequency *  location.z) + 1) * 6, 0, 1);
-                        density += Math.clamp((m_noise2.noise2(frequency2 * location.z, frequency2 *  location.x) + 1) * 0.2, 0, 1);
-                        density += Math.clamp((m_noise3.noise2(frequency3 * location.x, frequency3 *  location.z) + 1) * 2, 0, 1);
+                        float heightVal = 0;
+                        heightVal += Math.clamp((m_noise.noise2(frequency * location.x, frequency *  location.z) + 1) * 6, 0, 1);
+                        heightVal += Math.clamp((m_noise2.noise2(frequency2 * location.z, frequency2 *  location.x) + 1) * 0.2, 0, 1);
+                        heightVal += Math.clamp((m_noise3.noise2(frequency3 * location.x, frequency3 *  location.z) + 1) * 2, 0, 1);
+                        density += heightVal;
+                        heightMap[x][z] = heightVal * Chunk.CELL_SIZE;
                         res[x][y][z] = density;
 	
 					}	
 				}
 			}
-			return res;
+			return new ChunkData(res, heightMap);
 		};
     }
 

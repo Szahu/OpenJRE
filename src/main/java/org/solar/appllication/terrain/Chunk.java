@@ -1,12 +1,17 @@
 package org.solar.appllication.terrain;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
+import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
+import org.lwjgl.system.CallbackI.I;
 import org.solar.engine.Utils;
 import org.solar.engine.renderer.FloatArray;
 import org.solar.engine.renderer.VertexArray;
@@ -23,19 +28,19 @@ public class Chunk {
     public static final int CHUNK_HEIGHT = 30;
     public static final int CELL_SIZE = 8;
     private VertexData vData;
+    private Map<Vector2f, Float> m_worldCoordsHMap = new HashMap<>();
 
-    public Chunk(Vector2i inOffset, Function<Vector3f, double[][][]> generator, double isolevel) {
+    public Chunk(Vector2i inOffset, Function<Vector3f, ChunkData> generator, double isolevel) {
         this.offset = inOffset;
-        this.grid = generator.apply(new Vector3f(this.offset.x * CHUNK_SIZE * CELL_SIZE, 0 , this.offset.y * CHUNK_SIZE * CELL_SIZE));
+        ChunkData chData = generator.apply(new Vector3f(this.offset.x * CHUNK_SIZE * CELL_SIZE, 0 , this.offset.y * CHUNK_SIZE * CELL_SIZE));
+        this.grid = chData.getGrid();
         this.isolevel = isolevel;
     }
 
-    /* public VertexData getVertexData() {
-        float[] vertices = calculateVertices(grid, isolevel, offset);
-        return new VertexData(new FloatArray(3, vertices), new FloatArray(3, calculateNormals(vertices)));
-    } */
+    public Map<Vector2f, Float> getHeightMap() {
+        return m_worldCoordsHMap;
+    }
 
-    public void setVao(VertexArray vao) {vertexArray = vao;}
     public VertexArray getVertexArray() {return vertexArray;}
     public Vector2i getOffset() {return offset;}
 
@@ -46,12 +51,20 @@ public class Chunk {
         for(int i = 0;i < indices.length;i++) {
             indices[i] = i;
         }
-        
+
         vData = new VertexData(indices, new FloatArray(3, vertices), new FloatArray(3, normals));
     }
 
     public void createVertexArray() {
         vertexArray = new VertexArray(vData);
+
+        Iterator<Map.Entry<Vector2f, Float>> it = m_worldCoordsHMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<Vector2f, Float> item = it.next();
+            if (item.getKey().x == (offset.x * CHUNK_SIZE * CELL_SIZE) + CHUNK_SIZE * CELL_SIZE || item.getKey().y == (offset.y * CHUNK_SIZE * CELL_SIZE) + CHUNK_SIZE * CELL_SIZE) {
+                it.remove();
+            }
+        }
     }
 
     private Vector3f interpolateVerts(double isoLevel, Vector3f v1, Vector3f v2, double val1, double val2) {
@@ -112,6 +125,11 @@ public class Chunk {
         return Utils.floatListToArray(glVertices);
     }
 
+    public Vector2f snapToGrid(Vector2f vec) {
+        Vector2f gridWise = new Vector2f((int)(vec.x / CELL_SIZE), (int)(vec.y / CELL_SIZE));
+        return gridWise.mul(CELL_SIZE);
+    }
+
     public void polygonise(GridCell grid, double isolevel, List<Triangle> triangles) {
 
         int cubeindex;
@@ -149,7 +167,19 @@ public class Chunk {
 
             Vector3f vertexOffset = new Vector3f(offset.x * CHUNK_SIZE * CELL_SIZE, 0, offset.y * CHUNK_SIZE * CELL_SIZE);
 
-            triangles.add(new Triangle(new Vector3f(p1t).add(vertexOffset), new Vector3f(p2t).add(vertexOffset), new Vector3f(p3t).add(vertexOffset)));
+            Vector3f finalV1 = new Vector3f(p1t).add(vertexOffset);
+            Vector3f finalV2 = new Vector3f(p2t).add(vertexOffset);
+            Vector3f finalV3 = new Vector3f(p3t).add(vertexOffset);
+
+            Vector2f val1 = snapToGrid(new Vector2f(finalV1.x, finalV1.z));
+            Vector2f val2 = snapToGrid(new Vector2f(finalV2.x, finalV2.z));
+            Vector2f val3 = snapToGrid(new Vector2f(finalV3.x, finalV3.z));
+
+            m_worldCoordsHMap.put(val1, finalV1.y);
+            m_worldCoordsHMap.put(val2, finalV2.y);
+            m_worldCoordsHMap.put(val3, finalV3.y);
+
+            triangles.add(new Triangle(finalV1,finalV2,finalV3));
         }
     }
 

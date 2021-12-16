@@ -94,6 +94,10 @@ public class Utils {
         return result;
     }
 
+    public static <T extends Number> boolean marginCompare(T a, T b, double eps) {
+        return Math.abs(a.doubleValue() - b.doubleValue()) < eps;
+    }
+
     private final static String ANSI_RESET = "\u001B[0m";
     private final static String ANSI_RED = "\u001B[31m";
     private final static String ANSI_GREEN = "\u001B[32m";
