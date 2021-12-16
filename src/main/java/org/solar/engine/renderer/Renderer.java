@@ -2,6 +2,7 @@ package org.solar.engine.renderer;
 
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL31.*;
 
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL;
@@ -158,6 +159,24 @@ public class Renderer {
 
         drawVertexArray(vao);
 
+        shader.unbind();
+    }
+
+    public static void renderInstanced(InstancedVertexArray vao, Shader shader, int instances) {
+        
+        vao.bind();
+        
+        shader.bind();
+
+        shader.setUniform(Shader.uniformViewMatrixToken, m_CameraRefrence.getViewMatrix());
+
+        for(int i = 0;i < vao.getNumberOfAttributes(); i++) {
+            glEnableVertexAttribArray(i);
+        }
+
+        glDrawElementsInstanced(GL_TRIANGLES, vao.getIndexCount(), GL_UNSIGNED_INT, 0, instances); 
+
+        vao.unbind();
         shader.unbind();
     }
 

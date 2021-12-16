@@ -4,9 +4,11 @@
 
 layout (location = 0) in vec3 inVertexPosition;
 layout (location = 1) in vec3 inNormal;
+layout (location = 2) in vec3 offset;
 
 uniform mat4 u_projectionMatrix;
 uniform mat4 u_viewMatrix;
+uniform mat4 u_worldMatrix;
 
 out vec3 Normal;
 out vec3 FragmentPosition;
@@ -14,7 +16,7 @@ out vec3 FragmentPosition;
 void main() {
     FragmentPosition = vec3(vec4(inVertexPosition, 1.0));
     Normal = inNormal;
-    gl_Position =  u_projectionMatrix * u_viewMatrix * vec4(inVertexPosition, 1.0);
+    gl_Position =  u_projectionMatrix * u_viewMatrix * u_worldMatrix * vec4(inVertexPosition + offset, 1.0);
 }
 
 #fragmentShader

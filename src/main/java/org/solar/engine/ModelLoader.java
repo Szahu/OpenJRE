@@ -21,6 +21,7 @@ import org.solar.engine.renderer.RenderData;
 import org.solar.engine.renderer.RenderableEntity;
 import org.solar.engine.renderer.Texture;
 import org.solar.engine.renderer.VertexArray;
+import org.solar.engine.renderer.VertexData;
 import org.solar.engine.renderer.Texture.TextureType;
 
 
@@ -52,7 +53,7 @@ public class ModelLoader {
     } */
 
      //TODO add size normalization, add materials
-     public static VertexArray loadModel(String path) throws Exception {
+     public static VertexData loadModel(String path) throws Exception {
         AIScene aiScene = aiImportFile(path, aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices | aiProcess_Triangulate
         | aiProcess_FixInfacingNormals | aiProcess_PreTransformVertices  | aiProcess_CalcTangentSpace);
         if (aiScene == null) {
@@ -63,14 +64,14 @@ public class ModelLoader {
         int numMeshes = aiScene.mNumMeshes();
         AIMesh aiMesh = AIMesh.create(aiMeshes.get(0));
         List<Integer> indices = new ArrayList<>();
-        VertexArray mesh = processMesh(aiMesh);
+        VertexData mesh = processMesh(aiMesh);
         processIndices(aiMesh, indices);
 
         return mesh;
     }
 
 
-    private static VertexArray processMesh(AIMesh aiMesh) {
+    private static VertexData processMesh(AIMesh aiMesh) {
         List<Float> vertices = new ArrayList<>();
         List<Float> textures = new ArrayList<>();
         List<Float> normals = new ArrayList<>();
@@ -83,7 +84,7 @@ public class ModelLoader {
         processTangents(aiMesh, tangents);
         processIndices(aiMesh, indices);
     
-        return new VertexArray(
+        return new VertexData(
             Utils.intListToArray(indices), 
             new FloatArray(3, Utils.floatListToArray(vertices)), 
             new FloatArray(2, Utils.floatListToArray(textures)), 

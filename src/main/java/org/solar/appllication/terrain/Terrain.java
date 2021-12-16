@@ -4,7 +4,8 @@ import org.joml.Math;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
-
+import org.joml.Vector4i;
+import org.lwjgl.opengl.GL;
 import org.solar.engine.Utils;
 import org.solar.engine.renderer.FloatArray;
 import org.solar.engine.renderer.VertexArray;
@@ -14,23 +15,55 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class Terrain {
 
-    //public VertexArray getVertexArray() {return m_vertexArray;}
-    private Map<Vector2i, VertexArray> chunksVertexArrays = new HashMap<>();
+    public static int RENDERING_DSTSNCE = 10;
+    private Map<Vector2i, Chunk> chunks = new HashMap<>();
+    private Map<Vector2i, Chunk> toCreateVao = new HashMap<>();
+    private List<Vector2i> queueKeys = new ArrayList<>();
     private double isolevel = 0.0;
     private Function<Vector3f, double[][][]> generator;
     private OpenSimplexNoise m_noise;
     private OpenSimplexNoise m_noise2;
+    private OpenSimplexNoise m_noise3;
+
+    class ChunkLoader extends Thread {
+
+        private Vector4i scope = new Vector4i();
+        public ChunkLoader(Vector4i scope) {
+            this.scope = scope;
+        }
+        public boolean done = false;
+
+        @Override
+        public void run() {
+            for (int i = scope.x;i != scope.z;i++) {
+                for (int j = scope.y;j != scope.w;j++) {
+                    addNewChunk(new Vector2i(i,j));
+                }
+            }
+            done = true;
+        } 
+
+    }
+    
+    public void multiThreadedLoading() {
+        Thread t1 = new ChunkLoader(new Vector4i(-3,-3, 3,3));
+
+        t1.start();  
+    }
 
     public Terrain() {
 
         m_noise = new OpenSimplexNoise(123);
         m_noise2 = new OpenSimplexNoise(456);
-    	double frequency = 0.01f;
-    	double frequency2= 0.4f;
+        m_noise3 = new OpenSimplexNoise(789);
+    	double frequency = 0.0009f;
+    	double frequency2 = 0.05f;
+    	double frequency3 = 0.003f;
 
         generator = (offset) -> {
 			double[][][] res = new double[Chunk.CHUNK_SIZE+1][Chunk.CHUNK_HEIGHT+1][Chunk.CHUNK_SIZE+1];
@@ -38,11 +71,13 @@ public class Terrain {
 				for(int y = 0;y <= Chunk.CHUNK_HEIGHT;y++){
 					for(int z = 0;z <= Chunk.CHUNK_SIZE;z++){
 						
-						float density = -y - offset.y;
-						Vector2f location = new Vector2f(x + offset.z + 1, z + offset.x + 1);
-						density += Math.clamp((m_noise.noise2(frequency * location.x, frequency *  location.y) + 1) * 6, 0, 1);
-                        //density += Math.clamp((m_noise2.noise2(frequency2 * location.x, frequency2 *  location.y) + 1) * 0.1, 0, 1);
-						res[x][y][z] = density;
+                        Vector3f location = new Vector3f((x + 1) * Chunk.CELL_SIZE + offset.z, y * Chunk.CELL_SIZE, (z + 1) * Chunk.CELL_SIZE + offset.x);
+
+                        float density = -y - offset.y;
+                        density += Math.clamp((m_noise.noise2(frequency * location.x, frequency *  location.z) + 1) * 6, 0, 1);
+                        density += Math.clamp((m_noise2.noise2(frequency2 * location.z, frequency2 *  location.x) + 1) * 0.2, 0, 1);
+                        density += Math.clamp((m_noise3.noise2(frequency3 * location.x, frequency3 *  location.z) + 1) * 2, 0, 1);
+                        res[x][y][z] = density;
 	
 					}	
 				}
@@ -52,16 +87,36 @@ public class Terrain {
     }
 
     public void generateNewChunk(Vector2i offset) {
-        Chunk chunk = new Chunk(new Vector3f(offset.x * Chunk.CHUNK_SIZE, 0, offset.y * Chunk.CHUNK_SIZE), generator, isolevel);
-        chunksVertexArrays.put(offset, chunk.generate());
+        Chunk chunk = new Chunk(offset, generator, isolevel);
+        chunk.generate();
+        toCreateVao.put(offset, chunk);
+        queueKeys.add(offset);
     }
 
-    public Map<Vector2i, VertexArray> getVertexArrays() {
-        return chunksVertexArrays;
+    public void initOneChunkInQueue() {
+        if (queueKeys.size() > 0 && toCreateVao.get(queueKeys.get(0)) != null) {
+            Vector2i offset = queueKeys.get(0);
+            Chunk chunk = toCreateVao.get(offset); 
+            chunk.createVertexArray();
+            chunks.put(offset, chunk);
+            toCreateVao.remove(queueKeys.get(0));
+            queueKeys.remove(0);
+        }
+    }
+
+    public void initAllChunksInQueue() {
+        for (Chunk chunk : toCreateVao.values()) {
+            chunk.createVertexArray();
+            chunks.put(chunk.getOffset(), chunk);
+        }
+    }
+
+    public Map<Vector2i, Chunk> getChunks() {
+        return chunks;
     }
 
     public void addNewChunk(Vector2i offset) {
-        if(!chunksVertexArrays.containsKey(offset)) {
+        if(!chunks.containsKey(offset) && !toCreateVao.containsKey(offset) && !queueKeys.contains(offset)) {
             generateNewChunk(offset);
         }
     }

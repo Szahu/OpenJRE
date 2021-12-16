@@ -3,6 +3,7 @@ package org.solar.engine.renderer;
 public class VertexData {
     public FloatArray[] arrays;
     public float[] rawData;
+    public int[] indices;
 
     public VertexData(FloatArray ...data) {
         arrays = data;
@@ -18,6 +19,11 @@ public class VertexData {
                 }
             }
         }
+    }
+
+    public VertexData(int[] indices, FloatArray ...data) {
+        this(data);
+        this.indices = indices;
     }
 
     private int getSumVarStep() {

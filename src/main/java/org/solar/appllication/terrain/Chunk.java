@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import org.joml.Vector2i;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 import org.solar.engine.Utils;
@@ -14,16 +15,18 @@ import org.solar.engine.renderer.VertexData;
 import static org.solar.appllication.terrain.Consts.*;
 
 public class Chunk {
-    private Vector3f offset = new Vector3f();
+    private Vector2i offset = new Vector2i();
     private double[][][] grid;
     private double isolevel;
+    private VertexArray vertexArray;
+    public static final int CHUNK_SIZE = 10;
+    public static final int CHUNK_HEIGHT = 30;
+    public static final int CELL_SIZE = 8;
+    private VertexData vData;
 
-    public static final int CHUNK_SIZE = 20;
-    public static final int CHUNK_HEIGHT = 20;
-
-    public Chunk(Vector3f inOffset, Function<Vector3f, double[][][]> generator, double isolevel) {
+    public Chunk(Vector2i inOffset, Function<Vector3f, double[][][]> generator, double isolevel) {
         this.offset = inOffset;
-        this.grid = generator.apply(this.offset);
+        this.grid = generator.apply(new Vector3f(this.offset.x * CHUNK_SIZE * CELL_SIZE, 0 , this.offset.y * CHUNK_SIZE * CELL_SIZE));
         this.isolevel = isolevel;
     }
 
@@ -32,14 +35,23 @@ public class Chunk {
         return new VertexData(new FloatArray(3, vertices), new FloatArray(3, calculateNormals(vertices)));
     } */
 
-    public VertexArray generate() {
+    public void setVao(VertexArray vao) {vertexArray = vao;}
+    public VertexArray getVertexArray() {return vertexArray;}
+    public Vector2i getOffset() {return offset;}
+
+    public void generate() {
         float[] vertices = calculateVertices();
         float[] normals = calculateNormals(vertices);
         int[] indices = new int[vertices.length/3];
         for(int i = 0;i < indices.length;i++) {
             indices[i] = i;
         }
-        return new VertexArray(indices, new FloatArray(3, vertices), new FloatArray(3, normals));
+        
+        vData = new VertexData(indices, new FloatArray(3, vertices), new FloatArray(3, normals));
+    }
+
+    public void createVertexArray() {
+        vertexArray = new VertexArray(vData);
     }
 
     private Vector3f interpolateVerts(double isoLevel, Vector3f v1, Vector3f v2, double val1, double val2) {
@@ -75,14 +87,14 @@ public class Chunk {
                     });
 
                     cell.points = new Vector3f[]{
-                        new Vector3f(0.0f + i, 0.0f + j, 0.0f + k),
-                        new Vector3f(1.0f + i, 0.0f + j, 0.0f + k),
-                        new Vector3f(1.0f + i, 0.0f + j, 1.0f + k),
-                        new Vector3f(0.0f + i, 0.0f + j, 1.0f + k),
-                        new Vector3f(0.0f + i, 1.0f + j, 0.0f + k),
-                        new Vector3f(1.0f + i, 1.0f + j, 0.0f + k),
-                        new Vector3f(1.0f + i, 1.0f + j, 1.0f + k),
-                        new Vector3f(0.0f + i, 1.0f + j, 1.0f + k),
+                        new Vector3f((0.0f + i) * CELL_SIZE, (0.0f + j)*CELL_SIZE, (0.0f + k) * CELL_SIZE),
+                        new Vector3f((1.0f + i) * CELL_SIZE, (0.0f + j)*CELL_SIZE, (0.0f + k) * CELL_SIZE),
+                        new Vector3f((1.0f + i) * CELL_SIZE, (0.0f + j)*CELL_SIZE, (1.0f + k) * CELL_SIZE),
+                        new Vector3f((0.0f + i) * CELL_SIZE, (0.0f + j)*CELL_SIZE, (1.0f + k) * CELL_SIZE),
+                        new Vector3f((0.0f + i) * CELL_SIZE, (1.0f + j)*CELL_SIZE, (0.0f + k) * CELL_SIZE),
+                        new Vector3f((1.0f + i) * CELL_SIZE, (1.0f + j)*CELL_SIZE, (0.0f + k) * CELL_SIZE),
+                        new Vector3f((1.0f + i) * CELL_SIZE, (1.0f + j)*CELL_SIZE, (1.0f + k) * CELL_SIZE),
+                        new Vector3f((0.0f + i) * CELL_SIZE, (1.0f + j)*CELL_SIZE, (1.0f + k) * CELL_SIZE),
                     };
 
                     polygonise(cell, isolevel, triangles);
@@ -135,7 +147,9 @@ public class Chunk {
             Vector3f p2t = interpolateVerts(isolevel, new Vector3f(grid.points[a1]), new Vector3f(grid.points[b1]), grid.levels[a1], grid.levels[b1]);
             Vector3f p3t = interpolateVerts(isolevel, new Vector3f(grid.points[a2]), new Vector3f(grid.points[b2]), grid.levels[a2], grid.levels[b2]);
 
-            triangles.add(new Triangle(new Vector3f(p1t).add(this.offset), new Vector3f(p2t).add(this.offset), new Vector3f(p3t).add(this.offset)));
+            Vector3f vertexOffset = new Vector3f(offset.x * CHUNK_SIZE * CELL_SIZE, 0, offset.y * CHUNK_SIZE * CELL_SIZE);
+
+            triangles.add(new Triangle(new Vector3f(p1t).add(vertexOffset), new Vector3f(p2t).add(vertexOffset), new Vector3f(p3t).add(vertexOffset)));
         }
     }
 
